@@ -6,5 +6,5 @@ using UnityEngine;
 public class SubInventoryItemEventArgs : EventArgs
 {
     public Item Item { get; set; }
-    public Vector2Int OriginGridCoordinate { get; set; }
+    public Vector2Int OriginCellCoordinate { get; set; }
 }
