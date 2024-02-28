@@ -17,7 +17,6 @@ public class SubInventoryUIGenerator
         textureGenerator = new(drawSettings);
     }
 
-
     public GameObject GenerateSubInventoryObject(Transform parent)
     {
         //Rename Object
@@ -34,19 +33,18 @@ public class SubInventoryUIGenerator
         imageComponent.sprite = sprite;
 
         RectTransform rectTransform = subInventoryObject.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = sprite.texture.Size();
+        rectTransform.sizeDelta = sprite.texture.Size();  
         rectTransform.localScale = Vector3.one;
         rectTransform.pivot = Vector2.up;
 
         return subInventoryObject;
     }
-
     private Sprite LookUpOrGenerateSprite(Vector2Int key)
     {
         Sprite sprite;
         if (!CAHCED_SPRITES.TryGetValue(key, out sprite))
         {
-            GenerateSprite(key);
+            sprite = GenerateSprite(key);
             CAHCED_SPRITES.Add(subInventory.Size, sprite);
         }
         return sprite;
