@@ -409,7 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f0e05ebec5b5da47acb492a136deda2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: {x: 1, y: 1}
+  size: {x: 2, y: 5}
   drawSettingsSO: {fileID: 11400000, guid: 16e7db63187cea641bdef1fa1ff91a50, type: 2}
 --- !u!114 &1549034961
 MonoBehaviour:

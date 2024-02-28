@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class Slot
 {
-    public bool IsOccupied { get => ItemInSlot != null; }
+    public SubInventory ParentSubInventory { get; }
     public Item ItemInSlot { get; private set; }
+    public bool IsOccupied { get => ItemInSlot != null; }
+
+    public Slot(SubInventory parentSubInventory)
+    {
+        ParentSubInventory = parentSubInventory;
+    }
 
     public void InsertItem(Item InsertedItem)
     {

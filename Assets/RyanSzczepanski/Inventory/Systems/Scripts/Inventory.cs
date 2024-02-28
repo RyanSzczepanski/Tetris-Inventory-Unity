@@ -5,14 +5,16 @@ using UnityEngine;
 public class Inventory
 {
     //Inventory Refrences
-    public readonly SubInventory[] subInventories;
+    public SubInventory[] SubInventories { get; }
 
-    //InventoryData should come from Inventory Interface
-    public Inventory(/*InventoryData*/)
+    //TODO: InventoryData should come from Inventory Interface
+    public Inventory(InventoryDataTest inventoryDataTest)
     {
-        //Foreach (InventoryData.SubInventories SubInvData){
-        //  new SubInventory(SubInvData, this)
-        //}
+        SubInventories = new SubInventory[inventoryDataTest.subInventories.Length];
+        for (int i = 0; i < inventoryDataTest.subInventories.Length; i++)
+        {
+            SubInventories[i] =  new SubInventory(inventoryDataTest.subInventories[i], this);
+        }
     }
     //AddItem(Item)
     //RemoveItem(Item)
