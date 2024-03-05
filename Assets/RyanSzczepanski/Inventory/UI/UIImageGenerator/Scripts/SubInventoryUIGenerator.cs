@@ -22,9 +22,7 @@ public class SubInventoryUIGenerator
         //Rename Object
         GameObject subInventoryObject = new GameObject($"{subInventory.Size.x}x{subInventory.Size.y} SubInventory");
         subInventoryObject.transform.SetParent(parent, false);
-        //TODO: Remove this and replace with required components in SubInventoryUI
-        subInventoryObject.AddComponent<Image>();
-        //subInventoryObject.AddComponent<SubInventoryUI>().Init(subInventory);
+        subInventoryObject.AddComponent<SubInventoryUI>().Init(subInventory);
 
         Sprite sprite = LookUpOrGenerateSprite(subInventory.Size);
 
