@@ -98,6 +98,38 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
                 break;
         }
     }
+
+    Item draggedItem;
+    Vector2Int originGridCoordinate;
+    bool originRotatedStatus;
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (draggedItem == null) { return; }
+        if (Input.GetKey(KeyCode.R)) { draggedItem.Rotate(); }
+    }
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        originGridCoordinate = GridCoordinateFromScreenPosition(eventData.pressPosition);
+        draggedItem = SubInventory.Slots[originGridCoordinate.x, originGridCoordinate.y].ItemInSlot;
+        if (draggedItem == null) { return; }
+        originRotatedStatus = draggedItem.IsRotated;
+    }
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (draggedItem == null) { return; }
+
+        //Raycast for TargetSubInventory
+        SubInventoryUI targetSubInventoryUI = null;
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject.TryGetComponent<SubInventoryUI>(out targetSubInventoryUI)) { break; }
+    }
+
+        Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position);
+
+        SubInventory.TryMoveItem(draggedItem, targetSubInventoryUI.SubInventory, targetCoordinate, originGridCoordinate, originRotatedStatus);
     }
 
     private Vector2 LocalPositionFromScreenPosition(Vector2 screenPosition)
