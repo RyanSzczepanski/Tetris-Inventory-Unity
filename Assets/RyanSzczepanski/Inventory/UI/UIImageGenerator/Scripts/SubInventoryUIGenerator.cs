@@ -17,15 +17,12 @@ public class SubInventoryUIGenerator
         textureGenerator = new(drawSettings);
     }
 
-
-    public GameObject GenerateSubInventoryObject(Transform parent)
+    public GameObject GenerateSubInventoryObject(Transform parent, InventoryCellDrawSettingsSO drawSettingsSO)
     {
         //Rename Object
         GameObject subInventoryObject = new GameObject($"{subInventory.Size.x}x{subInventory.Size.y} SubInventory");
         subInventoryObject.transform.SetParent(parent, false);
-        //TODO: Remove this and replace with required components in SubInventoryUI
-        subInventoryObject.AddComponent<Image>();
-        //subInventoryObject.AddComponent<SubInventoryUI>().Init(subInventory);
+        subInventoryObject.AddComponent<SubInventoryUI>().Init(subInventory, drawSettingsSO);
 
         Sprite sprite = LookUpOrGenerateSprite(subInventory.Size);
 
@@ -34,19 +31,18 @@ public class SubInventoryUIGenerator
         imageComponent.sprite = sprite;
 
         RectTransform rectTransform = subInventoryObject.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = sprite.texture.Size();
+        rectTransform.sizeDelta = sprite.texture.Size();  
         rectTransform.localScale = Vector3.one;
         rectTransform.pivot = Vector2.up;
 
         return subInventoryObject;
     }
-
     private Sprite LookUpOrGenerateSprite(Vector2Int key)
     {
         Sprite sprite;
         if (!CAHCED_SPRITES.TryGetValue(key, out sprite))
         {
-            GenerateSprite(key);
+            sprite = GenerateSprite(key);
             CAHCED_SPRITES.Add(subInventory.Size, sprite);
         }
         return sprite;
