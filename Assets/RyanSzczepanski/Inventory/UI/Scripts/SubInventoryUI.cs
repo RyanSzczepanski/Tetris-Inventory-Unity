@@ -48,7 +48,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
     public void OnItemMoved(object source, SubInventoryItemMovedEventArgs args)
     {
         
-        }
+    }
     public void OnItemRemoved(object source, SubInventoryItemRemovedEventArgs args)
     {
 
@@ -125,7 +125,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         foreach (RaycastResult result in results)
         {
             if (result.gameObject.TryGetComponent<SubInventoryUI>(out targetSubInventoryUI)) { break; }
-    }
+        }
 
         Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position);
 
