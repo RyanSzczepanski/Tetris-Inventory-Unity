@@ -10,19 +10,27 @@ public class SubInventoryUIGeneratorTest : MonoBehaviour
 
     public InventoryDataTest inventoryDataTest;
 
-    private void Start()
+    private Inventory inventory;
+
+    public void GenerateNewInventory()
+    {
+        inventory = new Inventory(inventoryDataTest);
+    }
+    public void GenerateInventoryUI()
     {
         SubInventoryUIGenerator UIGenerator;
         Inventory inventory = new Inventory(inventoryDataTest);
         foreach (SubInventory subInventory in inventory.SubInventories)
         {
             UIGenerator = new SubInventoryUIGenerator(drawSettingsSO, subInventory);
-            UIGenerator.GenerateSubInventoryObject(transform);
+            UIGenerator.GenerateSubInventoryObject(transform, drawSettingsSO);
         }
-        foreach (Slot slot in inventory.SubInventories[0].Slots) { Debug.Log(slot.ItemInSlot); }
-        Debug.Log(inventory.SubInventories[0].TryAddItem(new Item() { Size = new Vector2Int(2, 2) }));
-        foreach (Slot slot in inventory.SubInventories[0].Slots) { Debug.Log(slot.ItemInSlot); }
-        Debug.Log(inventory.SubInventories[0].CanAddItem(new Item() { Size = new Vector2Int(2, 2) }));
+    }
 
+
+    private void Start()
+    {
+        GenerateNewInventory();
+        GenerateInventoryUI();
     }
 }
