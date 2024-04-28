@@ -26,6 +26,17 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         }
     }
 
+    private void Update()
+    {
+        if (isDraggingItem)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                rotateItem = !rotateItem;
+            }
+        }
+    }
+
     private void Subscribe()
     {
         SubInventory.ItemAdded += OnItemAdded;
@@ -99,24 +110,26 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         }
     }
 
+    bool isDraggingItem;
     Item draggedItem;
     Vector2Int originGridCoordinate;
     bool originRotatedStatus;
+    bool rotateItem;
     public void OnDrag(PointerEventData eventData)
     {
-        if (draggedItem == null) { return; }
-        if (Input.GetKey(KeyCode.R)) { draggedItem.Rotate(); }
+        if (!isDraggingItem) { return; }
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
         originGridCoordinate = GridCoordinateFromScreenPosition(eventData.pressPosition);
         draggedItem = SubInventory.Slots[originGridCoordinate.x, originGridCoordinate.y].ItemInSlot;
         if (draggedItem == null) { return; }
+        isDraggingItem = true;
         originRotatedStatus = draggedItem.IsRotated;
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (draggedItem == null) { return; }
+        if (!isDraggingItem) { return; }
 
         //Raycast for TargetSubInventory
         SubInventoryUI targetSubInventoryUI = null;
@@ -129,7 +142,12 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
         Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position);
 
+        if (rotateItem) { draggedItem.Rotate(); }
+
         SubInventory.TryMoveItem(draggedItem, targetSubInventoryUI.SubInventory, targetCoordinate, originGridCoordinate, originRotatedStatus);
+
+        rotateItem = false;
+        isDraggingItem = false;
     }
 
     private Vector2 LocalPositionFromScreenPosition(Vector2 screenPosition)
