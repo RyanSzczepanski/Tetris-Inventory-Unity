@@ -17,12 +17,12 @@ public class SubInventoryUIGenerator
         textureGenerator = new(drawSettings);
     }
 
-    public GameObject GenerateSubInventoryObject(Transform parent)
+    public GameObject GenerateSubInventoryObject(Transform parent, InventoryCellDrawSettingsSO drawSettingsSO)
     {
         //Rename Object
         GameObject subInventoryObject = new GameObject($"{subInventory.Size.x}x{subInventory.Size.y} SubInventory");
         subInventoryObject.transform.SetParent(parent, false);
-        subInventoryObject.AddComponent<SubInventoryUI>().Init(subInventory);
+        subInventoryObject.AddComponent<SubInventoryUI>().Init(subInventory, drawSettingsSO);
 
         Sprite sprite = LookUpOrGenerateSprite(subInventory.Size);
 
