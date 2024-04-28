@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
-public class SubInventoryUI : MonoBehaviour, IPointerClickHandler
+public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public SubInventory SubInventory { get; private set; }
 
@@ -17,7 +17,46 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log(GridCoordinateFromScreenPosition(eventData.position));
+        if(eventData.dragging) { return; }
+        Vector2Int targetGridCoordinate = GridCoordinateFromScreenPosition(eventData.position);
+        Slot slot = SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y];
+        switch (eventData.button)
+        {
+            case PointerEventData.InputButton.Left:
+                Item item = new Item(new Vector2Int(1, 2));
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    item.Rotate();
+                }
+                SubInventory.TryAddItem(item, targetGridCoordinate);
+
+                break;
+            case PointerEventData.InputButton.Middle:
+                if (slot.IsOccupied)
+                {
+                    if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        Debug.Log($"{slot.ItemInSlot.GetHashCode()}");
+                    }
+                    else
+                    {
+                        Debug.Log($"IsRotated: {SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y].ItemInSlot.IsRotated}, Size: {SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y].ItemInSlot.Size}");
+                    }
+                }
+                else
+                {
+                    Debug.Log($"Empty");
+                }
+                
+                break;
+            case PointerEventData.InputButton.Right:
+                if (slot.IsOccupied)
+                {
+                    SubInventory.TryRemoveItem(slot.ItemInSlot);
+                }
+                break;
+        }
+    }
     }
 
     private Vector2 LocalPositionFromScreenPosition(Vector2 screenPosition)
