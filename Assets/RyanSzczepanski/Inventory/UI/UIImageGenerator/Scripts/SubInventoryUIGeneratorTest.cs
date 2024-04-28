@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class SubInventoryUIGeneratorTest : MonoBehaviour
 {
-    public Vector2Int size;
     public InventoryCellDrawSettingsSO drawSettingsSO;
 
     public InventoryDataTest inventoryDataTest;
@@ -19,7 +18,6 @@ public class SubInventoryUIGeneratorTest : MonoBehaviour
     public void GenerateInventoryUI()
     {
         SubInventoryUIGenerator UIGenerator;
-        Inventory inventory = new Inventory(inventoryDataTest);
         foreach (SubInventory subInventory in inventory.SubInventories)
         {
             UIGenerator = new SubInventoryUIGenerator(drawSettingsSO, subInventory);
