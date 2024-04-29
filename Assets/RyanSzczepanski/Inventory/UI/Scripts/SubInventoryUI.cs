@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -75,7 +73,9 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                Item item = new Item(new Vector2Int(1, 2));
+                ItemBasicSO data = ScriptableObject.CreateInstance<ItemBasicSO>();
+                data.size = new Vector2Int(1, 2);
+                ItemBasic item = new ItemBasic(data);
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
                     item.Rotate();
@@ -111,7 +111,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
     }
 
     bool isDraggingItem;
-    Item draggedItem;
+    ItemBasic draggedItem;
     Vector2Int originGridCoordinate;
     bool originRotatedStatus;
     bool rotateItem;
@@ -132,7 +132,6 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         if (!isDraggingItem) { return; }
 
         //Raycast for TargetSubInventory
-        SubInventoryUI targetSubInventoryUI = null;
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
         RaycastResult result = results.Find(r => r.gameObject.GetComponent<SubInventoryUI>());

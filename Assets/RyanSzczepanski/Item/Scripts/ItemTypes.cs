@@ -4,24 +4,24 @@ using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 
-public class Item
+public class ItemBasic
 {
-    private Vector2Int size;
+    public ItemBasicSO Data { get; private set; }
+
     public Vector2Int Size { get => new Vector2Int(
-        ((1 - Convert.ToInt32(IsRotated)) * size.x) + (Convert.ToInt32(IsRotated) * (size.x * size.y / size.x)),
-        ((1 - Convert.ToInt32(IsRotated)) * size.y) + (Convert.ToInt32(IsRotated) * (size.x * size.y / size.y))
+        ((1 - Convert.ToInt32(IsRotated)) * Data.size.x) + (Convert.ToInt32(IsRotated) * (Data.size.x * Data.size.y / Data.size.x)),
+        ((1 - Convert.ToInt32(IsRotated)) * Data.size.y) + (Convert.ToInt32(IsRotated) * (Data.size.x * Data.size.y / Data.size.y))
     ); }
     public bool IsRotated { get; private set; }
-
 
     //Delegates
     public delegate void ItemRemovedHandler(object source, ItemRemovedEventArgs args);
     //Events
     public event ItemRemovedHandler ItemRemoved;
     //Constructor
-    public Item(Vector2Int size)
+    public ItemBasic(ItemBasicSO data)
     {
-        this.size = size;
+        Data = data;
     }
 
     public void OnItemRemoved(object source, SubInventoryItemRemovedEventArgs args)
@@ -53,6 +53,15 @@ public class Item
         IsRotated = rotated;
     }
 }
+
+public class ItemInventory : ItemBasic
+{
+    public ItemInventory(ItemInventorySO data) : base(data)
+    {
+
+    }
+}
+
 
 public struct ItemData
 {

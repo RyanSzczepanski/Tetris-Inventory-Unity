@@ -11,12 +11,12 @@ public class ItemUI : MonoBehaviour
     private static GameObject ITEM_PREFAB;
     private static InventoryCellDrawSettingsSO DRAW_SETTINGS;
 
-    public Item Item { get; private set; }
+    public ItemBasic Item { get; private set; }
     private RectTransform spritesTransform;
     private Image sprite;
     private Image background;
 
-    private void Init(Item item, InventoryCellDrawSettingsSO drawSettingsSO)
+    private void Init(ItemBasic item, InventoryCellDrawSettingsSO drawSettingsSO)
     {
         Item = item;
         DRAW_SETTINGS = drawSettingsSO;
@@ -30,7 +30,7 @@ public class ItemUI : MonoBehaviour
         GetComponent<RectTransform>().anchorMax = Vector2.up;
     }
 
-    public static ItemUI Init(Item item, SubInventoryUI subInventoryUI, Vector2Int targetCoord)
+    public static ItemUI Init(ItemBasic item, SubInventoryUI subInventoryUI, Vector2Int targetCoord)
     {
         if(ITEM_PREFAB == null)
         {

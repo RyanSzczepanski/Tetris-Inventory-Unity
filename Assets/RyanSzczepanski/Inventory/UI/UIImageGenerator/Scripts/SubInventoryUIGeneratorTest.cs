@@ -11,9 +11,12 @@ public class SubInventoryUIGeneratorTest : MonoBehaviour
 
     private Inventory inventory;
 
+    public ItemInventorySO itemInventorySO;
+
+
     public void GenerateNewInventory()
     {
-        inventory = new Inventory(inventoryDataTest);
+        inventory = new Inventory(itemInventorySO);
     }
     public void GenerateInventoryUI()
     {

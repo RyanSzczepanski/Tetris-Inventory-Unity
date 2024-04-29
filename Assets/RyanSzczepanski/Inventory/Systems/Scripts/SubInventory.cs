@@ -34,7 +34,7 @@ public class SubInventory
         this.ParentInventory = parentInventory;
     }
 
-    private void OnItemAdded(Item item, ItemData targetData)
+    private void OnItemAdded(ItemBasic item, ItemData targetData)
     {
         if (ItemAdded is null) { return; }
         ItemAdded(this, new SubInventoryItemAddedEventArgs
@@ -45,7 +45,7 @@ public class SubInventory
             TargetSubInventory = targetData.subInventory,
         });
     }
-    private void OnItemMoved(Item item, ItemData originData, ItemData targetData)
+    private void OnItemMoved(ItemBasic item, ItemData originData, ItemData targetData)
     {
         if (ItemMoved is null) { return; }
         ItemMoved(this, new SubInventoryItemMovedEventArgs
@@ -61,7 +61,7 @@ public class SubInventory
             TargetSubInventory = targetData.subInventory,
         });
     }
-    private void OnItemRemoved(Item item)
+    private void OnItemRemoved(ItemBasic item)
     {
         if (ItemRemoved is null) { return; }
         ItemRemoved(this, new SubInventoryItemRemovedEventArgs
@@ -70,7 +70,7 @@ public class SubInventory
         });
     }
 
-    private bool BoundsCheck(Item item, Vector2Int originCellCoordinate)
+    private bool BoundsCheck(ItemBasic item, Vector2Int originCellCoordinate)
     {
         return (
             originCellCoordinate.x + item.Size.x <= Size.x &&
@@ -79,7 +79,7 @@ public class SubInventory
             originCellCoordinate.y >= 0
         );
     }
-    private bool SlotsOccupiedCheck(Item item, Vector2Int originCellCoordinate)
+    private bool SlotsOccupiedCheck(ItemBasic item, Vector2Int originCellCoordinate)
     {
         for (int y = 0; y < item.Size.y; y++)
         {
@@ -95,13 +95,13 @@ public class SubInventory
         return true;
     }
     //TODO: Add Slot Occupied Check
-    public bool CanAddItem(Item item, Vector2Int targetCoordinate)
+    public bool CanAddItem(ItemBasic item, Vector2Int targetCoordinate)
     {
         if (!BoundsCheck(item, targetCoordinate)) { return false; }
         if (!SlotsOccupiedCheck(item, targetCoordinate)) { return false; }
         return true;
     }
-    public bool CanAddItem(Item item)
+    public bool CanAddItem(ItemBasic item)
     {
         Vector2Int currentCoordinate = new Vector2Int();
         for (currentCoordinate.y = 0; currentCoordinate.y < Size.y; currentCoordinate.y++)
@@ -113,7 +113,7 @@ public class SubInventory
         }
         return false;
     }
-    public bool CanAddItem(Item item, out Vector2Int validCoordinate)
+    public bool CanAddItem(ItemBasic item, out Vector2Int validCoordinate)
     {
         validCoordinate = new Vector2Int();
         for (validCoordinate.y = 0; validCoordinate.y < Size.y; validCoordinate.y++)
@@ -125,7 +125,7 @@ public class SubInventory
         }
         return false;
     }
-    private void AddItem(Item item, Vector2Int targetCoordinate)
+    private void AddItem(ItemBasic item, Vector2Int targetCoordinate)
     {
         for (int y = 0; y < item.Size.y; y++)
         {
@@ -142,20 +142,20 @@ public class SubInventory
             isRotated = item.IsRotated
         });
     }
-    public bool TryAddItem(Item item)
+    public bool TryAddItem(ItemBasic item)
     {
         if (!CanAddItem(item, out Vector2Int position)) { return false; }
         AddItem(item, position);
         return true;
     }
-    public bool TryAddItem(Item item, Vector2Int targetCoordinate)
+    public bool TryAddItem(ItemBasic item, Vector2Int targetCoordinate)
     {
         if(!CanAddItem(item, targetCoordinate)) { return false; }
         AddItem(item, targetCoordinate);
         return true;
     }
 
-    private void RemoveItem(Item item)
+    private void RemoveItem(ItemBasic item)
     {
         for (int y = 0; y < Slots.GetLength(1); y++)
         {
@@ -169,13 +169,13 @@ public class SubInventory
         }
         OnItemRemoved(item);
     }
-    public bool TryRemoveItem(Item item)
+    public bool TryRemoveItem(ItemBasic item)
     {
         RemoveItem(item);
         return true;
     }
 
-    public bool TryMoveItem(Item item, SubInventory targetSubInventory, Vector2Int targetCoordinate, Vector2Int originCoordinate, bool originRotatedStatus)
+    public bool TryMoveItem(ItemBasic item, SubInventory targetSubInventory, Vector2Int targetCoordinate, Vector2Int originCoordinate, bool originRotatedStatus)
     {
         RemoveItem(item);
         if (!targetSubInventory.TryAddItem(item, targetCoordinate)) {

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Slot
 {
     public SubInventory ParentSubInventory { get; }
-    public Item ItemInSlot { get; private set; }
+    public ItemBasic ItemInSlot { get; private set; }
     public bool IsOccupied { get => ItemInSlot != null; }
 
     public Slot(SubInventory parentSubInventory)
@@ -13,7 +13,7 @@ public class Slot
         ParentSubInventory = parentSubInventory;
     }
 
-    public void InsertItem(Item InsertedItem)
+    public void InsertItem(ItemBasic InsertedItem)
     {
         ItemInSlot = InsertedItem;
     }
