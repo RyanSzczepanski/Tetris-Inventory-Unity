@@ -135,10 +135,10 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         SubInventoryUI targetSubInventoryUI = null;
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
-        foreach (RaycastResult result in results)
-        {
-            if (result.gameObject.TryGetComponent<SubInventoryUI>(out targetSubInventoryUI)) { break; }
-        }
+        RaycastResult result = results.Find(r => r.gameObject.GetComponent<SubInventoryUI>());
+        if (!result.isValid) { return; }
+        SubInventoryUI targetSubInventoryUI = result.gameObject.GetComponent<SubInventoryUI>();
+
 
         Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position);
 
