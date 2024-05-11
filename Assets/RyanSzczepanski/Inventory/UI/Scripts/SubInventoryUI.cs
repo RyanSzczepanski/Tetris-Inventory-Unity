@@ -115,9 +115,11 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
     Vector2Int originGridCoordinate;
     bool originRotatedStatus;
     bool rotateItem;
+
     public void OnDrag(PointerEventData eventData)
     {
         if (!isDraggingItem) { return; }
+        if (draggedItem == null) { return; }
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -143,8 +145,8 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position);
 
         if (rotateItem) { draggedItem.Rotate(); }
-
-        SubInventory.TryMoveItem(draggedItem, targetSubInventoryUI.SubInventory, targetCoordinate, originGridCoordinate, originRotatedStatus);
+        var origin = draggedItem.data.gridCoordinate; //originGridCoordinate;
+        SubInventory.TryMoveItem(draggedItem, targetSubInventoryUI.SubInventory, targetCoordinate, origin, originRotatedStatus);
 
         rotateItem = false;
         isDraggingItem = false;

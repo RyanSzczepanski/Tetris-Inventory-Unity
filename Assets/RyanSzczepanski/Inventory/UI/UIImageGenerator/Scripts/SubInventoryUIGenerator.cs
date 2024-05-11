@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +13,7 @@ public class SubInventoryUIGenerator
     public SubInventoryUIGenerator(InventoryCellDrawSettingsSO drawSettings, SubInventory subInventory)
     {
         this.subInventory = subInventory;
-        textureGenerator = new(drawSettings);
+        textureGenerator = new SubInventoryUITextureGenerator(drawSettings);
     }
 
     public GameObject GenerateSubInventoryObject(Transform parent, InventoryCellDrawSettingsSO drawSettingsSO)
@@ -31,7 +30,7 @@ public class SubInventoryUIGenerator
         imageComponent.sprite = sprite;
 
         RectTransform rectTransform = subInventoryObject.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = sprite.texture.Size();  
+        rectTransform.sizeDelta = new Vector2(sprite.texture.width, sprite.texture.height);  
         rectTransform.localScale = Vector3.one;
         rectTransform.pivot = Vector2.up;
 
@@ -67,12 +66,12 @@ public class SubInventoryUITextureGenerator
 
     public Texture2D GenerateCellGridTexture(Vector2Int gridSize)
     {
-        Vector2Int textureSize = new(
+        Vector2Int textureSize = new Vector2Int(
         gridSize.x * drawSettings._cellSize + drawSettings._paddingSize * 2 + drawSettings._outlineSize * 2,
         gridSize.y * drawSettings._cellSize + drawSettings._paddingSize * 2 + drawSettings._outlineSize * 2
         );
         Color32[] color = new Color32[textureSize.x * textureSize.y];
-        Texture2D texture = new(textureSize.x, textureSize.y);
+        Texture2D texture = new Texture2D(textureSize.x, textureSize.y);
 
         for (int y = 0; y < textureSize.y; y++)
         {
