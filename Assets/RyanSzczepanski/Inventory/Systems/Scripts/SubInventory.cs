@@ -135,12 +135,14 @@ public class SubInventory
             }
         }
         item.Subscribe(this);
-        OnItemAdded(item, new ItemData
+        var data = new ItemData
         {
             subInventory = this,
             gridCoordinate = targetCoordinate,
             isRotated = item.IsRotated
-        });
+        };
+        item.SetData(data);
+        OnItemAdded(item, data);
     }
     public bool TryAddItem(Item item)
     {

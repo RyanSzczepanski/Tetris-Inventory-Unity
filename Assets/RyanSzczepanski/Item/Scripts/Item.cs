@@ -12,6 +12,7 @@ public class Item
         ((1 - Convert.ToInt32(IsRotated)) * size.y) + (Convert.ToInt32(IsRotated) * (size.x * size.y / size.y))
     ); }
     public bool IsRotated { get; private set; }
+    public ItemData data { get; private set; }
 
 
     //Delegates
@@ -51,6 +52,11 @@ public class Item
     public void SetRotate(bool rotated)
     {
         IsRotated = rotated;
+    }
+
+    public void SetData(ItemData data)
+    {
+        this.data = data;
     }
 }
 
