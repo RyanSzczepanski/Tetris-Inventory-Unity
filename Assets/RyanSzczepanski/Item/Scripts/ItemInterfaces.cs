@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IInventory
 {
-    public SubInventory[] SubInventories { get; set; }
+    public Inventory Inventory { get; }
 }

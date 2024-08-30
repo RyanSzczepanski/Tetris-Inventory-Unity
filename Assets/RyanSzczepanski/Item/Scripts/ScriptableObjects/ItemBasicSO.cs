@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Basic Item SO", menuName = "Items/Basic Item")]
-public class ItemBasicSO : ScriptableObject
+public class ItemBasicSO : ItemBaseSO
 {
-    public Vector2Int size;
+    new public ItemBasic CreateItem()
+    {
+        return new ItemBasic(this);
+    }
 }

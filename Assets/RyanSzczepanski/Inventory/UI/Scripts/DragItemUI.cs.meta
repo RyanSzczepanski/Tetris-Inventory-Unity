@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: daed44bef4852a44697cdca607c3f4fb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - draggedItemPrefab: {fileID: 5664126220522947414, guid: 48b141470e9e6894385265e0d2d38293, type: 3}
+  - icon: {instanceID: 0}
+  - background: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

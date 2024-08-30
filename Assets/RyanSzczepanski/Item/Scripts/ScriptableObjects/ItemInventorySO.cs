@@ -4,47 +4,14 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Inventory Item SO", menuName = "Items/Inventory Item")]
-public class ItemInventorySO : ItemBasicSO, IInventorySO
+public class ItemInventorySO : ItemBaseSO, IInventorySO
 {
-    private Vector2Int[] subInventories;
-    public Vector2Int[] SubInventories
-    {
-        get
-        {
-            if (subInventories.Length == 0)
-            {
-                subInventories = IInventorySO.GetAllSubInventories(SubInventoryArrangements);
-            }
-
-            return subInventories;
-        }
-    }
+    public Vector2Int[] SubInventories { get => IInventorySO.GetAllSubInventories(SubInventoryArrangements); }
     [field: SerializeField]
-    public SubInventoryArrangement SubInventoryArrangements { get ; set ; }
-}
+    public SubInventoryArrangement SubInventoryArrangements { get ; private set; }
 
-
-public interface IInventorySO
-{
-
-    public Vector2Int[] SubInventories { get; }
-    public SubInventoryArrangement SubInventoryArrangements { get; set; }
-
-    public static Vector2Int[] GetAllSubInventories(SubInventoryArrangement subInventoryArrangement)
+    new public ItemInventory CreateItem()
     {
-        List<Vector2Int> subInventories = new List<Vector2Int>();
-
-        if (!subInventoryArrangement.IsLeaf)
-        {
-            foreach (SubInventoryArrangement child in subInventoryArrangement.childArrangements)
-            {
-                subInventories.AddRange(GetAllSubInventories(child));
-            }
-        }
-        if (subInventoryArrangement.HasSubInventory)
-        {
-            subInventories.Add(subInventoryArrangement.subInventorySize);
-        }
-        return subInventories.ToArray();
+        return new ItemInventory(this);
     }
 }

@@ -7,15 +7,23 @@ public class Inventory
     //Inventory Refrences
     public SubInventory[] SubInventories { get; }
 
-    //TODO: InventoryData should come from Inventory Interface
-    public Inventory(InventoryDataTest inventoryDataTest)
+    public Inventory(IInventorySO inventoryData)
     {
-        SubInventories = new SubInventory[inventoryDataTest.subInventories.Length];
-        for (int i = 0; i < inventoryDataTest.subInventories.Length; i++)
+        SubInventories = new SubInventory[inventoryData.SubInventories.Length];
+        for (int i = 0; i < inventoryData.SubInventories.Length; i++)
         {
-            SubInventories[i] =  new SubInventory(inventoryDataTest.subInventories[i], this);
+            SubInventories[i] =  new SubInventory(inventoryData.SubInventories[i], this);
         }
     }
-    //AddItem(Item)
+
+    public bool TryAddItem(ItemBase itemBase)
+    {
+        foreach(var subInventory in SubInventories)
+        {
+            if (subInventory.TryAddItem(itemBase)) { return true; }
+        }
+
+        return false;
+    }
     //RemoveItem(Item)
 }

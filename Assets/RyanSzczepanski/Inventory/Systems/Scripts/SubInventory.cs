@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [System.Serializable]
 public class SubInventory
@@ -34,7 +30,7 @@ public class SubInventory
         this.ParentInventory = parentInventory;
     }
 
-    private void OnItemAdded(ItemBasic item, ItemData targetData)
+    private void OnItemAdded(ItemBase item, ItemData targetData)
     {
         if (ItemAdded is null) { return; }
         ItemAdded(this, new SubInventoryItemAddedEventArgs
@@ -45,7 +41,7 @@ public class SubInventory
             TargetSubInventory = targetData.subInventory,
         });
     }
-    private void OnItemMoved(ItemBasic item, ItemData originData, ItemData targetData)
+    private void OnItemMoved(ItemBase item, ItemData originData, ItemData targetData)
     {
         if (ItemMoved is null) { return; }
         ItemMoved(this, new SubInventoryItemMovedEventArgs
@@ -61,7 +57,7 @@ public class SubInventory
             TargetSubInventory = targetData.subInventory,
         });
     }
-    private void OnItemRemoved(ItemBasic item)
+    private void OnItemRemoved(ItemBase item)
     {
         if (ItemRemoved is null) { return; }
         ItemRemoved(this, new SubInventoryItemRemovedEventArgs
@@ -70,92 +66,116 @@ public class SubInventory
         });
     }
 
-    private bool BoundsCheck(ItemBasic item, Vector2Int originCellCoordinate)
+    private bool BoundsCheck(ItemBase item, Vector2Int originCellCoordinate, bool isRotated)
     {
+        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.size.y, item.Data.size.x) : item.Data.size;
         return (
-            originCellCoordinate.x + item.Size.x <= Size.x &&
+            originCellCoordinate.x + itemSize.x <= Size.x &&
             originCellCoordinate.x >= 0 &&
-            originCellCoordinate.y + item.Size.y <= Size.y &&
+            originCellCoordinate.y + itemSize.y <= Size.y &&
             originCellCoordinate.y >= 0
         );
     }
-    private bool SlotsOccupiedCheck(ItemBasic item, Vector2Int originCellCoordinate)
+    private bool SlotsOccupiedCheck(ItemBase item, Vector2Int originCellCoordinate, bool isRotated, bool ignoreSelf = true)
     {
-        for (int y = 0; y < item.Size.y; y++)
+        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.size.y, item.Data.size.x) : item.Data.size;
+
+        for (int y = 0; y < itemSize.y; y++)
         {
-            for (int x = 0; x < item.Size.x; x++)
+            for (int x = 0; x < itemSize.x; x++)
             {
-                if (Slots[originCellCoordinate.x+x, originCellCoordinate.y+y].IsOccupied)
+                if (Slots[originCellCoordinate.x + x, originCellCoordinate.y + y].ItemInSlot == item && ignoreSelf) { continue; }
+                if (Slots[originCellCoordinate.x + x, originCellCoordinate.y + y].IsOccupied)
                 {
-                    Debug.LogWarning("Failed Slots Occupied Check");
                     return false;
                 }
             }
         }
         return true;
     }
-    //TODO: Add Slot Occupied Check
-    public bool CanAddItem(ItemBasic item, Vector2Int targetCoordinate)
+
+    public Vector2Int GetItemOriginSlot(ItemBase item)
     {
-        if (!BoundsCheck(item, targetCoordinate)) { return false; }
-        if (!SlotsOccupiedCheck(item, targetCoordinate)) { return false; }
+        for (int y = 0; y < Slots.GetLength(1); y++)
+        {
+            for (int x = 0; x < Slots.GetLength(0); x++)
+            {
+                if (Slots[x, y].ItemInSlot == item)
+                {
+                    return new Vector2Int(x, y);
+                }
+            }
+        }
+        return new Vector2Int(-1, -1);
+    }
+
+    public bool CanAddItem(ItemBase item, Vector2Int targetCoordinate, bool isRotated)
+    {
+        if (!BoundsCheck(item, targetCoordinate, isRotated)) { return false; }
+        if (!SlotsOccupiedCheck(item, targetCoordinate, isRotated)) { return false; }
         return true;
     }
-    public bool CanAddItem(ItemBasic item)
+    public bool CanAddItem(ItemBase item)
     {
         Vector2Int currentCoordinate = new Vector2Int();
         for (currentCoordinate.y = 0; currentCoordinate.y < Size.y; currentCoordinate.y++)
         {
-            for (currentCoordinate.x = 0; currentCoordinate.x < Size.y; currentCoordinate.x++)
+            for (currentCoordinate.x = 0; currentCoordinate.x < Size.x; currentCoordinate.x++)
             {
-                if(CanAddItem(item, currentCoordinate)) { return true; }
+                if (CanAddItem(item, currentCoordinate, false)) { return true; }
+                if (CanAddItem(item, currentCoordinate, true)) { return true; }
             }
         }
         return false;
     }
-    public bool CanAddItem(ItemBasic item, out Vector2Int validCoordinate)
+    public bool CanAddItem(ItemBase item, out Vector2Int validCoordinate, out bool isRotated)
     {
         validCoordinate = new Vector2Int();
+        isRotated = false;
         for (validCoordinate.y = 0; validCoordinate.y < Size.y; validCoordinate.y++)
         {
-            for (validCoordinate.x = 0; validCoordinate.x < Size.y; validCoordinate.x++)
+            for (validCoordinate.x = 0; validCoordinate.x < Size.x; validCoordinate.x++)
             {
-                if (CanAddItem(item, validCoordinate)) { return true; }
+                if (CanAddItem(item, validCoordinate, false)) { return true; }
+                if (CanAddItem(item, validCoordinate, true)) { isRotated = true; return true; }
             }
         }
         return false;
     }
-    private void AddItem(ItemBasic item, Vector2Int targetCoordinate)
+
+    private void AddItem(ItemBase item, Vector2Int targetCoordinate, bool isRotated)
     {
-        for (int y = 0; y < item.Size.y; y++)
+        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.size.y, item.Data.size.x) : item.Data.size;
+        for (int y = 0; y < itemSize.y; y++)
         {
-            for (int x = 0; x < item.Size.x; x++)
+            for (int x = 0; x < itemSize.x; x++)
             {
                 Slots[targetCoordinate.x + x, targetCoordinate.y + y].InsertItem(item);
             }
         }
         item.Subscribe(this);
+        item.Rotate(isRotated);
         OnItemAdded(item, new ItemData
         {
             subInventory = this,
             gridCoordinate = targetCoordinate,
-            isRotated = item.IsRotated
+            isRotated = isRotated
         });
     }
-    public bool TryAddItem(ItemBasic item)
+    public bool TryAddItem(ItemBase item)
     {
-        if (!CanAddItem(item, out Vector2Int position)) { return false; }
-        AddItem(item, position);
+        if (!CanAddItem(item, out Vector2Int position, out bool isRotated)) { return false; }
+        AddItem(item, position, isRotated);
         return true;
     }
-    public bool TryAddItem(ItemBasic item, Vector2Int targetCoordinate)
+    public bool TryAddItem(ItemBase item, Vector2Int targetCoordinate, bool isRotated)
     {
-        if(!CanAddItem(item, targetCoordinate)) { return false; }
-        AddItem(item, targetCoordinate);
+        if (!CanAddItem(item, targetCoordinate, isRotated)) { return false; }
+        AddItem(item, targetCoordinate, isRotated);
         return true;
     }
 
-    private void RemoveItem(ItemBasic item)
+    private void RemoveItem(ItemBase item)
     {
         for (int y = 0; y < Slots.GetLength(1); y++)
         {
@@ -168,21 +188,39 @@ public class SubInventory
             }
         }
         OnItemRemoved(item);
+        item.Unsubscribe(this);
     }
-    public bool TryRemoveItem(ItemBasic item)
+    public bool TryRemoveItem(ItemBase item)
     {
         RemoveItem(item);
         return true;
     }
 
-    public bool TryMoveItem(ItemBasic item, SubInventory targetSubInventory, Vector2Int targetCoordinate, Vector2Int originCoordinate, bool originRotatedStatus)
+    public bool CanMoveItem(ItemBase item, SubInventory targetSubInventory, Vector2Int targetCoordinate, bool isRotated)
+    {
+        if (!targetSubInventory.BoundsCheck(item, targetCoordinate, isRotated)) { return false; }
+        if (!targetSubInventory.SlotsOccupiedCheck(item, targetCoordinate, isRotated)) { return false; }
+        return true;
+    }
+    public void MoveItem(ItemBase item, SubInventory targetSubInventory, Vector2Int targetCoordinate, bool isRotated)
     {
         RemoveItem(item);
-        if (!targetSubInventory.TryAddItem(item, targetCoordinate)) {
-            item.SetRotate(originRotatedStatus);
-            TryAddItem(item, originCoordinate);
-            return false;
+        targetSubInventory.AddItem(item, targetCoordinate, isRotated);
+        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.size.y, item.Data.size.x) : item.Data.size;
+        for (int y = 0; y < itemSize.y; y++)
+        {
+            for (int x = 0; x < itemSize.x; x++)
+            {
+                targetSubInventory.Slots[targetCoordinate.x + x, targetCoordinate.y + y].InsertItem(item);
+            }
         }
+        item.Subscribe(targetSubInventory);
+    }
+
+    public bool TryMoveItem(ItemBase item, SubInventory targetSubInventory, Vector2Int targetCoordinate, bool isRotated, Vector2Int originCoordinate, bool originRotatedStatus)
+    {
+        if (!CanMoveItem(item, targetSubInventory, targetCoordinate, isRotated)) { return false; }
+        MoveItem(item, targetSubInventory, targetCoordinate, isRotated);
         return true;
     }
 }
