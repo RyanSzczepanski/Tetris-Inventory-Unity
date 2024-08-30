@@ -43,6 +43,11 @@ public class ItemBase
         ItemRotated?.Invoke(this, IsRotated);
     }
 
+    public override string ToString()
+    {
+        return $"{Data.fullName}\n   Type: {GetType()}\n   Size: {Data.size}";
+    }
+
     public void Subscribe(SubInventory subInventory)
     {
         subInventory.ItemRemoved += OnItemRemoved;

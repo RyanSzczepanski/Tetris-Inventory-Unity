@@ -16,7 +16,6 @@ public class ScriptableObjectDatabase<T> : MonoBehaviour where T : ScriptableObj
                 Debug.LogError($"Duplicate Entry \'{obj.name}\'");
                 return;
             }
-            Debug.Log(obj.name);
             objects[obj.name] = obj;
         }
     }

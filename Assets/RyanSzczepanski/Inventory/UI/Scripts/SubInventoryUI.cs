@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -90,6 +91,8 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
             case PointerEventData.InputButton.Left:
                 ItemBasicSO data = ScriptableObject.CreateInstance<ItemBasicSO>();
                 data.size = new Vector2Int(3, 2);
+                data.fullName = $"Procedural Item {data.size.x}x{data.size.y}";
+                data.shortName = $"Procedural Item";
                 ItemBase item = data.CreateItem();
                 bool isRotated = Input.GetKey(KeyCode.LeftShift);
                 SubInventory.TryAddItem(item, targetGridCoordinate, isRotated);
@@ -104,7 +107,9 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
                     }
                     else
                     {
-                        Debug.Log($"IsRotated: {SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y].ItemInSlot.IsRotated}, Size: {SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y].ItemInSlot.Size}");
+                        ItemBase itemInSlot = SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y].ItemInSlot;
+                        string log = $"{itemInSlot}\n   Origin Coordinate: {SubInventory.GetItemOriginSlot(itemInSlot)}";
+                        Debug.Log(log);
                     }
                 }
                 else
