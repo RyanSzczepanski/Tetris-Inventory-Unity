@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9990a2a101c07f747997c24619afca52, type: 3}
   m_Name: Test Rig 1
   m_EditorClassIdentifier: 
+  fullName: Test Rig 1
+  shortName: Test Rig 1
+  description: 
   size: {x: 3, y: 2}
+  weight: 3
+  icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
   <SubInventoryArrangements>k__BackingField:
     alignment: 0
     direction: 0
