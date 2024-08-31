@@ -89,11 +89,12 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                ItemBasicSO data = ScriptableObject.CreateInstance<ItemBasicSO>();
-                data.size = new Vector2Int(3, 2);
-                data.fullName = $"Procedural Item {data.size.x}x{data.size.y}";
-                data.shortName = $"Procedural Item";
-                ItemBase item = data.CreateItem();
+                //ItemBasicSO data = ScriptableObject.CreateInstance<ItemBasicSO>();
+                //data.size = new Vector2Int(3, 2);
+                //data.fullName = $"Procedural Item {data.size.x}x{data.size.y}";
+                //data.shortName = $"Procedural Item";
+                //ItemBase item = data.CreateItem();
+                ItemBase item = ItemDB.GetObjectByName("Test Rig 1").CreateItem();
                 bool isRotated = Input.GetKey(KeyCode.LeftShift);
                 SubInventory.TryAddItem(item, targetGridCoordinate, isRotated);
 
@@ -183,7 +184,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
         Vector2Int itemSize = isRotated ? new Vector2Int(targetItem.Data.size.y, targetItem.Data.size.x) : targetItem.Data.size;
 
-        Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(SlotAndItemCenteringOffset(eventData.position, itemSize, drawSettings));
+        Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position - SlotAndItemCenteringOffset(itemSize, drawSettings) * GetComponentInParent<Canvas>().scaleFactor);
         targetCoordinate.Clamp(Vector2Int.zero, new Vector2Int(SubInventory.Size.x - itemSize.x, SubInventory.Size.y - itemSize.y));
 
         SubInventory.TryMoveItem(targetItem, targetSubInventoryUI.SubInventory, targetCoordinate, isRotated, originGridCoordinate, originRotatedStatus);
@@ -244,18 +245,18 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         return ScreenPositionFromGridCoordinate(gridCoord);
     }
 
-    public static Vector2 ItemCenteringOffset(Vector2 originPosition, Vector2Int itemSize, InventoryCellDrawSettings drawSettings)
+    public static Vector2 ItemCenteringOffset(Vector2Int itemSize, InventoryCellDrawSettings drawSettings)
     {
-        return originPosition -
-            (drawSettings._cellSize * 0.5f *new Vector2(itemSize.x, -itemSize.y));
+        return
+            (drawSettings._cellSize * 0.5f * new Vector2(itemSize.x, -itemSize.y));
     }
     public static Vector2 SlotCenteringOffset(Vector2 originPosition, InventoryCellDrawSettings drawSettings)
     {
         return originPosition - new Vector2(drawSettings._cellSize / 2, -drawSettings._cellSize / 2);
     }
-    public static Vector2 SlotAndItemCenteringOffset(Vector2 originPosition, Vector2Int itemSize, InventoryCellDrawSettings drawSettings)
+    public static Vector2 SlotAndItemCenteringOffset(Vector2Int itemSize, InventoryCellDrawSettings drawSettings)
     {
-        return originPosition -
+        return
             ((drawSettings._cellSize * 0.5f * new Vector2(itemSize.x, -itemSize.y)) -
             new Vector2(drawSettings._cellSize / 2, -drawSettings._cellSize / 2));
     }
