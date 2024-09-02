@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Debug Backpack
   m_EditorClassIdentifier: 
   <FullName>k__BackingField: Debug Backpack
-  shortName: Debug Backpack
-  description: 
-  size: {x: 5, y: 5}
-  weight: 0
-  icon: {fileID: 21300000, guid: f5d5b410cce6d0a4ba9591fad39b1cbe, type: 3}
+  <ShortName>k__BackingField: Debug Backpack
+  <Description>k__BackingField: 
+  <Size>k__BackingField: {x: 3, y: 3}
+  <Weight>k__BackingField: 9
+  <Icon>k__BackingField: {fileID: 0}
   <SubInventoryArrangements>k__BackingField:
     alignment: 0
     direction: 0

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Basic Item
   m_EditorClassIdentifier: 
   <FullName>k__BackingField: Basic Item
-  shortName: Basic Item
-  description: Basic Item
-  size: {x: 1, y: 1}
-  weight: 1
-  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  <ShortName>k__BackingField: Basic Item
+  <Description>k__BackingField: 
+  <Size>k__BackingField: {x: 1, y: 1}
+  <Weight>k__BackingField: 1
+  <Icon>k__BackingField: {fileID: 0}

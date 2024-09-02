@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: 5x6 Backpack
   m_EditorClassIdentifier: 
   <FullName>k__BackingField: 5x6 Backpack
-  shortName: 5x6 Backpack
-  description: 
-  size: {x: 5, y: 5}
-  weight: 0
-  icon: {fileID: 21300000, guid: f5d5b410cce6d0a4ba9591fad39b1cbe, type: 3}
+  <ShortName>k__BackingField: 5x6 Backpack
+  <Description>k__BackingField: 
+  <Size>k__BackingField: {x: 5, y: 6}
+  <Weight>k__BackingField: 4
+  <Icon>k__BackingField: {fileID: 0}
+  <Tags>k__BackingField: 0
   <SubInventoryArrangements>k__BackingField:
     alignment: 0
     direction: 0

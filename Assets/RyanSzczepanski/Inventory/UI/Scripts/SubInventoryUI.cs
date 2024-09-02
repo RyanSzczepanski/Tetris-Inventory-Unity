@@ -89,6 +89,12 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
+                foreach(ItemInventorySO itemBase in ItemDB.GetItems<ItemInventorySO>())
+                {
+                    Debug.Log(itemBase);
+                }
+
+
                 ItemBaseSO itemSO = ItemDB.GetObjectByName("Test Rig 1");
                 bool isRotated = Input.GetKey(KeyCode.LeftShift);
                 SubInventory.TryAddItem(itemSO.CreateItem(), targetGridCoordinate, isRotated);

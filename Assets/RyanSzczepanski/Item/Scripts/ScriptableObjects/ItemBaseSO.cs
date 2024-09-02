@@ -12,6 +12,7 @@ public abstract class ItemBaseSO : ScriptableObject
     [field: SerializeField] public Vector2Int Size { get; private set; }
     [field: SerializeField] public float Weight { get; private set; }
     [field: SerializeField] public Sprite Icon { get; private set; }
+    [field: SerializeField] public ItemTags Tags { get; private set; }
 
     public virtual ItemBase CreateItem()
     {
