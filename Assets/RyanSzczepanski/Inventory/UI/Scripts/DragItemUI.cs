@@ -10,7 +10,7 @@ public static class DragItemUI
 
     private static ItemBase ITEM;
     private static bool IS_ROTATED;
-    private static Vector2Int ITEM_SIZE { get => IS_ROTATED ? new Vector2Int(ITEM.Data.size.y, ITEM.Data.size.x) : ITEM.Data.size; }
+    private static Vector2Int ITEM_SIZE { get => IS_ROTATED ? new Vector2Int(ITEM.Data.Size.y, ITEM.Data.Size.x) : ITEM.Data.Size; }
 
     private static GameObject DEBUG;
 
@@ -77,8 +77,8 @@ public static class DragItemUI
 
         ICON.transform.SetAsLastSibling();
         ICON.transform.eulerAngles = IS_ROTATED ? new Vector3(0, 0, 90) : new Vector3(0, 0, 0);
-        ICON.GetComponent<RectTransform>().sizeDelta = ITEM.Data.size * DRAW_SETTINGS._cellSize;
-        ICON.GetComponent<Image>().sprite = ITEM.Data.icon;
+        ICON.GetComponent<RectTransform>().sizeDelta = ITEM.Data.Size * DRAW_SETTINGS._cellSize;
+        ICON.GetComponent<Image>().sprite = ITEM.Data.Icon;
         ICON.SetActive(true);
 
         DEBUG.transform.SetAsLastSibling();

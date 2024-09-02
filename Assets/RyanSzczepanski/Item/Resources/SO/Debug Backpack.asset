@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9990a2a101c07f747997c24619afca52, type: 3}
   m_Name: Debug Backpack
   m_EditorClassIdentifier: 
-  fullName: Debug Backpack
+  <FullName>k__BackingField: Debug Backpack
   shortName: Debug Backpack
   description: 
   size: {x: 5, y: 5}

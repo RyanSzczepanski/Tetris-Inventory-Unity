@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c229a9264b90df446a7c1b3883702946, type: 3}
   m_Name: Basic Item
   m_EditorClassIdentifier: 
-  fullName: Basic Item
+  <FullName>k__BackingField: Basic Item
   shortName: Basic Item
   description: Basic Item
   size: {x: 1, y: 1}

@@ -89,14 +89,9 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                //ItemBasicSO data = ScriptableObject.CreateInstance<ItemBasicSO>();
-                //data.size = new Vector2Int(3, 2);
-                //data.fullName = $"Procedural Item {data.size.x}x{data.size.y}";
-                //data.shortName = $"Procedural Item";
-                //ItemBase item = data.CreateItem();
-                ItemBase item = ItemDB.GetObjectByName("Test Rig 1").CreateItem();
+                ItemBaseSO itemSO = ItemDB.GetObjectByName("Test Rig 1");
                 bool isRotated = Input.GetKey(KeyCode.LeftShift);
-                SubInventory.TryAddItem(item, targetGridCoordinate, isRotated);
+                SubInventory.TryAddItem(itemSO.CreateItem(), targetGridCoordinate, isRotated);
 
                 break;
             case PointerEventData.InputButton.Middle:
@@ -182,7 +177,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         }
         SubInventoryUI targetSubInventoryUI = result.gameObject.GetComponent<SubInventoryUI>();
 
-        Vector2Int itemSize = isRotated ? new Vector2Int(targetItem.Data.size.y, targetItem.Data.size.x) : targetItem.Data.size;
+        Vector2Int itemSize = isRotated ? new Vector2Int(targetItem.Data.Size.y, targetItem.Data.Size.x) : targetItem.Data.Size;
 
         Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position - SlotAndItemCenteringOffset(itemSize, drawSettings) * GetComponentInParent<Canvas>().scaleFactor);
         targetCoordinate.Clamp(Vector2Int.zero, new Vector2Int(SubInventory.Size.x - itemSize.x, SubInventory.Size.y - itemSize.y));

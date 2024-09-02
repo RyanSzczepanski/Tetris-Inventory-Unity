@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -9,12 +7,6 @@ public class ItemBase
     [field: SerializeField]
     public ItemBaseSO Data { get; private set; }
 
-    public Vector2Int Size
-    {
-        get => new Vector2Int(
-        ((1 - Convert.ToInt32(IsRotated)) * Data.size.x) + (Convert.ToInt32(IsRotated) * (Data.size.x * Data.size.y / Data.size.x)),
-        ((1 - Convert.ToInt32(IsRotated)) * Data.size.y) + (Convert.ToInt32(IsRotated) * (Data.size.x * Data.size.y / Data.size.y)));
-    }
     public bool IsRotated { get; private set; }
 
     public delegate void ItemRemovedHandler(object source, ItemRemovedEventArgs args);
@@ -45,7 +37,7 @@ public class ItemBase
 
     public override string ToString()
     {
-        return $"{Data.fullName}\n   Type: {GetType()}\n   Size: {Data.size}";
+        return $"{Data.FullName}\n   Type: {GetType()}\n   Size: {Data.Size}";
     }
 
     public void Subscribe(SubInventory subInventory)

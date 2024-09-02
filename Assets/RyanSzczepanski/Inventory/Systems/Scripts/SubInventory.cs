@@ -68,7 +68,7 @@ public class SubInventory
 
     private bool BoundsCheck(ItemBase item, Vector2Int originCellCoordinate, bool isRotated)
     {
-        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.size.y, item.Data.size.x) : item.Data.size;
+        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.Size.y, item.Data.Size.x) : item.Data.Size;
         return (
             originCellCoordinate.x + itemSize.x <= Size.x &&
             originCellCoordinate.x >= 0 &&
@@ -78,7 +78,7 @@ public class SubInventory
     }
     private bool SlotsOccupiedCheck(ItemBase item, Vector2Int originCellCoordinate, bool isRotated, bool ignoreSelf = true)
     {
-        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.size.y, item.Data.size.x) : item.Data.size;
+        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.Size.y, item.Data.Size.x) : item.Data.Size;
 
         for (int y = 0; y < itemSize.y; y++)
         {
@@ -145,7 +145,7 @@ public class SubInventory
 
     private void AddItem(ItemBase item, Vector2Int targetCoordinate, bool isRotated)
     {
-        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.size.y, item.Data.size.x) : item.Data.size;
+        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.Size.y, item.Data.Size.x) : item.Data.Size;
         for (int y = 0; y < itemSize.y; y++)
         {
             for (int x = 0; x < itemSize.x; x++)
@@ -206,7 +206,7 @@ public class SubInventory
     {
         RemoveItem(item);
         targetSubInventory.AddItem(item, targetCoordinate, isRotated);
-        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.size.y, item.Data.size.x) : item.Data.size;
+        Vector2Int itemSize = isRotated ? new Vector2Int(item.Data.Size.y, item.Data.Size.x) : item.Data.Size;
         for (int y = 0; y < itemSize.y; y++)
         {
             for (int x = 0; x < itemSize.x; x++)

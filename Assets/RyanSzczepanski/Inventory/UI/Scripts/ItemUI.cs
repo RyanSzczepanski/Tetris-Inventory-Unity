@@ -29,11 +29,11 @@ public class ItemUI : MonoBehaviour
     {
         Item = item;
         DRAW_SETTINGS = drawSettings;
-        icon.GetComponent<Image>().sprite = Item.Data.icon;
+        icon.GetComponent<Image>().sprite = Item.Data.Icon;
 
         Subscibe();
 
-        transform.GetComponent<RectTransform>().sizeDelta = Item.Data.size * DRAW_SETTINGS._cellSize;
+        transform.GetComponent<RectTransform>().sizeDelta = Item.Data.Size * DRAW_SETTINGS._cellSize;
         GetComponent<RectTransform>().anchorMin = Vector2.up;
         GetComponent<RectTransform>().anchorMax = Vector2.up;
 

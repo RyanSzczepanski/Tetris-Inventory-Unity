@@ -9,7 +9,7 @@ public class ItemBasic : ItemBase
     public new ItemBasicSO Data { get; private set; }
     public ItemBasic(ItemBasicSO data) : base(data)
     {
-        Data = data;
+
     }
 }
 
@@ -23,6 +23,11 @@ public class ItemInventory : ItemBase, IInventory
         Data = data;
         Inventory = new Inventory(data);
         //SubInventoryUIGenerator uIGenerator = new SubInventoryUIGenerator();
+    }
+
+    public override string ToString()
+    {
+        return $"{Data.FullName}\n   Type: {GetType()}\n   Size: {Data.Size}\n   Storage: {Data.StorageSlots}";
     }
 }
 
