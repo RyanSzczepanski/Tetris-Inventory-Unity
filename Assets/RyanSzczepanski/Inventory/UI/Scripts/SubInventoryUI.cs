@@ -1,27 +1,39 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
+[RequireComponent(typeof(LayoutElement))]
 public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
 
     public SubInventory SubInventory { get; private set; }
-    public InventoryCellDrawSettingsSO drawSettingsSO;
+    public InventoryCellDrawSettings drawSettings;
 
-    public void Init(SubInventory subInventory, InventoryCellDrawSettingsSO drawSettingsSO)
+    public delegate void OnDragBeginHandler(object sender);
+    public delegate void OnDragEndHandler(object sender);
+    public event OnDragBeginHandler DragBegin;
+    public event OnDragEndHandler DragEnd;
+
+
+    public void Init(SubInventory subInventory, InventoryCellDrawSettings drawSettings)
     {
         SubInventory = subInventory;
-        this.drawSettingsSO = drawSettingsSO;
+        this.drawSettings = drawSettings;
         Subscribe();
-        foreach (Slot slot in  SubInventory.Slots)
+
+        List<ItemBase> items = new List<ItemBase>();
+        for (int y = 0; y < subInventory.Slots.GetLength(1); y++)
         {
-            if (slot.IsOccupied)
+            for (int x = 0; x < subInventory.Slots.GetLength(0); x++)
             {
-                //ItemUI.InitUI(slot.ItemInSlot, this);
+                if (!subInventory.Slots[x, y].IsOccupied) { continue; }
+                if (items.Contains(subInventory.Slots[x, y].ItemInSlot)) { continue; }
+                items.Add(subInventory.Slots[x, y].ItemInSlot);
+                ItemUI.Generate(subInventory.Slots[x, y].ItemInSlot, this, new Vector2Int(x, y));
             }
         }
     }
@@ -32,9 +44,14 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                rotateItem = !rotateItem;
+                isRotated = !isRotated;
+                DragItemUI.Rotate();
             }
         }
+    }
+    private void OnDestroy()
+    {
+        Unsubscribe();
     }
 
     private void Subscribe()
@@ -43,7 +60,6 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         SubInventory.ItemMoved += OnItemMoved;
         SubInventory.ItemRemoved += OnItemRemoved;
     }
-
     private void Unsubscribe()
     {
         SubInventory.ItemAdded -= OnItemAdded;
@@ -53,7 +69,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
     public void OnItemAdded(object source, SubInventoryItemAddedEventArgs args)
     {
-        ItemUI.Init(args.Item, this, args.TargetCellCoordinate);
+        ItemUI.Generate(args.Item, this, args.TargetCellCoordinate);
 
     }
     public void OnItemMoved(object source, SubInventoryItemMovedEventArgs args)
@@ -65,22 +81,17 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
     }
 
-
-
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(eventData.dragging) { return; }
+        if (eventData.dragging) { return; }
         Vector2Int targetGridCoordinate = GridCoordinateFromScreenPosition(eventData.position);
         Slot slot = SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y];
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                Item item = new Item(new Vector2Int(1, 2));
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    item.Rotate();
-                }
-                SubInventory.TryAddItem(item, targetGridCoordinate);
+                ItemBaseSO itemSO = ItemDB.GetObjectByName("Test Rig 1");
+                bool isRotated = Input.GetKey(KeyCode.LeftShift);
+                SubInventory.TryAddItem(itemSO.CreateItem(), targetGridCoordinate, isRotated);
 
                 break;
             case PointerEventData.InputButton.Middle:
@@ -92,14 +103,16 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
                     }
                     else
                     {
-                        Debug.Log($"IsRotated: {SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y].ItemInSlot.IsRotated}, Size: {SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y].ItemInSlot.Size}");
+                        ItemBase itemInSlot = SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y].ItemInSlot;
+                        string log = $"{itemInSlot}\n   Origin Coordinate: {SubInventory.GetItemOriginSlot(itemInSlot)}";
+                        Debug.Log(log);
                     }
                 }
                 else
                 {
                     Debug.Log($"Empty");
                 }
-                
+
                 break;
             case PointerEventData.InputButton.Right:
                 if (slot.IsOccupied)
@@ -111,71 +124,135 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
     }
 
     bool isDraggingItem;
-    Item draggedItem;
+
     Vector2Int originGridCoordinate;
     bool originRotatedStatus;
-    bool rotateItem;
+    bool isRotated;
+
+    ItemBase targetItem;
+    ItemUI targetItemUI;
+
+
     public void OnDrag(PointerEventData eventData)
     {
         if (!isDraggingItem) { return; }
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+        RaycastResult result = results.Find(r => r.gameObject.GetComponent<SubInventoryUI>());
+        if (!result.isValid) { DragItemUI.OnDrag(); return; }
+        DragItemUI.OnDrag(result.gameObject.GetComponent<SubInventoryUI>());
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        originGridCoordinate = GridCoordinateFromScreenPosition(eventData.pressPosition);
-        draggedItem = SubInventory.Slots[originGridCoordinate.x, originGridCoordinate.y].ItemInSlot;
-        if (draggedItem == null) { return; }
+        if (eventData.button != PointerEventData.InputButton.Left) { return; }
+        Vector2Int clickGridCoordinate = GridCoordinateFromScreenPosition(eventData.pressPosition);
+        targetItem = SubInventory.Slots[clickGridCoordinate.x, clickGridCoordinate.y].ItemInSlot;
+
+        if (targetItem == null) { return; }
+
+        //TODO: Better way of getting origin grid coordinate?
+        isRotated = targetItem.IsRotated;
+        originGridCoordinate = SubInventory.GetItemOriginSlot(targetItem);
+
+        DragItemUI.BeginDrag(targetItem);
+
+        targetItemUI = eventData.pointerPressRaycast.gameObject.GetComponentInParent<ItemUI>();
+        targetItemUI?.SetBackgroundActive(false);
+
         isDraggingItem = true;
-        originRotatedStatus = draggedItem.IsRotated;
+        originRotatedStatus = targetItem.IsRotated;
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (!isDraggingItem) { return; }
+        if (!isDraggingItem) { return; } 
 
         //Raycast for TargetSubInventory
-        SubInventoryUI targetSubInventoryUI = null;
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
-        foreach (RaycastResult result in results)
+        RaycastResult result = results.Find(r => r.gameObject.GetComponent<SubInventoryUI>());
+        if (!result.isValid)
         {
-            if (result.gameObject.TryGetComponent<SubInventoryUI>(out targetSubInventoryUI)) { break; }
+            DragItemUI.EndDrag();
+            return;
         }
+        SubInventoryUI targetSubInventoryUI = result.gameObject.GetComponent<SubInventoryUI>();
 
-        Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position);
+        Vector2Int itemSize = isRotated ? new Vector2Int(targetItem.Data.Size.y, targetItem.Data.Size.x) : targetItem.Data.Size;
 
-        if (rotateItem) { draggedItem.Rotate(); }
+        Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position - SlotAndItemCenteringOffset(itemSize, drawSettings) * GetComponentInParent<Canvas>().scaleFactor);
+        targetCoordinate.Clamp(Vector2Int.zero, new Vector2Int(SubInventory.Size.x - itemSize.x, SubInventory.Size.y - itemSize.y));
 
-        SubInventory.TryMoveItem(draggedItem, targetSubInventoryUI.SubInventory, targetCoordinate, originGridCoordinate, originRotatedStatus);
+        SubInventory.TryMoveItem(targetItem, targetSubInventoryUI.SubInventory, targetCoordinate, isRotated, originGridCoordinate, originRotatedStatus);
 
-        rotateItem = false;
+        DragItemUI.EndDrag();
+
+        targetItemUI?.SetBackgroundActive(false);
+
+        targetItem = null;
+        isRotated = false;
         isDraggingItem = false;
     }
 
-    private Vector2 LocalPositionFromScreenPosition(Vector2 screenPosition)
+    public Vector2 LocalPositionFromScreenPosition(Vector2 screenPosition)
     {
-        Vector2 localPosition = new Vector2(screenPosition.x - transform.position.x, transform.position.y - screenPosition.y) / GetComponentInParent<Canvas>().transform.localScale;
-        
-        return localPosition;
+        return new Vector2(screenPosition.x - transform.position.x, transform.position.y - screenPosition.y) / GetComponentInParent<Canvas>().transform.localScale;
     }
-    private Vector2Int GridCoordinateFromLocalPosition(Vector2 localPosition)
+    public Vector2 ScreenPositionFromLocalPosition(Vector2 localPosition)
     {
-        //TODO: Remove search for drawsettings with DI
-        InventoryCellDrawSettingsSO settings = Resources.Load<InventoryCellDrawSettingsSO>("SubInventory UI Draw Settings");
+        localPosition *= GetComponentInParent<Canvas>().transform.localScale;
+        return new Vector2(localPosition.x + transform.position.x, -(localPosition.y - transform.position.y));
+    }
 
+    public Vector2Int GridCoordinateFromLocalPosition(Vector2 localPosition)
+    {
         return new Vector2Int(
             Mathf.Clamp(
-                Mathf.FloorToInt((localPosition.x - settings._paddingSize - settings._outlineSize) / (settings._cellSize)),
+                Mathf.FloorToInt((localPosition.x - drawSettings._paddingSize - drawSettings._outlineSize) / (drawSettings._cellSize)),
                 0,
                 SubInventory.Size.x - 1
             ),
             Mathf.Clamp(
-                Mathf.FloorToInt((localPosition.y - settings._paddingSize - settings._outlineSize) / (settings._cellSize)),
+                Mathf.FloorToInt((localPosition.y - drawSettings._paddingSize - drawSettings._outlineSize) / (drawSettings._cellSize)),
                 0,
                 SubInventory.Size.y - 1
             )
         );
     }
-    private Vector2Int GridCoordinateFromScreenPosition(Vector2 screenPosition)
+    public Vector2Int GridCoordinateFromScreenPosition(Vector2 screenPosition)
     {
         return GridCoordinateFromLocalPosition(LocalPositionFromScreenPosition(screenPosition));
+    }
+
+    public Vector2 LocalPositionFromGridCoordinate(Vector2Int gridCoordinate)
+    {
+        return new Vector2(gridCoordinate.x * drawSettings._cellSize + drawSettings._paddingSize + drawSettings._outlineSize,
+            gridCoordinate.y * drawSettings._cellSize + drawSettings._paddingSize + drawSettings._outlineSize);
+    }
+    public Vector2 ScreenPositionFromGridCoordinate(Vector2Int gridCoordinate)
+    {
+        return ScreenPositionFromLocalPosition(LocalPositionFromGridCoordinate(gridCoordinate));
+    }
+
+    public Vector2 ScreenPositionToGridSnapScreenPosition(Vector2 screenPosition, Vector2Int itemSize)
+    {
+        Vector2Int gridCoord = GridCoordinateFromScreenPosition(screenPosition);
+        gridCoord.Clamp(Vector2Int.zero, new Vector2Int(SubInventory.Size.x - itemSize.x, SubInventory.Size.y - itemSize.y));
+        return ScreenPositionFromGridCoordinate(gridCoord);
+    }
+
+    public static Vector2 ItemCenteringOffset(Vector2Int itemSize, InventoryCellDrawSettings drawSettings)
+    {
+        return
+            (drawSettings._cellSize * 0.5f * new Vector2(itemSize.x, -itemSize.y));
+    }
+    public static Vector2 SlotCenteringOffset(Vector2 originPosition, InventoryCellDrawSettings drawSettings)
+    {
+        return originPosition - new Vector2(drawSettings._cellSize / 2, -drawSettings._cellSize / 2);
+    }
+    public static Vector2 SlotAndItemCenteringOffset(Vector2Int itemSize, InventoryCellDrawSettings drawSettings)
+    {
+        return
+            ((drawSettings._cellSize * 0.5f * new Vector2(itemSize.x, -itemSize.y)) -
+            new Vector2(drawSettings._cellSize / 2, -drawSettings._cellSize / 2));
     }
 }
