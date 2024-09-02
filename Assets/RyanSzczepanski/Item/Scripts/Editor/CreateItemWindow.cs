@@ -17,12 +17,34 @@ public class CreateItemWindow : EditorWindow
         window.Init();
     }
 
+    void SavePrefs()
+    {
+        EditorPrefs.SetString(nameof(itemScriptableObjectClassPath), itemScriptableObjectClassPath);
+        EditorPrefs.SetString(nameof(itemObjectClassPath), itemObjectClassPath);
+        EditorPrefs.SetString(nameof(itemScriptableObjectPath), itemScriptableObjectPath);
+    }
+    void LoadPrefs()
+    {
+        itemScriptableObjectClassPath = EditorPrefs.GetString(nameof(itemScriptableObjectClassPath));
+        itemObjectClassPath = EditorPrefs.GetString(nameof(itemObjectClassPath));
+        itemScriptableObjectPath = EditorPrefs.GetString(nameof(itemScriptableObjectPath));
+
+    }
+
     void Init()
     {
-        itemScriptableObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBaseSO))[0]);
-        itemScriptableObjectClassPath = itemScriptableObjectClassPath.Remove(itemScriptableObjectClassPath.Length - (nameof(ItemBaseSO).Length + 3));
-        itemObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBase))[0]);
-        itemObjectClassPath = itemObjectClassPath.Remove(itemObjectClassPath.Length - (nameof(ItemBase).Length + 3));
+        LoadPrefs();
+        if (itemScriptableObjectClassPath == string.Empty)
+        {
+            itemScriptableObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBaseSO))[0]);
+            itemScriptableObjectClassPath = itemScriptableObjectClassPath.Remove(itemScriptableObjectClassPath.Length - (nameof(ItemBaseSO).Length + 3));
+        }
+        if (itemObjectClassPath == string.Empty)
+        {
+            itemObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBase))[0]);
+            itemObjectClassPath = itemObjectClassPath.Remove(itemObjectClassPath.Length - (nameof(ItemBase).Length + 3));
+        }
+        
     }
 
     void OnGUI()
@@ -67,5 +89,12 @@ public class CreateItemWindow : EditorWindow
                 }
             }
         }
+    }
+
+
+    private void OnDestroy()
+    {
+        Debug.Log("Saving Prefs");
+        SavePrefs();
     }
 }
