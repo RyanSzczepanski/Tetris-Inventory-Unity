@@ -14,7 +14,7 @@ public class CreateItemWindow : EditorWindow
 
     ItemTags itemTags;
     string newItemName;
-    List<Type> itemTypes = new List<Type>();
+    List<Type> itemTypes;
 
     [MenuItem("Window/Create Item GUI")]
     public static void ShowWindow()
@@ -39,6 +39,7 @@ public class CreateItemWindow : EditorWindow
     void Init()
     {
         LoadPrefs();
+        GetItemTypes(out itemTypes);
         if (itemScriptableObjectClassPath == string.Empty)
         {
             itemScriptableObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBaseSO))[0]);
@@ -49,9 +50,14 @@ public class CreateItemWindow : EditorWindow
             itemObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBase))[0]);
             itemObjectClassPath = itemObjectClassPath.Remove(itemObjectClassPath.Length - (nameof(ItemBase).Length + 3));
         }
+    }
+
+    void GetItemTypes(out List<Type> types)
+    {
+        types = new List<Type>();
         foreach (Type type in typeof(ItemBaseSO).Assembly.GetTypes())
         {
-            if (type.BaseType == typeof(ItemBaseSO)) { itemTypes.Add(type); }
+            if (type.BaseType == typeof(ItemBaseSO)) { types.Add(type); }
         }
     }
 
@@ -59,6 +65,7 @@ public class CreateItemWindow : EditorWindow
     int tabSelected = 0;
     void OnGUI()
     {
+        if (itemTypes == null) { GetItemTypes(out itemTypes); } 
         tabSelected = GUILayout.Toolbar(tabSelected, tabs);
         switch (tabSelected)
         {
