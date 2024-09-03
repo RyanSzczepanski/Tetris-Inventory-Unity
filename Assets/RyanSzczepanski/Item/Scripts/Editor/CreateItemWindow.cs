@@ -117,7 +117,7 @@ public class CreateItemWindow : EditorWindow
         if (!TryGetTargetItemTypeFromTags(itemTags, out Type targetType)) { return; }
 
         newItemName = EditorGUILayout.TextField("Item Name", newItemName);
-        if (Regex.IsMatch(newItemName, "(?<ItemName>^\\w+|[-]+$)"))
+        if (Regex.IsMatch(newItemName, "^(?<ItemName>(?>\\w|[- ])*)$"))
         {
             string[] assetGUIDS = AssetDatabase.FindAssets(newItemName);
             if (assetGUIDS.Length != 0)
@@ -134,15 +134,6 @@ public class CreateItemWindow : EditorWindow
         else
         {
             EditorGUILayout.HelpBox("Asset name is invalid\nMust be Alphanumeric and can contain Spaces, Hyphens and Underscores", MessageType.Warning, false);
-        }
-
-        if ()
-        {
-            
-        }
-        else
-        {
-            
         }
         
 
