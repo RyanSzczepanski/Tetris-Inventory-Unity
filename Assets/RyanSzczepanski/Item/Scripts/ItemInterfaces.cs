@@ -29,9 +29,10 @@ public static class ItemTagsUtils
     public static ItemTags TypesToTags(Type type)
     {
         ItemTags tags = ItemTags.Basic;
-        foreach(Type interfaceType in (type.GetInterfaces()))
+        if (type.BaseType != typeof(ItemBaseSO)) { Debug.LogWarning($"Type: {type} does not derive from ItemBaseSO"); }
+        foreach (Type interfaceType in type.GetInterfaces())
         {
-            tags |= (ItemTags)interfaceType.GetField("TAG").GetRawConstantValue();
+            tags |= (ItemTags)interfaceType.GetField("TAG")?.GetRawConstantValue();
         }
         return tags;
     }
@@ -40,9 +41,10 @@ public static class ItemTagsUtils
         ItemTags tags = ItemTags.Basic;
         foreach (Type type in types)
         {
+            if(type.BaseType != typeof(ItemBaseSO)) { Debug.LogWarning($"Type: {type} does not derive from ItemBaseSO"); continue; }
             foreach (Type interfaceType in (type.GetInterfaces()))
             {
-                tags |= (ItemTags)interfaceType.GetField("TAG").GetRawConstantValue();
+                tags |= (ItemTags)interfaceType.GetField("TAG")?.GetRawConstantValue();
             }
         }
         return tags;

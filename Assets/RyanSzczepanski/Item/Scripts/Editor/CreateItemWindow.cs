@@ -1,19 +1,24 @@
-using Sirenix.Utilities;
 using System;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using UnityEditor;
 using UnityEngine;
 
 public class CreateItemWindow : EditorWindow
 {
-    ItemTags itemTags;
+    //Prefs
     string itemScriptableObjectClassPath;
     string itemObjectClassPath;
     string itemScriptableObjectPath;
+
+    ItemTags itemTags;
     string newItemName;
-    [MenuItem("Window/My Window")]
+    List<Type> itemTypes = new List<Type>();
+
+    [MenuItem("Window/Create Item GUI")]
     public static void ShowWindow()
     {
-        CreateItemWindow window = EditorWindow.GetWindow<CreateItemWindow>();
+        CreateItemWindow window = EditorWindow.GetWindow<CreateItemWindow>("Item Tool");
         window.Init();
     }
 
@@ -28,7 +33,6 @@ public class CreateItemWindow : EditorWindow
         itemScriptableObjectClassPath = EditorPrefs.GetString(nameof(itemScriptableObjectClassPath));
         itemObjectClassPath = EditorPrefs.GetString(nameof(itemObjectClassPath));
         itemScriptableObjectPath = EditorPrefs.GetString(nameof(itemScriptableObjectPath));
-
     }
 
     void Init()
@@ -44,51 +48,85 @@ public class CreateItemWindow : EditorWindow
             itemObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBase))[0]);
             itemObjectClassPath = itemObjectClassPath.Remove(itemObjectClassPath.Length - (nameof(ItemBase).Length + 3));
         }
-        
-    }
-
-    void OnGUI()
-    {
-        itemScriptableObjectClassPath = EditorGUILayout.TextField("Item Scriptable Object Class Path", itemScriptableObjectClassPath);
-        itemObjectClassPath = EditorGUILayout.TextField("Item Object Class Path", itemObjectClassPath);
-        itemScriptableObjectPath = EditorGUILayout.TextField("Item Scriptable Object Path", itemScriptableObjectPath);
-
-        Type targetType = null;
-        GUILayout.Label("Item Tags", EditorStyles.boldLabel);
-        itemTags = (ItemTags)EditorGUILayout.EnumFlagsField("Item Tags", itemTags);
-
         foreach (Type type in typeof(ItemBaseSO).Assembly.GetTypes())
         {
-            if(type.BaseType != typeof(ItemBaseSO)) { continue; }
-            if(ItemTagsUtils.TypesToTags(type) != itemTags) { continue; }
-            targetType = type;
-            //Debug.Log(ItemTagsUtils.TypesToTags(type));
+            if (type.BaseType == typeof(ItemBaseSO)) { itemTypes.Add(type); }
         }
+    }
+
+    string[] tabs = { "Settings", "Create Item", "Search For Item" };
+    int tabSelected = -1;
+    void OnGUI()
+    {
+        tabSelected = GUILayout.Toolbar(tabSelected, tabs);
+        switch (tabSelected)
+        {
+            case 0:
+                DrawSettings();
+                break;
+            case 1:
+                DrawCreateItem();
+                break;
+            case 2:
+                DrawSearchForItem();
+                break;
+        }
+    }
+
+    private void DrawSettings()
+    {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Item Scriptable Object Class Path", GUILayout.Width(225));
+        itemScriptableObjectClassPath = EditorGUILayout.TextField(itemScriptableObjectClassPath);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Item Object Class Path", GUILayout.Width(225));
+        itemObjectClassPath = EditorGUILayout.TextField(itemObjectClassPath);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Item Scriptable Object Path", GUILayout.Width(225));
+        itemScriptableObjectPath = EditorGUILayout.TextField(itemScriptableObjectPath);
+        EditorGUILayout.EndHorizontal();
+    }
+    private bool TryGetTargetItemTypeFromTags(ItemTags tags, out Type targetType)
+    {
         
-        if(targetType == null) { return; }
-        if (GUILayout.Button($"Open {targetType.Name}"))
+        foreach (Type type in itemTypes.AsReadOnly())
+        {
+            if (ItemTagsUtils.TypesToTags(type) != itemTags) { continue; }
+            targetType = type;
+            return true;
+        }
+        targetType = null;
+        return false;
+    }
+    private void DrawCreateItem()
+    {
+        itemTags = (ItemTags)EditorGUILayout.EnumFlagsField("Item Tags", itemTags);
+        if (!TryGetTargetItemTypeFromTags(itemTags, out Type targetType)) { return; }
+
+
+        newItemName = EditorGUILayout.TextField("Item Name", newItemName);
+
+        if (GUILayout.Button($"Create Asset"))
+        {
+            ScriptableObject so = ScriptableObject.CreateInstance(targetType.Name);
+            AssetDatabase.CreateAsset(so, $"{itemScriptableObjectPath}{newItemName}.asset");
+        }
+
+        if (GUILayout.Button($"Open Class {targetType.Name}"))
         {
             foreach (var asset in AssetDatabase.FindAssets(targetType.Name))
             {
                 AssetDatabase.OpenAsset(AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(asset)));
             }
         }
-
-        newItemName = EditorGUILayout.TextField("Item Name", newItemName);
-
-        if (GUILayout.Button($"Create Scriptable Object {targetType.Name}"))
-        {
-            ScriptableObject so = ScriptableObject.CreateInstance(targetType.Name);
-            AssetDatabase.CreateAsset(so, $"{itemScriptableObjectPath}{newItemName}.asset");
-            //Debug.Log(ScriptableObject);
-            foreach (var member in targetType.GetBaseClasses())
-            {
-                foreach (var Method in typeof(ScriptableObject).GetMethods())
-                {
-                    //Debug.Log(Method.Name);
-                }
-            }
-        }
+    }
+    private void DrawSearchForItem()
+    {
+        
     }
 
 
