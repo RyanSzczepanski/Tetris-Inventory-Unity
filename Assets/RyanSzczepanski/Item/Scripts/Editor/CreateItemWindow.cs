@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.VersionControl;
@@ -115,30 +116,33 @@ public class CreateItemWindow : EditorWindow
         itemTags = (ItemTags)EditorGUILayout.EnumFlagsField("Item Tags", itemTags);
         if (!TryGetTargetItemTypeFromTags(itemTags, out Type targetType)) { return; }
 
-
         newItemName = EditorGUILayout.TextField("Item Name", newItemName);
-
-        if (Regex.IsMatch(newItemName, "^(?:[a-zA-Z0-9-\\s])+$"))
+        if (Regex.IsMatch(newItemName, "(?<ItemName>^\\w+|[-]+$)"))
         {
-            if (GUILayout.Button($"Create Asset"))
+            string[] assetGUIDS = AssetDatabase.FindAssets(newItemName);
+            if (assetGUIDS.Length != 0)
+            {
+                PopUpAssetInspector.Create(AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assetGUIDS[0])));
+            }
+            else if (GUILayout.Button($"Create Asset"))
             {
                 ScriptableObject so = ScriptableObject.CreateInstance(targetType.Name);
-                string[] assetGUIDS = AssetDatabase.FindAssets(newItemName);
-                //TODO: Make popup saying asset already exists
-                if (assetGUIDS.Length != 0)
-                {
-                    PopUpAssetInspector.Create(AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assetGUIDS[0])));
-                }
-                else
-                {
-                    AssetDatabase.CreateAsset(so, $"{itemScriptableObjectPath}{newItemName}.asset");
-                    PopUpAssetInspector.Create(so);
-                }
+                AssetDatabase.CreateAsset(so, $"{itemScriptableObjectPath}{newItemName}.asset");
+                PopUpAssetInspector.Create(so);
             }
         }
         else
         {
-            EditorGUILayout.HelpBox("Asset name is invalid\nMust be Alphanumeric and can contain Spaces and Hyphens", MessageType.Warning, false);
+            EditorGUILayout.HelpBox("Asset name is invalid\nMust be Alphanumeric and can contain Spaces, Hyphens and Underscores", MessageType.Warning, false);
+        }
+
+        if ()
+        {
+            
+        }
+        else
+        {
+            
         }
         
 
