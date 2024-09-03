@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -55,7 +56,7 @@ public class CreateItemWindow : EditorWindow
     }
 
     string[] tabs = { "Settings", "Create Item", "Search For Item" };
-    int tabSelected = -1;
+    int tabSelected = 0;
     void OnGUI()
     {
         tabSelected = GUILayout.Toolbar(tabSelected, tabs);
@@ -76,17 +77,17 @@ public class CreateItemWindow : EditorWindow
     private void DrawSettings()
     {
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Item Scriptable Object Class Path", GUILayout.Width(225));
+        EditorGUILayout.LabelField(new GUIContent("Item Scriptable Objects Class Path", "This is the file location for the SCRIPTABLE OBEJCT C# files"), GUILayout.Width(225));
         itemScriptableObjectClassPath = EditorGUILayout.TextField(itemScriptableObjectClassPath);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Item Object Class Path", GUILayout.Width(225));
+        EditorGUILayout.LabelField(new GUIContent("Item Objects Class Path", "This is the file location for the ITEM OBJECT C# files"), GUILayout.Width(225));
         itemObjectClassPath = EditorGUILayout.TextField(itemObjectClassPath);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Item Scriptable Object Path", GUILayout.Width(225));
+        EditorGUILayout.LabelField(new GUIContent("Item Assets Path", "This is the file location for the ITEM ASSET files"), GUILayout.Width(225));
         itemScriptableObjectPath = EditorGUILayout.TextField(itemScriptableObjectPath);
         EditorGUILayout.EndHorizontal();
     }
