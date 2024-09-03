@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
-using Unity.VisualScripting;
+using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class CreateItemWindow : EditorWindow
@@ -111,11 +111,29 @@ public class CreateItemWindow : EditorWindow
 
         newItemName = EditorGUILayout.TextField("Item Name", newItemName);
 
-        if (GUILayout.Button($"Create Asset"))
+        if (Regex.IsMatch(newItemName, "^(?:[a-zA-Z0-9-\\s])+$"))
         {
-            ScriptableObject so = ScriptableObject.CreateInstance(targetType.Name);
-            AssetDatabase.CreateAsset(so, $"{itemScriptableObjectPath}{newItemName}.asset");
+            if (GUILayout.Button($"Create Asset"))
+            {
+                ScriptableObject so = ScriptableObject.CreateInstance(targetType.Name);
+                string[] assetGUIDS = AssetDatabase.FindAssets(newItemName);
+                //TODO: Make popup saying asset already exists
+                if (assetGUIDS.Length != 0)
+                {
+                    PopUpAssetInspector.Create(AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assetGUIDS[0])));
+                }
+                else
+                {
+                    AssetDatabase.CreateAsset(so, $"{itemScriptableObjectPath}{newItemName}.asset");
+                    PopUpAssetInspector.Create(so);
+                }
+            }
         }
+        else
+        {
+            EditorGUILayout.HelpBox("Asset name is invalid\nMust be Alphanumeric and can contain Spaces and Hyphens", MessageType.Warning, false);
+        }
+        
 
         if (GUILayout.Button($"Open Class {targetType.Name}"))
         {
@@ -135,5 +153,30 @@ public class CreateItemWindow : EditorWindow
     {
         Debug.Log("Saving Prefs");
         SavePrefs();
+    }
+}
+
+public class PopUpAssetInspector : EditorWindow
+{
+    private UnityEngine.Object asset;
+    private Editor assetEditor;
+
+    public static PopUpAssetInspector Create(UnityEngine.Object asset)
+    {
+        var window = CreateWindow<PopUpAssetInspector>($"{asset.name} | {asset.GetType().Name}");
+        window.asset = asset;
+        window.assetEditor = Editor.CreateEditor(asset);
+        return window;
+    }
+
+    private void OnGUI()
+    {
+        GUI.enabled = false;
+        asset = EditorGUILayout.ObjectField("Asset", asset, asset.GetType(), false);
+        GUI.enabled = true;
+
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        assetEditor.OnInspectorGUI();
+        EditorGUILayout.EndVertical();
     }
 }
