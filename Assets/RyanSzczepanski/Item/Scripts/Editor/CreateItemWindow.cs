@@ -113,6 +113,7 @@ public class CreateItemWindow : EditorWindow
     }
     private void DrawCreateItem()
     {
+        UnityEngine.Object targetAssetObject = null;
         itemTags = (ItemTags)EditorGUILayout.EnumFlagsField("Item Tags", itemTags);
         if (!TryGetTargetItemTypeFromTags(itemTags, out Type targetType)) { return; }
 
@@ -120,15 +121,26 @@ public class CreateItemWindow : EditorWindow
         if (Regex.IsMatch(newItemName, "^(?<ItemName>(?>\\w|[- ])*)$"))
         {
             string[] assetGUIDS = AssetDatabase.FindAssets(newItemName);
-            if (assetGUIDS.Length != 0)
+            foreach(string assetGUID in assetGUIDS)
             {
-                PopUpAssetInspector.Create(AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assetGUIDS[0])));
+                UnityEngine.Object assetObject = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assetGUID));
+                if(!itemTypes.Contains(assetObject.GetType()) || ((ItemBaseSO)assetObject).Tags != itemTags) { continue; }
+                targetAssetObject ??= assetObject;
+                GUILayout.Label(assetObject.name);
+            }
+
+            if (targetAssetObject != null)
+            {
+                if(GUILayout.Button($"Open Asset {targetAssetObject.name}"))
+                {
+                    PopUpAssetInspector.ShowWindow(targetAssetObject);
+                }
             }
             else if (GUILayout.Button($"Create Asset"))
             {
                 ScriptableObject so = ScriptableObject.CreateInstance(targetType.Name);
                 AssetDatabase.CreateAsset(so, $"{itemScriptableObjectPath}{newItemName}.asset");
-                PopUpAssetInspector.Create(so);
+                PopUpAssetInspector.ShowWindow(so);
             }
         }
         else
@@ -163,7 +175,7 @@ public class PopUpAssetInspector : EditorWindow
     private UnityEngine.Object asset;
     private Editor assetEditor;
 
-    public static PopUpAssetInspector Create(UnityEngine.Object asset)
+    public static PopUpAssetInspector ShowWindow(UnityEngine.Object asset)
     {
         var window = CreateWindow<PopUpAssetInspector>($"{asset.name} | {asset.GetType().Name}");
         window.asset = asset;

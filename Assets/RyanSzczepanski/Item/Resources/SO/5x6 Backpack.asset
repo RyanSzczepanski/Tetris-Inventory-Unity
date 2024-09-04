@@ -18,7 +18,7 @@ MonoBehaviour:
   <Size>k__BackingField: {x: 5, y: 6}
   <Weight>k__BackingField: 4
   <Icon>k__BackingField: {fileID: 0}
-  <Tags>k__BackingField: 0
+  <Tags>k__BackingField: 1
   <SubInventoryArrangements>k__BackingField:
     alignment: 0
     direction: 0
