@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 0a63e2964808a79428968f55f50c6df5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - visualTree: {fileID: 9197481963319205126, guid: feeb5050d5ecec643bcc711d28baf767, type: 3}
+  - createItemVisualTree: {fileID: 9197481963319205126, guid: 92305990fa43ca34d8e2a6284a69873a, type: 3}
+  - testTreeAsset: {fileID: 9197481963319205126, guid: b8107da866182364ebe51304a5e936da, type: 3}
+  - baseStyleSheet: {fileID: 7433441132597879392, guid: e6c206749fb9ea844a7fcbe5fecf045b, type: 3}
+  - inventoryPreviewOutline: {fileID: 7433441132597879392, guid: ae5b3649011004a4b866bb09c5365f14, type: 3}
+  - inventoryPreviewNoOutline: {fileID: 7433441132597879392, guid: 8af8065fdf469304eba699d3ca364994, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
@@ -104,7 +103,7 @@ public static class SubInventoryUIGenerator
 
         return subInventoryObject;
     }
-    private static Sprite GenerateSprite(Vector2Int size, in InventoryCellDrawSettings drawSettings)
+    public static Sprite GenerateSprite(Vector2Int size, in InventoryCellDrawSettings drawSettings)
     {
         Texture2D texture2D = GenerateCellGridTexture(size, in drawSettings);
         Sprite sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
