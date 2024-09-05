@@ -79,10 +79,6 @@ public static class InventoryUIToolkitGenerator
         Color color = Random.ColorHSV(0,1,.5f,1,1,1,1,1);
         color.a = .25f;
         ve.AddToClassList("inventory-preview-arrangement");
-        //ve.style.borderBottomWidth = 5;
-        //ve.style.borderTopWidth = 5;
-        //ve.style.borderLeftWidth= 5;
-        //ve.style.borderRightWidth= 5;
 
         ve.style.borderBottomColor = color;
         ve.style.borderTopColor = color;

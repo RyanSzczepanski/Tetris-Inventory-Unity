@@ -21,7 +21,7 @@ public class ItemToolWindow : EditorWindow
 
     string[] toolbarButtonsQuery;
     int selectedToolbarIndex = -1;
-    TemplateContainer tempContainer;
+    TemplateContainer toolbarContentContainer;
 
     private record ToolbarButtonRecord
     {
@@ -50,18 +50,18 @@ public class ItemToolWindow : EditorWindow
     bool outlineToggleLastState;
     public void OnGUI()
     {
-        Toggle OutlineToggle = tempContainer?.Query<Toggle>("outline-toggle");
+        Toggle OutlineToggle = toolbarContentContainer?.Query<Toggle>("outline-toggle");
         if (OutlineToggle != null && OutlineToggle.value != outlineToggleLastState)
         {
             if (OutlineToggle.value)
             {
-                tempContainer.styleSheets.Add(inventoryPreviewOutline);
-                tempContainer.styleSheets.Remove(inventoryPreviewNoOutline);
+                toolbarContentContainer.styleSheets.Add(inventoryPreviewOutline);
+                toolbarContentContainer.styleSheets.Remove(inventoryPreviewNoOutline);
             }
             else
             {
-                tempContainer.styleSheets.Add(inventoryPreviewNoOutline);
-                tempContainer.styleSheets.Remove(inventoryPreviewOutline);
+                toolbarContentContainer.styleSheets.Add(inventoryPreviewNoOutline);
+                toolbarContentContainer.styleSheets.Remove(inventoryPreviewOutline);
             }
             outlineToggleLastState = OutlineToggle.value;
         }
@@ -71,18 +71,18 @@ public class ItemToolWindow : EditorWindow
     {
         if (selectedToolbarIndex == newIndex) { return; }
         selectedToolbarIndex = newIndex;
-        if(tempContainer != null) { Debug.Log("Removing Temp Container"); rootFromUXML.Remove(tempContainer); tempContainer = null; }
+        if(toolbarContentContainer != null) { Debug.Log("Removing Temp Container"); rootFromUXML.Remove(toolbarContentContainer); toolbarContentContainer = null; }
         
         switch (newIndex)
         {
             case 0:
-                tempContainer = CreateTempGUI(createItemVisualTree);
+                toolbarContentContainer = CreateTempGUI(createItemVisualTree);
                 break;
             case 1:
-                tempContainer = CreateTempGUI(testTreeAsset);
+                toolbarContentContainer = CreateTempGUI(testTreeAsset);
                 InventoryCellDrawSettings drawSettings = new InventoryCellDrawSettings(AssetDatabase.LoadAssetAtPath<InventoryCellDrawSettingsSO>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("SubInventory UI Draw Settings")[0])));
                 ItemInventorySO itemInventorySO = AssetDatabase.LoadAssetAtPath<ItemInventorySO>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("Test Rig 2")[0]));
-                tempContainer.Add(InventoryUIToolkitGenerator.GenerateInventoryPreview(itemInventorySO as IInventorySO, in drawSettings));
+                toolbarContentContainer.Add(InventoryUIToolkitGenerator.GenerateInventoryPreview(itemInventorySO as IInventorySO, in drawSettings));
                 break;
         }
         rootVisualElement.styleSheets.Add(baseStyleSheet);
@@ -91,9 +91,9 @@ public class ItemToolWindow : EditorWindow
 
     private TemplateContainer CreateTempGUI(VisualTreeAsset asset)
     {
-        tempContainer = asset.Instantiate();
-        rootFromUXML.Add(tempContainer);
-        return tempContainer;
+        toolbarContentContainer = asset.Instantiate();
+        rootFromUXML.Add(toolbarContentContainer);
+        return toolbarContentContainer;
     }
 
     public void CreateGUI()

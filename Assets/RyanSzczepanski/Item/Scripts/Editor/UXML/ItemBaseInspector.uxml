@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/RyanSzczepanski/Item/Scripts/Editor/ItemToolStyle.uss?fileID=7433441132597879392&amp;guid=e6c206749fb9ea844a7fcbe5fecf045b&amp;type=3#ItemToolStyle" />
+    <ui:VisualElement name="HR" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); flex-direction: row;">
+        <ui:VisualElement name="Left" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); flex-shrink: 0; align-self: flex-start; align-items: flex-start; width: 128px;">
+            <ui:VisualElement name="no-icon-preview" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 128px; height: 128px; background-image: url(&apos;project://database/Assets/RyanSzczepanski/Item/Scripts/Editor/Untitled2.png?fileID=21300000&amp;guid=df930b8500537814ebf479432ecf49ed&amp;type=3#Untitled2&apos;); flex-shrink: 0; flex-basis: auto; position: relative; visibility: visible; display: flex;" />
+            <ui:VisualElement name="icon-preview" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 128px; height: 128px; background-image: url(&apos;project://database/Assets/RyanSzczepanski/Mats/618bb76513f5097c8d5aa2d5%20(1).png?fileID=21300000&amp;guid=f5d5b410cce6d0a4ba9591fad39b1cbe&amp;type=3#618bb76513f5097c8d5aa2d5 (1)&apos;); flex-basis: auto; flex-shrink: 0; position: absolute; display: flex; top: auto; opacity: 0;" />
+            <uie:ObjectField type="UnityEngine.Sprite, UnityEngine.CoreModule" name="sprite-field" binding-path="m_Icon" style="flex-grow: 1; background-image: none; white-space: nowrap; width: 100%; margin-right: 0; padding-right: 0; margin-left: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-top: 0; padding-bottom: 0;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Right" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); width: auto; min-width: 0;">
+            <ui:TextField picking-mode="Ignore" label="Full Name" value="Item Name" password="false" binding-path="m_FullName" />
+            <ui:TextField picking-mode="Ignore" label="Short Name" value="Item Name" password="false" binding-path="m_ShortName" />
+            <ui:IntegerField label="Value" value="100" binding-path="m_Value" />
+            <ui:FloatField label="Weight" value="1" binding-path="m_Weight" />
+            <ui:Vector2IntField label="Item Size" binding-path="m_Size" />
+            <uie:EnumFlagsField label="Item Tags" type="ItemTags, Assembly-CSharp" value="Basic" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Label tabindex="-1" text="Description" display-tooltip-when-elided="true" style="font-size: 24px; margin-left: 3px;" />
+    <ui:TextField picking-mode="Ignore" value="Item Summary" password="false" multiline="true" binding-path="m_Description" style="white-space: normal; height: 72px;" />
+</ui:UXML>

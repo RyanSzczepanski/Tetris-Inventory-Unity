@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9990a2a101c07f747997c24619afca52, type: 3}
-  m_Name: 5x6 Backpack
+  m_Name: T20 Backpack
   m_EditorClassIdentifier: 
-  <FullName>k__BackingField: 5x6 Backpack
-  <ShortName>k__BackingField: 5x6 Backpack
-  <Description>k__BackingField: 
-  <Size>k__BackingField: {x: 5, y: 6}
-  <Weight>k__BackingField: 4
-  <Icon>k__BackingField: {fileID: 0}
-  <Tags>k__BackingField: 1
-  <SubInventoryArrangements>k__BackingField:
+  m_FullName: T20 Backpack
+  m_ShortName: T20
+  m_Description: Gruppa 99 T20 Backpack
+  m_Value: 300
+  m_Weight: 2
+  m_Size: {x: 5, y: 5}
+  m_Icon: {fileID: 21300000, guid: f5d5b410cce6d0a4ba9591fad39b1cbe, type: 3}
+  m_SubInventoryArrangements:
     alignment: 0
     direction: 0
     childArrangements: []
-    subInventorySize: {x: 5, y: 6}
+    subInventorySize: {x: 5, y: 5}
