@@ -1,140 +1,202 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SubInventoryUIGenerator
+public static class InventoryUIGenerator
+{
+    private static int subInventoryTracker;
+    private static InventoryCellDrawSettings drawSettings;
+
+    public static void GenerateUIObject(Transform transform, ItemInventory itemInventory, in InventoryCellDrawSettings drawSettings)
+    {
+        subInventoryTracker = 0;
+        InventoryUIGenerator.drawSettings = drawSettings;
+        GameObject Inventory = new GameObject("Inventory", typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
+        Inventory.transform.SetParent(transform, false);
+
+        HorizontalOrVerticalLayoutGroup layoutGroup = Inventory.GetComponent<VerticalLayoutGroup>();
+        layoutGroup.childForceExpandHeight = false;
+        layoutGroup.childForceExpandWidth = false;
+
+        ContentSizeFitter csf = Inventory.GetComponent<ContentSizeFitter>();
+        csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
+        csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
+
+        ArrangementTreeSearch(itemInventory.Data.SubInventoryArrangements, Inventory.transform, in itemInventory);
+    }
+    private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, Transform parent, in ItemInventory item)
+    {
+        Transform newParent;
+        if (arrangement.HasSubInventory)
+        {
+            GameObject go = SubInventoryUIGenerator.GenerateSubInventoryObject(item.Inventory.SubInventories[subInventoryTracker], parent, in drawSettings); ;
+            newParent = go.transform;
+            subInventoryTracker++;
+        }
+        else
+        {
+            newParent = GenerateArrangement(arrangement, parent).transform;
+        }
+
+        if (arrangement.IsLeaf) { return; }
+        foreach (SubInventoryArrangement child in arrangement.childArrangements)
+        {
+            ArrangementTreeSearch(child, newParent, in item);
+        }
+    }
+    private static GameObject GenerateArrangement(SubInventoryArrangement arrangement, Transform parent)
+    {
+        GameObject go = new GameObject("Arrangement");
+        go.transform.SetParent(parent, false);
+        HorizontalOrVerticalLayoutGroup layoutGroup;
+        if (arrangement.direction == GridLayoutGroup.Axis.Vertical)
+        {
+            layoutGroup = go.AddComponent<VerticalLayoutGroup>();
+        }
+        else
+        {
+            layoutGroup = go.AddComponent<HorizontalLayoutGroup>();
+        }
+        layoutGroup.childForceExpandHeight = false;
+        layoutGroup.childForceExpandWidth = false;
+        layoutGroup.childAlignment = arrangement.alignment;
+        layoutGroup.spacing = 5;
+
+        return go;
+    }
+}
+
+
+public static class SubInventoryUIGenerator
 {
     public static Dictionary<Vector2Int, Sprite> CAHCED_SPRITES = new Dictionary<Vector2Int, Sprite>();
 
-    private readonly SubInventoryUITextureGenerator textureGenerator;
-    private readonly SubInventory subInventory;
-
-    public SubInventoryUIGenerator(InventoryCellDrawSettingsSO drawSettings, SubInventory subInventory)
-    {
-        this.subInventory = subInventory;
-        textureGenerator = new(drawSettings);
-    }
-
-    public GameObject GenerateSubInventoryObject(Transform parent, InventoryCellDrawSettingsSO drawSettingsSO)
+    public static GameObject GenerateSubInventoryObject(SubInventory subInventory, Transform parent, in InventoryCellDrawSettings drawSettings)
     {
         //Rename Object
         GameObject subInventoryObject = new GameObject($"{subInventory.Size.x}x{subInventory.Size.y} SubInventory");
         subInventoryObject.transform.SetParent(parent, false);
-        subInventoryObject.AddComponent<SubInventoryUI>().Init(subInventory, drawSettingsSO);
-
-        Sprite sprite = LookUpOrGenerateSprite(subInventory.Size);
+        SubInventoryUI subInventoryUI = subInventoryObject.AddComponent<SubInventoryUI>();
+        subInventoryUI.Init(subInventory, drawSettings);
+        //Generate Or Get Cached Sprite
+        if (!CAHCED_SPRITES.TryGetValue(subInventory.Size, out Sprite sprite))
+        {
+            sprite = GenerateSprite(subInventory.Size, drawSettings);
+            CAHCED_SPRITES.Add(subInventory.Size, sprite);
+        }
 
         //Set Component Values
         Image imageComponent = subInventoryObject.GetComponent<Image>();
         imageComponent.sprite = sprite;
 
-        RectTransform rectTransform = subInventoryObject.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = sprite.texture.Size();  
+        LayoutElement layoutElement = subInventoryObject.GetComponent<LayoutElement>();
+        layoutElement.minWidth = sprite.texture.width;
+        layoutElement.minHeight = sprite.texture.height;
+
+
+        RectTransform rectTransform = subInventoryObject.GetComponent<RectTransform>(); 
         rectTransform.localScale = Vector3.one;
         rectTransform.pivot = Vector2.up;
 
         return subInventoryObject;
     }
-    private Sprite LookUpOrGenerateSprite(Vector2Int key)
+    private static Sprite GenerateSprite(Vector2Int size, in InventoryCellDrawSettings drawSettings)
     {
-        Sprite sprite;
-        if (!CAHCED_SPRITES.TryGetValue(key, out sprite))
-        {
-            sprite = GenerateSprite(key);
-            CAHCED_SPRITES.Add(subInventory.Size, sprite);
-        }
-        return sprite;
-    }
-    private Sprite GenerateSprite(Vector2Int size)
-    {
-        Texture2D texture2D = textureGenerator.GenerateCellGridTexture(size);
+        Texture2D texture2D = GenerateCellGridTexture(size, in drawSettings);
         Sprite sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
-        sprite.name = $"{subInventory.Size.x}x{subInventory.Size.y} SubInventory";
+        sprite.name = $"{size.x}x{size.y} SubInventory";
         return sprite;
     }
-}
-
-
-public class SubInventoryUITextureGenerator
-{
-    private readonly InventoryCellDrawSettingsSO drawSettings;
-    public SubInventoryUITextureGenerator(InventoryCellDrawSettingsSO drawSettings)
-    {
-        this.drawSettings = drawSettings;
-    }
-
-    public Texture2D GenerateCellGridTexture(Vector2Int gridSize)
+    private static Texture2D GenerateCellGridTexture(Vector2Int gridSize, in InventoryCellDrawSettings drawSettings)
     {
         Vector2Int textureSize = new(
         gridSize.x * drawSettings._cellSize + drawSettings._paddingSize * 2 + drawSettings._outlineSize * 2,
         gridSize.y * drawSettings._cellSize + drawSettings._paddingSize * 2 + drawSettings._outlineSize * 2
         );
-        Color32[] color = new Color32[textureSize.x * textureSize.y];
+
         Texture2D texture = new(textureSize.x, textureSize.y);
 
-        for (int y = 0; y < textureSize.y; y++)
-        {
-            for (int x = 0; x < textureSize.x; x++)
-            {
-                color[y * textureSize.x + x] = CalculatePixelColor(x, y, textureSize);
-            }
-        }
+        NativeArray<Color32> color = new NativeArray<Color32>(textureSize.x * textureSize.y, Allocator.TempJob);
+        CalculatePixelColorsJob job = new CalculatePixelColorsJob() { color = color, textureSize = textureSize, drawSettings = drawSettings };
 
-        texture.SetPixels32(color);
+
+        JobHandle sheduleParralelJobHandle = job.ScheduleParallel(textureSize.x * textureSize.y, 64, new JobHandle());
+        sheduleParralelJobHandle.Complete();
+
+        texture.SetPixels32(color.ToArray());
+        color.Dispose();
         texture.Apply();
         return texture;
     }
-    private Color CalculatePixelColor(int x, int y, Vector2Int textureSize)
+    public struct CalculatePixelColorsJob : IJobFor
     {
-        Color pixelColor;
-        //Outline of entire sub inventory
-        if (x < drawSettings._outlineSize ||
-            y < drawSettings._outlineSize ||
-            x > textureSize.x - drawSettings._outlineSize - 1 ||
-            y > textureSize.y - drawSettings._outlineSize - 1)
+        public InventoryCellDrawSettings drawSettings;
+        public Vector2Int textureSize;
+        public NativeArray<Color32> color;
+
+        [BurstCompile]
+        public void Execute(int index)
         {
-            //Breaks up solid colors
-            if ((x + y % 2) % 2 == 0)
-                pixelColor = drawSettings._outlineAccentColor;
-            else
-                pixelColor = drawSettings._outlineColor;
+            int x = index % textureSize.x;
+            int y = Mathf.FloorToInt((float)index / textureSize.x);
+            color[index] = CalculatePixelColor(x, y, textureSize, drawSettings);
         }
-        //CellOutlinePadding (Keeps an even outline width on outside cell blocks)
-        else if (
-            x < drawSettings._paddingSize + drawSettings._outlineSize ||
-            y < drawSettings._paddingSize + drawSettings._outlineSize ||
-            x > textureSize.x - (drawSettings._paddingSize + drawSettings._outlineSize) ||
-            y > textureSize.y - (drawSettings._paddingSize + drawSettings._outlineSize))
+
+        [BurstCompile]
+        private Color CalculatePixelColor(int x, int y, Vector2Int textureSize, in InventoryCellDrawSettings drawSettings)
         {
-            //Breaks up solid colors
-            if ((x + y % 2) % 2 == 0)
-                pixelColor = drawSettings._cellOutlineAccentColor;
+            Color pixelColor;
+            //Outline of entire sub inventory
+            if (x < drawSettings._outlineSize ||
+                y < drawSettings._outlineSize ||
+                x > textureSize.x - drawSettings._outlineSize - 1 ||
+                y > textureSize.y - drawSettings._outlineSize - 1)
+            {
+                //Breaks up solid colors
+                if ((x + y % 2) % 2 == 0)
+                    pixelColor = drawSettings._outlineAccentColor;
+                else
+                    pixelColor = drawSettings._outlineColor;
+            }
+            //CellOutlinePadding (Keeps an even outline width on outside cell blocks)
+            else if (
+                x < drawSettings._paddingSize + drawSettings._outlineSize ||
+                y < drawSettings._paddingSize + drawSettings._outlineSize ||
+                x > textureSize.x - (drawSettings._paddingSize + drawSettings._outlineSize) ||
+                y > textureSize.y - (drawSettings._paddingSize + drawSettings._outlineSize))
+            {
+                //Breaks up solid colors
+                if ((x + y % 2) % 2 == 0)
+                    pixelColor = drawSettings._cellOutlineAccentColor;
+                else
+                    pixelColor = drawSettings._cellOutlineColor;
+            }
+            //CellOutline
+            else if ((x - (drawSettings._paddingSize + drawSettings._outlineSize)) % drawSettings._cellSize == 0 ||
+            (y - (drawSettings._paddingSize + drawSettings._outlineSize)) % drawSettings._cellSize == 0 ||
+            (x - (drawSettings._paddingSize + drawSettings._outlineSize)) % drawSettings._cellSize == drawSettings._cellSize - 1 ||
+                (y - (drawSettings._paddingSize + drawSettings._outlineSize)) % drawSettings._cellSize == drawSettings._cellSize - 1)
+            {
+                //Breaks up solid colors
+                if ((x + y % 2) % 2 == 0)
+                    pixelColor = drawSettings._cellOutlineAccentColor;
+                else
+                    pixelColor = drawSettings._cellOutlineColor;
+            }
+            //Fill
             else
-                pixelColor = drawSettings._cellOutlineColor;
+            {
+                //Breaks up solid colors
+                if ((x + y % 2) % 2 == 0)
+                    pixelColor = drawSettings._cellAccentColor;
+                else
+                    pixelColor = drawSettings._cellColor;
+            }
+            return pixelColor;
         }
-        //CellOutline
-        else if ((x - (drawSettings._paddingSize + drawSettings._outlineSize)) % drawSettings._cellSize == 0 ||
-        (y - (drawSettings._paddingSize + drawSettings._outlineSize)) % drawSettings._cellSize == 0 ||
-        (x - (drawSettings._paddingSize + drawSettings._outlineSize)) % drawSettings._cellSize == drawSettings._cellSize - 1 ||
-            (y - (drawSettings._paddingSize + drawSettings._outlineSize)) % drawSettings._cellSize == drawSettings._cellSize - 1)
-        {
-            //Breaks up solid colors
-            if ((x + y % 2) % 2 == 0)
-                pixelColor = drawSettings._cellOutlineAccentColor;
-            else
-                pixelColor = drawSettings._cellOutlineColor;
-        }
-        //Fill
-        else
-        {
-            //Breaks up solid colors
-            if ((x + y % 2) % 2 == 0)
-                pixelColor = drawSettings._cellAccentColor;
-            else
-                pixelColor = drawSettings._cellColor;
-        }
-        return pixelColor;
     }
 }

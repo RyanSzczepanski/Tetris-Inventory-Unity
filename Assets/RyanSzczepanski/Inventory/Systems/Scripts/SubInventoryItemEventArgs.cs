@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SubInventoryItemAddedEventArgs : EventArgs
 {
-    public Item Item { get; set; }
+    public ItemBase Item { get; set; }
 
     public Vector2Int TargetCellCoordinate { get; set; }
     public bool TargetIsRotated { get; set; }
@@ -14,7 +14,7 @@ public class SubInventoryItemAddedEventArgs : EventArgs
 }
 public class SubInventoryItemMovedEventArgs : EventArgs
 {
-    public Item Item { get; set; }
+    public ItemBase Item { get; set; }
 
     public Vector2Int OriginCellCoordinate { get; set; }
     public bool OriginIsRotated { get; set; }
@@ -27,11 +27,11 @@ public class SubInventoryItemMovedEventArgs : EventArgs
 }
 public class SubInventoryItemRemovedEventArgs : EventArgs
 {
-    public Item Item { get; set; }
+    public ItemBase Item { get; set; }
 }
 
 
 public class ItemRemovedEventArgs
 {
-    public Item Item { get; set; }
+    public ItemBase Item { get; set; }
 }

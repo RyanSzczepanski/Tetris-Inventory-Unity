@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c229a9264b90df446a7c1b3883702946, type: 3}
+  m_Name: Basic Item
+  m_EditorClassIdentifier: 
+  <FullName>k__BackingField: Basic Item
+  shortName: Basic Item
+  description: Basic Item
+  size: {x: 1, y: 1}
+  weight: 1
+  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
