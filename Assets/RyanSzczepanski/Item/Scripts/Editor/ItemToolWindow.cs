@@ -82,7 +82,7 @@ public class ItemToolWindow : EditorWindow
                 toolbarContentContainer = CreateTempGUI(testTreeAsset);
                 InventoryCellDrawSettings drawSettings = new InventoryCellDrawSettings(AssetDatabase.LoadAssetAtPath<InventoryCellDrawSettingsSO>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("SubInventory UI Draw Settings")[0])));
                 ItemInventorySO itemInventorySO = AssetDatabase.LoadAssetAtPath<ItemInventorySO>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("Test Rig 2")[0]));
-                toolbarContentContainer.Add(InventoryUIToolkitGenerator.GenerateInventoryPreview(itemInventorySO as IInventorySO, in drawSettings));
+                toolbarContentContainer.Add(InventoryUIToolkitGenerator.GenerateInventoryPreview(itemInventorySO as IItemInventorySO, in drawSettings));
                 break;
         }
         rootVisualElement.styleSheets.Add(baseStyleSheet);

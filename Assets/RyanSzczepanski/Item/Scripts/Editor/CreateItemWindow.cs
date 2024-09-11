@@ -120,7 +120,7 @@ public class CreateItemWindow : EditorWindow
         newItemName = EditorGUILayout.TextField("Item Name", newItemName);
         if (Regex.IsMatch(newItemName, "^(?<ItemName>(?>\\w|[- ])*)$"))
         {
-            string[] assetGUIDS = AssetDatabase.FindAssets(newItemName);
+            string[] assetGUIDS = AssetDatabase.FindAssets($"t:ItemBaseSO {newItemName}");
             foreach(string assetGUID in assetGUIDS)
             {
                 UnityEngine.Object assetObject = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assetGUID));

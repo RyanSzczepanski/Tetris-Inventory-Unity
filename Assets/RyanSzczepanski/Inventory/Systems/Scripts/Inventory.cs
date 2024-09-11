@@ -7,7 +7,7 @@ public class Inventory
     //Inventory Refrences
     public SubInventory[] SubInventories { get; }
 
-    public Inventory(IInventorySO inventoryData)
+    public Inventory(IItemInventorySO inventoryData)
     {
         SubInventories = new SubInventory[inventoryData.SubInventories.Length];
         for (int i = 0; i < inventoryData.SubInventories.Length; i++)

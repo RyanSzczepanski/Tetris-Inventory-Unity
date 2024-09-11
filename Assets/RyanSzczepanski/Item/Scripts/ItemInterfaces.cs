@@ -23,7 +23,7 @@ public static class ItemTagsUtils
     public static Type[] TagsToTypes(ItemTags tags)
     {
         List<Type> types = new List<Type>();
-        if ((ItemTags.Inventory & tags) != 0) { types.Add(typeof(IInventorySO)); }
+        if ((ItemTags.Inventory & tags) != 0) { types.Add(typeof(IItemInventorySO)); }
         return types.ToArray();
     }
     public static ItemTags TypesToTags(Type type)

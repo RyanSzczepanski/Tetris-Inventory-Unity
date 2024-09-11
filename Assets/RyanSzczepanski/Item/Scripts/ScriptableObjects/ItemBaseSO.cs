@@ -21,7 +21,7 @@ public abstract class ItemBaseSO : ScriptableObject
     public float Weight => m_Weight;
     public Vector2Int Size => m_Size;
     public Sprite Icon => m_Icon;
-    public ItemTags Tags => ItemTags.Basic;
+    public abstract ItemTags Tags { get; }
 
     public virtual ItemBase CreateItem()
     {

@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemEquipableInventorySO : ItemBaseSO, IInventorySO, IEquipableSO
+public class ItemEquipableInventorySO : ItemBaseSO, IItemInventorySO, IItemEquipableSO
 {
-    public Vector2Int[] SubInventories { get => IInventorySO.GetAllSubInventories(SubInventoryArrangements); }
-    public int StorageSlots { get => IInventorySO.GetStorageSlotsCount(SubInventoryArrangements); }
+    public Vector2Int[] SubInventories { get => IItemInventorySO.GetAllSubInventories(SubInventoryArrangements); }
+    public int StorageSlots { get => IItemInventorySO.GetStorageSlotsCount(SubInventoryArrangements); }
     [field: SerializeField] public SubInventoryArrangement SubInventoryArrangements { get; private set; }
+
+    public override ItemTags Tags => IItemInventorySO.TAG | IItemEquipableSO.TAG;
 }

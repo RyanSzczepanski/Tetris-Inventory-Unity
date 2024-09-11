@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInventorySO
+public interface IItemInventorySO
 {
     public const ItemTags TAG = ItemTags.Inventory;
 
@@ -31,7 +31,7 @@ public interface IInventorySO
     public static int GetStorageSlotsCount(SubInventoryArrangement subInventoryArrangement)
     {
         int storage = 0;
-        foreach (Vector2Int subInventory in IInventorySO.GetAllSubInventories(subInventoryArrangement))
+        foreach (Vector2Int subInventory in IItemInventorySO.GetAllSubInventories(subInventoryArrangement))
         {
             storage += subInventory.x * subInventory.y;
         }
@@ -39,9 +39,8 @@ public interface IInventorySO
     }
 }
 
-public interface IEquipableSO
+public interface IItemEquipableSO
 {
     public const ItemTags TAG = ItemTags.Equipable;
 
 }
-

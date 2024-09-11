@@ -7,7 +7,7 @@ public static class InventoryUIToolkitGenerator
     private static int subInventoryTracker;
     private static InventoryCellDrawSettings drawSettings;
 
-    public static VisualElement GenerateInventoryPreview(IInventorySO itemInventory, in InventoryCellDrawSettings drawSettings)
+    public static VisualElement GenerateInventoryPreview(IItemInventorySO itemInventory, in InventoryCellDrawSettings drawSettings)
     {
         subInventoryTracker = 0;
         InventoryUIToolkitGenerator.drawSettings = drawSettings;
@@ -18,7 +18,7 @@ public static class InventoryUIToolkitGenerator
         ArrangementTreeSearch(itemInventory.SubInventoryArrangements, inventory, in itemInventory);
         return inventory;
     }
-    private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, VisualElement parent, in IInventorySO item)
+    private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, VisualElement parent, in IItemInventorySO item)
     {
         VisualElement newParent;
         if (arrangement.HasSubInventory)
