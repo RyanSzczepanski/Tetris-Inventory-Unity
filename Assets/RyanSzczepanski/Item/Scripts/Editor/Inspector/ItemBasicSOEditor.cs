@@ -2,6 +2,7 @@ using UnityEditor.UIElements;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEngine;
+using Unity.VisualScripting;
 
 [CustomEditor(typeof(ItemBasicSO))]
 public class ItemBasicSOEditor : ItemBaseSOEditor

@@ -5,8 +5,9 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class CreateItemWindow : EditorWindow
+public class CreateItemWindow
 {
     //Prefs
     string itemScriptableObjectClassPath;
@@ -20,8 +21,8 @@ public class CreateItemWindow : EditorWindow
     [MenuItem("Window/Create Item GUI")]
     public static void ShowWindow()
     {
-        CreateItemWindow window = EditorWindow.GetWindow<CreateItemWindow>("Item Tool");
-        window.Init();
+        //CreateItemWindow window = EditorWindow.GetWindow<CreateItemWindow>("Item Tool");
+        //window.Init();
     }
 
     void SavePrefs()
@@ -39,17 +40,18 @@ public class CreateItemWindow : EditorWindow
 
     void Init()
     {
+        //rootVisualElement.Q<EnumField>
         LoadPrefs();
         GetItemTypes(out itemTypes);
         if (itemScriptableObjectClassPath == string.Empty)
         {
-            itemScriptableObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBaseSO))[0]);
-            itemScriptableObjectClassPath = itemScriptableObjectClassPath.Remove(itemScriptableObjectClassPath.Length - (nameof(ItemBaseSO).Length + 3));
+            itemScriptableObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBaseSO))[1]);
+            //itemScriptableObjectClassPath = itemScriptableObjectClassPath.Remove(itemScriptableObjectClassPath.Length - (nameof(ItemBaseSO).Length + 3));
         }
         if (itemObjectClassPath == string.Empty)
         {
-            itemObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBase))[0]);
-            itemObjectClassPath = itemObjectClassPath.Remove(itemObjectClassPath.Length - (nameof(ItemBase).Length + 3));
+            itemObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBase))[1]);
+            //itemObjectClassPath = itemObjectClassPath.Remove(itemObjectClassPath.Length - (nameof(ItemBase).Length + 3));
         }
     }
 

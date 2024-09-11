@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting.ReorderableList;
+using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -11,6 +8,7 @@ public class ItemToolWindow : EditorWindow
 {
     public VisualTreeAsset visualTree;
     public VisualTreeAsset createItemVisualTree;
+    public VisualTreeAsset settingsVisualTree;
     public VisualTreeAsset testTreeAsset;
     public StyleSheet baseStyleSheet;
     public StyleSheet inventoryPreviewOutline;
@@ -41,7 +39,6 @@ public class ItemToolWindow : EditorWindow
         ItemToolWindow window = GetWindow<ItemToolWindow>();
         window.titleContent = new GUIContent("Item Tool");
         
-
         Vector2 size = new Vector2(600, 475);
         window.minSize = size;
         window.maxSize = size;
@@ -71,8 +68,12 @@ public class ItemToolWindow : EditorWindow
     {
         if (selectedToolbarIndex == newIndex) { return; }
         selectedToolbarIndex = newIndex;
-        if(toolbarContentContainer != null) { Debug.Log("Removing Temp Container"); rootFromUXML.Remove(toolbarContentContainer); toolbarContentContainer = null; }
-        
+        if(toolbarContentContainer != null)
+        {
+            Debug.Log("Removing Temp Container");
+            rootFromUXML.Remove(toolbarContentContainer); toolbarContentContainer = null;
+        }
+
         switch (newIndex)
         {
             case 0:
@@ -84,9 +85,16 @@ public class ItemToolWindow : EditorWindow
                 ItemInventorySO itemInventorySO = AssetDatabase.LoadAssetAtPath<ItemInventorySO>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("Test Rig 2")[0]));
                 toolbarContentContainer.Add(InventoryUIToolkitGenerator.GenerateInventoryPreview(itemInventorySO as IItemInventorySO, in drawSettings));
                 break;
+            case 2:
+                toolbarContentContainer = CreateTempGUI(settingsVisualTree);
+                Debug.Log("Test");
+                ItemSettingsPrefs prefs = new ItemSettingsPrefs(rootFromUXML);
+
+                rootFromUXML.Q<Button>("save-button").clicked += () => prefs.SavePrefs();
+                rootFromUXML.Q<Button>("revert-button").clicked += () => prefs.LoadPrefs();
+                break;
         }
         rootVisualElement.styleSheets.Add(baseStyleSheet);
-        
     }
 
     private TemplateContainer CreateTempGUI(VisualTreeAsset asset)
@@ -112,6 +120,46 @@ public class ItemToolWindow : EditorWindow
             int index = i;
             rootFromUXML.Q<ToolbarButton>(toolbarButtonsQuery[i]).clicked += () => ToolBarClicked(index);
         }
+    }
+}
+
+public struct ItemSettingsPrefs
+{
+    private readonly TextField itemAssetPathTextField;
+    private readonly TextField itemObjectClassPathTextField;
+    private readonly TextField itemScriptableObjectClassPathTextField;
+
+    public ItemSettingsPrefs (VisualElement root)
+    {
+        itemAssetPathTextField = root.Q<TextField>("item-assets-path");
+        itemObjectClassPathTextField = root.Q<TextField>("item-object-class-path");
+        itemScriptableObjectClassPathTextField = root.Q<TextField>("item-so-class-path");
+
+        LoadPrefs();
+    }
+    
+    public void SavePrefs()
+    {
+        string itemAssetsPath = itemAssetPathTextField.text;
+        EditorPrefs.SetString($"RyanSzczepanski_ItemTools_{nameof(itemAssetsPath)}", itemAssetsPath);
+
+        string itemObjectClassPath = itemObjectClassPathTextField.text;
+        EditorPrefs.SetString($"RyanSzczepanski_ItemTools_{nameof(itemObjectClassPath)}", itemObjectClassPath);
+
+        string itemScriptableObjectClassPath = itemScriptableObjectClassPathTextField.text;
+        EditorPrefs.SetString($"RyanSzczepanski_ItemTools_{nameof(itemScriptableObjectClassPath)}", itemScriptableObjectClassPath);
+    }
+
+    public void LoadPrefs()
+    {
+        string itemAssetsPath = EditorPrefs.GetString($"RyanSzczepanski_ItemTools_{nameof(itemAssetsPath)}");
+        itemAssetPathTextField.SetValueWithoutNotify(itemAssetsPath);
+
+        string itemObjectClassPath = EditorPrefs.GetString($"RyanSzczepanski_ItemTools_{nameof(itemObjectClassPath)}");
+        itemObjectClassPathTextField.SetValueWithoutNotify(itemObjectClassPath);
+
+        string itemScriptableObjectClassPath = EditorPrefs.GetString($"RyanSzczepanski_ItemTools_{nameof(itemScriptableObjectClassPath)}");
+        itemScriptableObjectClassPathTextField.SetValueWithoutNotify(itemScriptableObjectClassPath);
 
     }
 }

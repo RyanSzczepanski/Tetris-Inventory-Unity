@@ -18,8 +18,10 @@ public class ItemBaseSOEditor : Editor
 
     protected void Init()
     {
+        Debug.Log("Init");
         root = new VisualElement();
         inspectorAssets = (ItemInspectorUXMLAssetsSO)AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("t:ItemInspectorUXMLAssetsSO")[0]));
+
     }
 
     public void OnIconChanged(ChangeEvent<Object> e)
