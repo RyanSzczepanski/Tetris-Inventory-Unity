@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9990a2a101c07f747997c24619afca52, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c12fda2f149ba244acf155168b75cfe, type: 3}
   m_Name: Test Rig 1
   m_EditorClassIdentifier: 
   m_FullName: 
   m_ShortName: 
   m_Description: 
   m_Value: 0
-  m_Weight: 0
+  m_Weight: 1
   m_Size: {x: 0, y: 0}
   m_Icon: {fileID: 0}
   m_SubInventoryArrangements:
@@ -50,7 +50,7 @@ MonoBehaviour:
         direction: 0
         childArrangements: []
         subInventorySize: {x: 2, y: 1}
-      - alignment: 0
+      - alignment: 2
         direction: 0
         childArrangements:
         - alignment: 0

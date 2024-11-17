@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemEquipableInventorySO : ItemBaseSO, IItemInventorySO, IItemEquipableSO
+[CreateAssetMenu(fileName = "New Equipable Inventory Item SO", menuName = "Items/Equipable Inventory Item")]
+public class ItemEquipableInventorySO : ItemBaseSO, IInventorySO, IItemEquipableSO
 {
-    public Vector2Int[] SubInventories { get => IItemInventorySO.GetAllSubInventories(SubInventoryArrangements); }
-    public int StorageSlots { get => IItemInventorySO.GetStorageSlotsCount(SubInventoryArrangements); }
-    [field: SerializeField] public SubInventoryArrangement SubInventoryArrangements { get; private set; }
+    public Vector2Int[] SubInventories { get => IInventorySO.GetAllSubInventories(SubInventoryArrangements); }
+    public int StorageSlots { get => IInventorySO.GetStorageSlotsCount(SubInventoryArrangements); }
+    public SubInventoryArrangement SubInventoryArrangements => m_SubInventoryArrangements;
+    [SerializeField] private SubInventoryArrangement m_SubInventoryArrangements;
 
-    public override ItemTags Tags => IItemInventorySO.TAG | IItemEquipableSO.TAG;
+    public override ItemTags Tags => IInventorySO.TAG | IItemEquipableSO.TAG;
 }

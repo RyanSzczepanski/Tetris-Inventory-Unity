@@ -7,7 +7,7 @@ public static class InventoryUIToolkitGenerator
     private static int subInventoryTracker;
     private static InventoryCellDrawSettings drawSettings;
 
-    public static VisualElement GenerateInventoryPreview(IItemInventorySO itemInventory, in InventoryCellDrawSettings drawSettings)
+    public static VisualElement GenerateInventoryPreview(IInventorySO itemInventory, in InventoryCellDrawSettings drawSettings)
     {
         subInventoryTracker = 0;
         InventoryUIToolkitGenerator.drawSettings = drawSettings;
@@ -18,7 +18,7 @@ public static class InventoryUIToolkitGenerator
         ArrangementTreeSearch(itemInventory.SubInventoryArrangements, inventory, in itemInventory);
         return inventory;
     }
-    private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, VisualElement parent, in IItemInventorySO item)
+    private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, VisualElement parent, in IInventorySO item)
     {
         VisualElement newParent;
         if (arrangement.HasSubInventory)
@@ -42,7 +42,7 @@ public static class InventoryUIToolkitGenerator
     private static VisualElement GenerateArrangement(SubInventoryArrangement arrangement, VisualElement parent)
     {
         VisualElement ve = new VisualElement();
-
+        //TODO: Some bug with Upper Right and Parent Alignment
         if (arrangement.direction == GridLayoutGroup.Axis.Horizontal)
         {
             ve.style.flexDirection = FlexDirection.Row;

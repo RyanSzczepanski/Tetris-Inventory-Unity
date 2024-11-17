@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(ItemBaseSO))]
 public class ItemBaseSOEditor : Editor
 {
-    protected ItemInspectorUXMLAssetsSO inspectorAssets;
+    [SerializeField] protected ItemInspectorUXMLAssetsSO inspectorAssets;
 
     protected VisualElement root;
 
@@ -18,10 +18,7 @@ public class ItemBaseSOEditor : Editor
 
     protected void Init()
     {
-        Debug.Log("Init");
         root = new VisualElement();
-        inspectorAssets = (ItemInspectorUXMLAssetsSO)AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("t:ItemInspectorUXMLAssetsSO")[0]));
-
     }
 
     public void OnIconChanged(ChangeEvent<Object> e)
@@ -43,6 +40,15 @@ public class ItemBaseSOEditor : Editor
     {
         VisualElement content = inspectorAssets.ItemBaseSO.Instantiate();
         content.Q<ObjectField>("sprite-field").RegisterCallback<ChangeEvent<Object>>(OnIconChanged);
+
+        foreach (string str in ItemTagsUtils.TagsToStringArr((target as ItemBaseSO).Tags))
+        {
+            Label label = new Label(str);
+            label.AddToClassList("enum-flag");
+            content.Q<VisualElement>("tag-container").Add(label);
+        }
+
+        
         return content;
     }
 }
