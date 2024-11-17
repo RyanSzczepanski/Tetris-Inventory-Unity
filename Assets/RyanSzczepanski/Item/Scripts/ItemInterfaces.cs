@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public interface IInventory
 {
@@ -23,7 +25,7 @@ public static class ItemTagsUtils
     public static Type[] TagsToTypes(ItemTags tags)
     {
         List<Type> types = new List<Type>();
-        if ((ItemTags.Inventory & tags) != 0) { types.Add(typeof(IItemInventorySO)); }
+        if ((ItemTags.Inventory & tags) != 0) { types.Add(typeof(IInventorySO)); }
         return types.ToArray();
     }
     public static ItemTags TypesToTags(Type type)
@@ -48,5 +50,9 @@ public static class ItemTagsUtils
             }
         }
         return tags;
+    }
+    public static string[] TagsToStringArr(ItemTags tags)
+    {
+        return tags.ToString().Split(", ");
     }
 }
