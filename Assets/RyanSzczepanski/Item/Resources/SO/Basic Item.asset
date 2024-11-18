@@ -17,5 +17,5 @@ MonoBehaviour:
   m_Description: Item Summary
   m_Value: 0
   m_Weight: 1
-  m_Size: {x: 0, y: 0}
+  m_Size: {x: 1, y: 1}
   m_Icon: {fileID: 0}

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 public class Character : MonoBehaviour
 {
-    public ItemBasicSO fillItem;
+    public ItemBaseSO fillItem;
     public EquipmentSlot equipmentSlot;
     public ItemBaseSO itemBaseSO;
     public Transform parent;
@@ -38,12 +38,11 @@ public class Character : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ItemInventory itemInventory = equipmentSlot.item as ItemInventory;
+            IInventory itemInventory = equipmentSlot.item as IInventory;
 
             for (int i = 0; i < 10000; i++)
             {
-                ItemBasic newItem = (ItemBasic)fillItem.CreateItem();
-                if (!itemInventory.Inventory.TryAddItem(newItem)) { break; }
+                if (!itemInventory.Inventory.TryAddItem(fillItem.CreateItem())) { break; }
             }
         }
     }
