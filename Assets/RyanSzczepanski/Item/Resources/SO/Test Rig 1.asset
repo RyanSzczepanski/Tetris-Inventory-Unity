@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c12fda2f149ba244acf155168b75cfe, type: 3}
   m_Name: Test Rig 1
   m_EditorClassIdentifier: 
-  m_FullName: 
-  m_ShortName: 
-  m_Description: 
-  m_Value: 0
+  m_FullName: Test Rig 1
+  m_ShortName: Test Rig 1
+  m_Description: Test Rig 1
+  m_Value: 100
   m_Weight: 1
-  m_Size: {x: 0, y: 0}
+  m_Size: {x: 3, y: 2}
   m_Icon: {fileID: 0}
   m_SubInventoryArrangements:
     alignment: 0
