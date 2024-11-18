@@ -13,7 +13,6 @@ public class ItemInventorySO : ItemBaseSO, IInventorySO
 
     public override ItemTags Tags => IInventorySO.TAG;
 
-
     public override ItemBase CreateItem()
     {
         return new ItemInventory(this);

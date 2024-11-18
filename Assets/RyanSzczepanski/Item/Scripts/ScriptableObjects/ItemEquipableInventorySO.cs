@@ -11,4 +11,9 @@ public class ItemEquipableInventorySO : ItemBaseSO, IInventorySO, IItemEquipable
     [SerializeField] private SubInventoryArrangement m_SubInventoryArrangements;
 
     public override ItemTags Tags => IInventorySO.TAG | IItemEquipableSO.TAG;
+
+    public override ItemBase CreateItem()
+    {
+        return new ItemEquipableInventory(this);
+    }
 }

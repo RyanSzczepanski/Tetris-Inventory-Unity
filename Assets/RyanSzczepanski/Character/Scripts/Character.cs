@@ -13,16 +13,14 @@ public class Character : MonoBehaviour
 
     private void Awake()
     {
-        ItemInventory itemInventory = (ItemInventory)itemBaseSO.CreateItem();
-        equipmentSlot.TryEquipItem(itemInventory);
+        equipmentSlot.TryEquipItem(itemBaseSO.CreateItem());
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            ItemInventory itemInventory = (ItemInventory)itemBaseSO.CreateItem();
-            equipmentSlot.TryEquipItem(itemInventory);
+            equipmentSlot.TryEquipItem(itemBaseSO.CreateItem());
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -36,7 +34,7 @@ public class Character : MonoBehaviour
 
             GameObject floatingWindow = FloatingWindowFactory.CreateFloatingWindow(parent, settings);
             Transform transform = floatingWindow.GetComponent<FloatingWindow>().Content.rectTransform;
-            InventoryUIGenerator.GenerateUIObject(transform, equipmentSlot.item as ItemInventory, in InventoryUIManager.DRAW_SETTINGS);
+            InventoryUIGenerator.GenerateUIObject(transform, equipmentSlot.item.Data as IInventorySO, equipmentSlot.item as IInventory, in InventoryUIManager.DRAW_SETTINGS);
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {

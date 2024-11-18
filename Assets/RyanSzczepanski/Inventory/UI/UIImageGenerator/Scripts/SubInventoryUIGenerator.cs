@@ -10,7 +10,7 @@ public static class InventoryUIGenerator
     private static int subInventoryTracker;
     private static InventoryCellDrawSettings drawSettings;
 
-    public static void GenerateUIObject(Transform transform, ItemInventory itemInventory, in InventoryCellDrawSettings drawSettings)
+    public static void GenerateUIObject(Transform transform, IInventorySO itemInventorySO, IInventory itemInventory, in InventoryCellDrawSettings drawSettings)
     {
         subInventoryTracker = 0;
         InventoryUIGenerator.drawSettings = drawSettings;
@@ -25,9 +25,9 @@ public static class InventoryUIGenerator
         csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
         csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
 
-        ArrangementTreeSearch(itemInventory.Data.SubInventoryArrangements, Inventory.transform, in itemInventory);
+        ArrangementTreeSearch(itemInventorySO.SubInventoryArrangements, Inventory.transform, in itemInventory);
     }
-    private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, Transform parent, in ItemInventory item)
+    private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, Transform parent, in IInventory item)
     {
         Transform newParent;
         if (arrangement.HasSubInventory)
