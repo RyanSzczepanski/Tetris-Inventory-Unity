@@ -39,9 +39,8 @@ public interface IInventorySO
     }
 }
 
-public interface IEquipableSO
+public interface IItemEquipableSO
 {
     public const ItemTags TAG = ItemTags.Equipable;
 
 }
-

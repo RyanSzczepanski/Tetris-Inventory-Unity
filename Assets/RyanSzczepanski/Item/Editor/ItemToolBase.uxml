@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <uie:Toolbar>
+        <uie:ToolbarButton text="Create&#10;" display-tooltip-when-elided="true" name="toolbar-create" style="left: 0; flex-shrink: 0; flex-grow: 1; -unity-text-align: upper-center; width: 0;" />
+        <uie:ToolbarButton text="Search" display-tooltip-when-elided="true" name="toolbar-search" style="left: 0; flex-shrink: 0; flex-grow: 1; -unity-text-align: upper-center; width: 0;" />
+        <uie:ToolbarButton text="Settings" display-tooltip-when-elided="true" name="toolbar-settings" style="left: 0; flex-shrink: 0; flex-grow: 1; -unity-text-align: upper-center; width: 0;" />
+    </uie:Toolbar>
+</ui:UXML>

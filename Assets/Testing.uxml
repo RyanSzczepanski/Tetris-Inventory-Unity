@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/RyanSzczepanski/Item/Scripts/Editor/InventoryPreviewOutline.uss?fileID=7433441132597879392&amp;guid=ae5b3649011004a4b866bb09c5365f14&amp;type=3#InventoryPreviewOutline" />
+    <Style src="project://database/Assets/RyanSzczepanski/Item/Scripts/Editor/InventoryPreviewNoOutline.uss?fileID=7433441132597879392&amp;guid=8af8065fdf469304eba699d3ca364994&amp;type=3#InventoryPreviewNoOutline" />
+    <Style src="project://database/Assets/RyanSzczepanski/Item/Scripts/Editor/ItemToolStyle.uss?fileID=7433441132597879392&amp;guid=e6c206749fb9ea844a7fcbe5fecf045b&amp;type=3#ItemToolStyle" />
+    <ui:Foldout text="Inventory Interface" name="Foldout" value="true">
+        <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" />
+    </ui:Foldout>
+    <ui:Toggle label="Outline Toggle" name="outline-toggle" />
+</ui:UXML>

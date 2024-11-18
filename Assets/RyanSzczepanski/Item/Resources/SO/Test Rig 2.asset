@@ -10,25 +10,45 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c12fda2f149ba244acf155168b75cfe, type: 3}
-  m_Name: Test Rig 1
+  m_Name: Test Rig 2
   m_EditorClassIdentifier: 
   m_FullName: 
   m_ShortName: 
   m_Description: 
   m_Value: 0
-  m_Weight: 1
+  m_Weight: 0
   m_Size: {x: 0, y: 0}
   m_Icon: {fileID: 0}
   m_SubInventoryArrangements:
     alignment: 0
     direction: 0
     childArrangements:
-    - alignment: 0
+    - alignment: 1
       direction: 1
       childArrangements:
       - alignment: 0
         direction: 0
         childArrangements:
+        - alignment: 0
+          direction: 0
+          childArrangements: []
+          subInventorySize: {x: 1, y: 2}
+        - alignment: 0
+          direction: 0
+          childArrangements: []
+          subInventorySize: {x: 1, y: 2}
+        - alignment: 0
+          direction: 0
+          childArrangements: []
+          subInventorySize: {x: 1, y: 2}
+        subInventorySize: {x: 0, y: 0}
+      - alignment: 0
+        direction: 0
+        childArrangements:
+        - alignment: 0
+          direction: 0
+          childArrangements: []
+          subInventorySize: {x: 1, y: 1}
         - alignment: 0
           direction: 0
           childArrangements: []
@@ -43,14 +63,22 @@ MonoBehaviour:
         childArrangements: []
         subInventorySize: {x: 2, y: 2}
       subInventorySize: {x: 0, y: 0}
-    - alignment: 2
+    - alignment: 0
       direction: 1
       childArrangements:
       - alignment: 0
         direction: 0
-        childArrangements: []
-        subInventorySize: {x: 2, y: 1}
-      - alignment: 2
+        childArrangements:
+        - alignment: 0
+          direction: 0
+          childArrangements: []
+          subInventorySize: {x: 1, y: 3}
+        - alignment: 0
+          direction: 0
+          childArrangements: []
+          subInventorySize: {x: 1, y: 3}
+        subInventorySize: {x: 0, y: 0}
+      - alignment: 0
         direction: 0
         childArrangements:
         - alignment: 0
