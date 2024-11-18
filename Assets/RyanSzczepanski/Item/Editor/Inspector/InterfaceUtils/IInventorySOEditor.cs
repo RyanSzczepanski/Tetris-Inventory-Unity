@@ -30,12 +30,11 @@ public interface IInventorySOEditor
 
     public static void DeferedCallbackSetting(VisualElement content, IInventorySO IInventory,  InventoryCellDrawSettings drawSettings)
     {
-        Debug.Log(content.Q<PropertyField>("subinventory-arrangements").Query(className: "unity-property-field").ToList().Count);
         content.Q<PropertyField>("subinventory-arrangements").Query<PropertyField>()
         .ForEach((element) =>
         {
-            Debug.Log(element.name);
-            element.RegisterCallback<SerializedPropertyChangeEvent>((e) => {
+            element.RegisterCallback<SerializedPropertyChangeEvent>((e) =>
+            {
                 OnInventoryChanged(content.Q<VisualElement>("inventory-preview"), IInventory, drawSettings);
             });
         });
