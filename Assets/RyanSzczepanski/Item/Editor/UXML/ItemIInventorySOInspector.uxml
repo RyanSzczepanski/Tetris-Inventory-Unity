@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <ui:VisualElement style="background-color: rgba(0, 0, 0, 0);">
-        <uie:PropertyField binding-path="m_SubInventoryArrangements" />
+        <uie:PropertyField binding-path="m_SubInventoryArrangements" name="subinventory-arrangements" />
     </ui:VisualElement>
     <ui:Button text="Toggle Preview" display-tooltip-when-elided="true" name="button-inventory-preview" style="height: 50px; width: 50%; font-size: 24px; -unity-font-style: bold; -unity-font: initial; align-items: flex-start; align-self: flex-start;" />
     <ui:VisualElement name="inventory-preview" style="background-color: rgba(0, 0, 0, 0); display: flex; align-items: flex-start; align-self: flex-start;" />

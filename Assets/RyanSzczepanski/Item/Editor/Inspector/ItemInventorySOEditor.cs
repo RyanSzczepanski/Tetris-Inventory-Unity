@@ -14,6 +14,7 @@ public class ItemInventorySOEditor : ItemBaseSOEditor, IInventorySOEditor
         var foldout = new Foldout() { viewDataKey = "ItemBasicSOInspectorFoldout", text = "Full Inspector" };
         InspectorElement.FillDefaultInspector(foldout, serializedObject, this);
         root.Add(foldout);
+        
         return root;
     }
 }
