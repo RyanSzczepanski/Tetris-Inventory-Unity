@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
@@ -11,7 +10,7 @@ public static class InventoryUIGenerator
     private static int subInventoryTracker;
     private static InventoryCellDrawSettings drawSettings;
 
-    public static void GenerateUIObject(Transform transform, ItemInventory itemInventory, in InventoryCellDrawSettings drawSettings)
+    public static void GenerateUIObject(Transform transform, IInventorySO itemInventorySO, IInventory itemInventory, in InventoryCellDrawSettings drawSettings)
     {
         subInventoryTracker = 0;
         InventoryUIGenerator.drawSettings = drawSettings;
@@ -26,9 +25,9 @@ public static class InventoryUIGenerator
         csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
         csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
 
-        ArrangementTreeSearch(itemInventory.Data.SubInventoryArrangements, Inventory.transform, in itemInventory);
+        ArrangementTreeSearch(itemInventorySO.SubInventoryArrangements, Inventory.transform, in itemInventory);
     }
-    private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, Transform parent, in ItemInventory item)
+    private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, Transform parent, in IInventory item)
     {
         Transform newParent;
         if (arrangement.HasSubInventory)
@@ -104,7 +103,7 @@ public static class SubInventoryUIGenerator
 
         return subInventoryObject;
     }
-    private static Sprite GenerateSprite(Vector2Int size, in InventoryCellDrawSettings drawSettings)
+    public static Sprite GenerateSprite(Vector2Int size, in InventoryCellDrawSettings drawSettings)
     {
         Texture2D texture2D = GenerateCellGridTexture(size, in drawSettings);
         Sprite sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
