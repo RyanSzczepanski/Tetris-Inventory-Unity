@@ -46,11 +46,12 @@ public static class InventoryUIToolkitGenerator
         if (arrangement.direction == GridLayoutGroup.Axis.Horizontal)
         {
             ve.style.flexDirection = FlexDirection.Row;
-            if (arrangement.alignment == TextAnchor.UpperLeft | arrangement.alignment == TextAnchor.LowerLeft)
+
+            if (arrangement.alignment == TextAnchor.UpperLeft || arrangement.alignment == TextAnchor.UpperCenter || arrangement.alignment == TextAnchor.UpperRight)
             {
                 ve.style.alignItems = Align.FlexStart;
             }
-            else if(arrangement.alignment == TextAnchor.MiddleLeft)
+            else if(arrangement.alignment == TextAnchor.MiddleLeft || arrangement.alignment == TextAnchor.MiddleCenter || arrangement.alignment == TextAnchor.MiddleRight)
             {
                 ve.style.alignItems = Align.Center;
             }
@@ -58,14 +59,40 @@ public static class InventoryUIToolkitGenerator
             {
                 ve.style.alignItems = Align.FlexEnd;
             }
+
+            if (arrangement.alignment == TextAnchor.UpperLeft || arrangement.alignment == TextAnchor.MiddleLeft || arrangement.alignment == TextAnchor.LowerLeft)
+            {
+                ve.style.alignSelf = Align.FlexStart;
+            }
+            else if (arrangement.alignment == TextAnchor.UpperCenter || arrangement.alignment == TextAnchor.MiddleCenter || arrangement.alignment == TextAnchor.LowerCenter)
+            {
+                ve.style.alignSelf = Align.Center;
+            }
+            else
+            {
+                ve.style.alignSelf = Align.FlexEnd;
+            }
         }
         else
         {
-            if (arrangement.alignment == TextAnchor.UpperLeft |  arrangement.alignment == TextAnchor.UpperRight)
+            if (arrangement.alignment == TextAnchor.UpperLeft || arrangement.alignment == TextAnchor.UpperCenter || arrangement.alignment == TextAnchor.UpperRight)
+            {
+                ve.style.alignSelf = Align.FlexStart;
+            }
+            else if (arrangement.alignment == TextAnchor.MiddleLeft || arrangement.alignment == TextAnchor.MiddleCenter || arrangement.alignment == TextAnchor.MiddleRight)
+            {
+                ve.style.alignSelf = Align.Center;
+            }
+            else
+            {
+                ve.style.alignSelf = Align.FlexEnd;
+            }
+
+            if (arrangement.alignment == TextAnchor.UpperLeft || arrangement.alignment == TextAnchor.MiddleLeft || arrangement.alignment == TextAnchor.LowerLeft)
             {
                 ve.style.alignItems = Align.FlexStart;
             }
-            else if(arrangement.alignment == TextAnchor.UpperCenter)
+            else if (arrangement.alignment == TextAnchor.UpperCenter || arrangement.alignment == TextAnchor.MiddleCenter || arrangement.alignment == TextAnchor.LowerCenter)
             {
                 ve.style.alignItems = Align.Center;
             }
