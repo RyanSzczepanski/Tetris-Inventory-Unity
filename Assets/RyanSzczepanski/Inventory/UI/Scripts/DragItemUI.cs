@@ -1,7 +1,4 @@
-﻿using System;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public static class DragItemUI
@@ -11,8 +8,6 @@ public static class DragItemUI
     private static ItemBase ITEM;
     private static bool IS_ROTATED;
     private static Vector2Int ITEM_SIZE { get => IS_ROTATED ? new Vector2Int(ITEM.Data.Size.y, ITEM.Data.Size.x) : ITEM.Data.Size; }
-
-    private static GameObject DEBUG;
 
     private static GameObject BACKGROUND;
     private static GameObject ICON;
@@ -39,13 +34,6 @@ public static class DragItemUI
         ICON.GetComponent<RectTransform>().pivot = new Vector2(.5f, .5f);
         ICON.GetComponent<Image>().preserveAspect = true;
         ICON.SetActive(false);
-
-        DEBUG = new GameObject("DEBUG", typeof(Image));
-        DEBUG.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
-        DEBUG.GetComponent<RectTransform>().pivot = new Vector2(.5f, .5f);
-        DEBUG.GetComponent<RectTransform>().sizeDelta = new Vector2(10,10);
-        DEBUG.GetComponent<Image>().color = Color.red;
-
     }
 
     public static void OnDrag(SubInventoryUI hoveredSubInventory = null)
@@ -53,8 +41,6 @@ public static class DragItemUI
         ICON.GetComponent<RectTransform>().position = Input.mousePosition;
         if (hoveredSubInventory != null)
         {
-            DEBUG.GetComponent<RectTransform>().position = (Vector2)Input.mousePosition - SubInventoryUI.SlotAndItemCenteringOffset(ITEM_SIZE, DRAW_SETTINGS) * hoveredSubInventory.GetComponentInParent<Canvas>().scaleFactor;
-
             BACKGROUND.GetComponent<RectTransform>().position = hoveredSubInventory.ScreenPositionToGridSnapScreenPosition((Vector2)Input.mousePosition - SubInventoryUI.SlotAndItemCenteringOffset(ITEM_SIZE, DRAW_SETTINGS) * hoveredSubInventory.GetComponentInParent<Canvas>().scaleFactor, ITEM_SIZE);
             SetBackgroundColor(hoveredSubInventory);
             BACKGROUND.SetActive(true);
@@ -80,8 +66,6 @@ public static class DragItemUI
         ICON.GetComponent<RectTransform>().sizeDelta = ITEM.Data.Size * DRAW_SETTINGS._cellSize;
         ICON.GetComponent<Image>().sprite = ITEM.Data.Icon;
         ICON.SetActive(true);
-
-        DEBUG.transform.SetAsLastSibling();
     }
     public static void EndDrag()
     {
@@ -106,13 +90,6 @@ public static class DragItemUI
         Vector2Int targetCoord = targetSubInventoryUI.GridCoordinateFromScreenPosition((Vector2)Input.mousePosition - SubInventoryUI.SlotAndItemCenteringOffset(ITEM_SIZE, DRAW_SETTINGS) * targetSubInventoryUI.GetComponentInParent<Canvas>().scaleFactor);
         Vector2Int maxClamp = new Vector2Int(targetSubInventoryUI.SubInventory.Size.x - ITEM_SIZE.x, targetSubInventoryUI.SubInventory.Size.y - ITEM_SIZE.y);
         targetCoord.Clamp(Vector2Int.zero, maxClamp);
-        if (targetSubInventoryUI.SubInventory.CanMoveItem(ITEM, targetSubInventoryUI.SubInventory, targetCoord, IS_ROTATED))
-        {
-            BACKGROUND.GetComponent<Image>().color = VALID_PLACEMENT;
-        }
-        else
-        {
-            BACKGROUND.GetComponent<Image>().color = INVALID_PLACEMENT;
-        }
+        BACKGROUND.GetComponent<Image>().color = targetSubInventoryUI.SubInventory.CanMoveItem(ITEM, targetSubInventoryUI.SubInventory, targetCoord, IS_ROTATED) ? VALID_PLACEMENT : INVALID_PLACEMENT;
     }
 }

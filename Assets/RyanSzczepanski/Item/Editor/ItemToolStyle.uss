@@ -1,0 +1,20 @@
+.unity-composite-field__field-spacer {
+    width: 0;
+    max-width: 0;
+    min-width: 0;
+}
+
+Label.enum-flag {
+    background-color: rgb(255, 93, 93);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    padding-right: 5px;
+    padding-top: 0;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    padding-left: 5px;
+}
