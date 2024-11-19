@@ -28,10 +28,18 @@ public class SubInventoryItemMovedEventArgs : EventArgs
 public class SubInventoryItemRemovedEventArgs : EventArgs
 {
     public ItemBase Item { get; set; }
+    public SubInventory SubInventory { get; set; }
 }
 
 
+public class ItemAddedEventArgs
+{
+    public ItemBase Item { get; set; }
+    public SubInventory SubInventory { get; set; }
+    public bool IsRotated { get; set; }
+}
 public class ItemRemovedEventArgs
 {
     public ItemBase Item { get; set; }
+    public SubInventory SubInventory { get; set; }
 }

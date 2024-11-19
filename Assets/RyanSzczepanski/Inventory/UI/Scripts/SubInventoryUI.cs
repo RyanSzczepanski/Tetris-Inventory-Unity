@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
@@ -53,18 +52,6 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         Unsubscribe();
     }
 
-    private void Subscribe()
-    {
-        SubInventory.ItemAdded += OnItemAdded;
-        SubInventory.ItemMoved += OnItemMoved;
-        SubInventory.ItemRemoved += OnItemRemoved;
-    }
-    private void Unsubscribe()
-    {
-        SubInventory.ItemAdded -= OnItemAdded;
-        SubInventory.ItemMoved -= OnItemMoved;
-        SubInventory.ItemRemoved -= OnItemRemoved;
-    }
 
     public void OnItemAdded(object source, SubInventoryItemAddedEventArgs args)
     {
@@ -80,15 +67,28 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
     }
 
+
+    bool isDraggingItem;
+
+    Vector2Int originGridCoordinate;
+    bool originRotatedStatus;
+    bool isRotated;
+
+    ItemBase targetItem;
+    ItemUI targetItemUI;
+
+
     public void OnPointerClick(PointerEventData eventData)
     {
+        //TODO: Think about wether or not this logic should be moved to ItemUI
+        //Does it make more sence b/c you are clicking on the item or should it stay here b/c you are going to need to have sub inventory data
         if (eventData.dragging) { return; }
         Vector2Int targetGridCoordinate = GridCoordinateFromScreenPosition(eventData.position);
         Slot slot = SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y];
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-
+                if (!slot.IsOccupied) { break; }
                 break;
             case PointerEventData.InputButton.Middle:
                 if (slot.IsOccupied)
@@ -111,32 +111,9 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
                 break;
             case PointerEventData.InputButton.Right:
-                if (slot.IsOccupied)
-                {
-                    SubInventory.TryRemoveItem(slot.ItemInSlot);
-                }
+                SubInventory.TryRemoveItem(slot.ItemInSlot);
                 break;
         }
-    }
-
-    bool isDraggingItem;
-
-    Vector2Int originGridCoordinate;
-    bool originRotatedStatus;
-    bool isRotated;
-
-    ItemBase targetItem;
-    ItemUI targetItemUI;
-
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (!isDraggingItem) { return; }
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventData, results);
-        RaycastResult result = results.Find(r => r.gameObject.GetComponent<SubInventoryUI>());
-        if (!result.isValid) { DragItemUI.OnDrag(); return; }
-        DragItemUI.OnDrag(result.gameObject.GetComponent<SubInventoryUI>());
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -146,7 +123,6 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
         if (targetItem == null) { return; }
 
-        //TODO: Better way of getting origin grid coordinate?
         isRotated = targetItem.IsRotated;
         originGridCoordinate = SubInventory.GetItemOriginSlot(targetItem);
 
@@ -157,6 +133,15 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
         isDraggingItem = true;
         originRotatedStatus = targetItem.IsRotated;
+    }
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (!isDraggingItem) { return; }
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+        RaycastResult result = results.Find(r => r.gameObject.GetComponent<SubInventoryUI>());
+        if (!result.isValid) { DragItemUI.OnDrag(); return; }
+        DragItemUI.OnDrag(result.gameObject.GetComponent<SubInventoryUI>());
     }
     public void OnEndDrag(PointerEventData eventData)
     {
@@ -250,5 +235,18 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         return
             ((drawSettings._cellSize * 0.5f * new Vector2(itemSize.x, -itemSize.y)) -
             new Vector2(drawSettings._cellSize / 2, -drawSettings._cellSize / 2));
+    }
+
+    private void Subscribe()
+    {
+        SubInventory.ItemAdded += OnItemAdded;
+        SubInventory.ItemMoved += OnItemMoved;
+        SubInventory.ItemRemoved += OnItemRemoved;
+    }
+    private void Unsubscribe()
+    {
+        SubInventory.ItemAdded -= OnItemAdded;
+        SubInventory.ItemMoved -= OnItemMoved;
+        SubInventory.ItemRemoved -= OnItemRemoved;
     }
 }

@@ -7,6 +7,7 @@ public class ItemBase
     [field: SerializeField]
     public ItemBaseSO Data { get; private set; }
 
+    public SubInventory ParentSubInventory { get; private set; }
     public bool IsRotated { get; private set; }
 
     public delegate void ItemRemovedHandler(object source, ItemRemovedEventArgs args);
@@ -19,20 +20,33 @@ public class ItemBase
         Data = data;
     }
 
-    private void OnItemRemoved(object source, SubInventoryItemRemovedEventArgs args)
+    public void OnItemAdded(object source, ItemAddedEventArgs args)
     {
-        if (args.Item != this) { return; }
-        ItemRemoved?.Invoke(this, new ItemRemovedEventArgs { Item = this });
+        Rotate(IsRotated);
+        ParentSubInventory = args.SubInventory;
     }
-    public void Rotate()
+    public void OnItemRemoved(object source, ItemRemovedEventArgs args)
+    {
+        //if (args.Item != this) { return; }
+        ItemRemoved?.Invoke(this, new ItemRemovedEventArgs {
+            Item = this,
+            SubInventory = args.SubInventory,
+        });
+    }
+    private void Rotate()
     {
         IsRotated = !IsRotated;
         ItemRotated?.Invoke(this, IsRotated);
     }
-    public void Rotate(bool rotated)
+    private void Rotate(bool rotated)
     {
         IsRotated = rotated;
         ItemRotated?.Invoke(this, IsRotated);
+    }
+
+    public string[] ContextMenuOptions()
+    {
+        return new string[1] { ParentSubInventory.Size.ToString() };
     }
 
     public override string ToString()
@@ -42,10 +56,12 @@ public class ItemBase
 
     public void Subscribe(SubInventory subInventory)
     {
-        subInventory.ItemRemoved += OnItemRemoved;
+        Debug.Log("DEPRICATE");
+        //subInventory.ItemRemoved += OnItemRemoved;
     }
     public void Unsubscribe(SubInventory subInventory)
     {
-        subInventory.ItemRemoved -= OnItemRemoved;
+        Debug.Log("DEPRICATE");
+        //subInventory.ItemRemoved -= OnItemRemoved;
     }
 }

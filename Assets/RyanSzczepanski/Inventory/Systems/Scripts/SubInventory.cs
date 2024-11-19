@@ -32,8 +32,13 @@ public class SubInventory
 
     private void OnItemAdded(ItemBase item, ItemData targetData)
     {
-        if (ItemAdded is null) { return; }
-        ItemAdded(this, new SubInventoryItemAddedEventArgs
+        //if (ItemAdded is null) { return; }
+        item.OnItemAdded(this, new ItemAddedEventArgs() {
+            Item = item,
+            SubInventory = targetData.subInventory,
+            IsRotated = targetData.isRotated
+        });
+        ItemAdded?.Invoke(this, new SubInventoryItemAddedEventArgs
         {
             Item = item,
             TargetCellCoordinate = targetData.gridCoordinate,
@@ -43,8 +48,8 @@ public class SubInventory
     }
     private void OnItemMoved(ItemBase item, ItemData originData, ItemData targetData)
     {
-        if (ItemMoved is null) { return; }
-        ItemMoved(this, new SubInventoryItemMovedEventArgs
+        //if (ItemMoved is null) { return; }
+        ItemMoved?.Invoke(this, new SubInventoryItemMovedEventArgs
         {
             Item = item,
 
@@ -59,10 +64,16 @@ public class SubInventory
     }
     private void OnItemRemoved(ItemBase item)
     {
-        if (ItemRemoved is null) { return; }
-        ItemRemoved(this, new SubInventoryItemRemovedEventArgs
+
+        //if (ItemRemoved is null) { return; }
+        ItemRemoved?.Invoke(this, new SubInventoryItemRemovedEventArgs
         {
             Item = item,
+            SubInventory = this
+        });
+        item.OnItemRemoved(this, new ItemRemovedEventArgs {
+            Item = item,
+            SubInventory = this
         });
     }
 
@@ -153,8 +164,6 @@ public class SubInventory
                 Slots[targetCoordinate.x + x, targetCoordinate.y + y].InsertItem(item);
             }
         }
-        item.Subscribe(this);
-        item.Rotate(isRotated);
         OnItemAdded(item, new ItemData
         {
             subInventory = this,
@@ -188,7 +197,6 @@ public class SubInventory
             }
         }
         OnItemRemoved(item);
-        item.Unsubscribe(this);
     }
     public bool TryRemoveItem(ItemBase item)
     {
