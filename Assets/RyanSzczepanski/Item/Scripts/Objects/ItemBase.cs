@@ -46,7 +46,7 @@ public class ItemBase
 
     public string[] ContextMenuOptions()
     {
-        return new string[1] { ParentSubInventory.Size.ToString() };
+        return new string[2] { "Open Inspector", "Discard" };
     }
 
     public override string ToString()

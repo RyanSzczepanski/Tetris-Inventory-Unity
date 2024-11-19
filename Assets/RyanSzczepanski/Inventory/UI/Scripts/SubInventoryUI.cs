@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Szczepanski.UI;
+using Sirenix.Reflection.Editor;
 
 [RequireComponent(typeof(Image))]
 [RequireComponent(typeof(LayoutElement))]
@@ -82,6 +84,8 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
     {
         //TODO: Think about wether or not this logic should be moved to ItemUI
         //Does it make more sence b/c you are clicking on the item or should it stay here b/c you are going to need to have sub inventory data
+
+        //Should move remove item function to the item to allow for discarding of the item being tied to the item its self rather than the slot it was in on the start of the interaction
         if (eventData.dragging) { return; }
         Vector2Int targetGridCoordinate = GridCoordinateFromScreenPosition(eventData.position);
         Slot slot = SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y];
@@ -89,6 +93,22 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         {
             case PointerEventData.InputButton.Left:
                 if (!slot.IsOccupied) { break; }
+                string[] optionsText = slot.ItemInSlot.ContextMenuOptions();
+                ContextMenuOption[] CMOptions = new ContextMenuOption[optionsText.Length];
+                for (int i = 0; i < CMOptions.Length; i++)
+                {
+                    CMOptions[i] = new ContextMenuOption()
+                    {
+                        optionText = optionsText[i],
+                        OnSelected = () => SubInventory.TryRemoveItem(slot.ItemInSlot),
+                    };
+                }
+
+                ContextMenuFactory.CreateContextMenu(GetComponentInParent<Canvas>().transform, new ContextMenuSettings {
+                    lifeSpan = ContextMenuLifeSpan.OnOptionSelect,
+                    sizeFit = ContextMenuSizeFit.ToLargestElement,
+                    options = CMOptions,
+                });
                 break;
             case PointerEventData.InputButton.Middle:
                 if (slot.IsOccupied)

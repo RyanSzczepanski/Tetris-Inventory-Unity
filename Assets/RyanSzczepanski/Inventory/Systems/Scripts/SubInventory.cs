@@ -200,6 +200,7 @@ public class SubInventory
     }
     public bool TryRemoveItem(ItemBase item)
     {
+        if (item == null) { return false; }
         RemoveItem(item);
         return true;
     }

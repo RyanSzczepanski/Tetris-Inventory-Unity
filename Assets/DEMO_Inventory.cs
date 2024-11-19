@@ -19,23 +19,20 @@ public class DEMO_Inventory : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            raycastResults.Clear();
             PointerEventData m_PointerData = new PointerEventData(EventSystem.current);
-
             m_PointerData.position = Input.mousePosition;
 
             m_Raycaster.Raycast(m_PointerData, raycastResults);
-            foreach (var raycast in raycastResults)
-            {
-                //if(raycast.gameObject == null) { continue; }
-                if (raycast.gameObject.TryGetComponent<SubInventoryUI>(out SubInventoryUI subInventoryUI))
-                {
-                    var targetGridCoordinate = subInventoryUI.GridCoordinateFromScreenPosition(m_PointerData.position);
 
-                    ItemBaseSO itemSO = ItemDB.GetObjectByName("Basic Item 2x2");
-                    bool isRotated = Input.GetKey(KeyCode.LeftShift);
-                    subInventoryUI.SubInventory.TryAddItem(itemSO.CreateItem(), targetGridCoordinate, isRotated);
-                    break;
-                }
+            if (raycastResults.Count <= 0) { return; }
+            if (raycastResults[0].gameObject.TryGetComponent<SubInventoryUI>(out SubInventoryUI subInventoryUI))
+            {
+                var targetGridCoordinate = subInventoryUI.GridCoordinateFromScreenPosition(m_PointerData.position);
+
+                ItemBaseSO itemSO = ItemDB.GetObjectByName("Basic Item 2x2");
+                bool isRotated = Input.GetKey(KeyCode.LeftShift);
+                subInventoryUI.SubInventory.TryAddItem(itemSO.CreateItem(), targetGridCoordinate, isRotated);
             }
         }
     }
