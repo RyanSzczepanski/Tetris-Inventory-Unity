@@ -2,23 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Szczepanski
 {
-    [RequireComponent(typeof(Image))]
-    public class Button : MonoBehaviour
+    [RequireComponent(typeof(MaskableGraphic))]
+    public class Button : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
     {
         [field: SerializeField] public bool IsActive { get; private set; } = true;
 
         public Color normalColor = Color.white;
         public Color highlightColor = Color.red;
-        public Color PressedColor = Color.white;
+        public Color PressedColor = Color.red;
         public Color SelectedColor = Color.white;
         public Color DisabledColor = Color.white;
 
         public float fadeDuration = 0.1f;
 
+        public delegate void OnClick();
+        public OnClick OnButtonClicked;
 
         private Color startColor;
         private Color targetColor;
@@ -26,8 +29,15 @@ namespace Szczepanski
         private float startTime;
         private float lerpValue;
 
-        private void StartLerp()
+        private void Awake()
         {
+            startColor = normalColor;
+        }
+
+        private void StartLerp(Color targetColor)
+        {
+            startColor = GetComponent<Image>().color;
+            this.targetColor = targetColor;
             startTime = Time.realtimeSinceStartup;
             doLerp = true;
         }
@@ -37,19 +47,30 @@ namespace Szczepanski
         }
         private void Update()
         {
-            if (Input.GetKeyUp(KeyCode.Escape))
-            {
-                StartLerp();
-            }
             if (doLerp)
             {
                 lerpValue = (Time.realtimeSinceStartup - startTime) / fadeDuration;
+                GetComponent<Image>().color = Color.Lerp(startColor, targetColor, lerpValue);
                 if (lerpValue > 1)
                 {
                     EndLerp();
                 }
             }
-            GetComponent<Image>().color = Color.Lerp(normalColor, highlightColor, lerpValue);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            OnButtonClicked?.Invoke();
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            StartLerp(normalColor);
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            StartLerp(PressedColor);
         }
     }
 }

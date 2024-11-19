@@ -32,7 +32,7 @@ public class DragBar : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDow
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(eventData.pointerCurrentRaycast.gameObject.GetComponent<Button>() != null)
+        if(null != eventData.pointerCurrentRaycast.gameObject.GetComponent<Button>())
         {
             DoDrag = false;
             return;

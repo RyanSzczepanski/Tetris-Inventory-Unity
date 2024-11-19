@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Szczepanski.UI;
 
 public class DEMO_Inventory : MonoBehaviour
 {

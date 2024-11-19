@@ -1,27 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Szczepanski;
+using UnityEngine.UI;
+using TMPro;
 
-namespace Szczepanski
+namespace Szczepanski.UI
 {
-    namespace UI
+    [System.Serializable]
+    public struct ContextMenuOption
     {
+        public string optionText;
+        public delegate void OnSelectHandler();
+        public OnSelectHandler OnSelected;
 
-        [System.Serializable]
-        public class ContextMenuOption
+        public void ContextMenuClicked()
         {
-            public string optionText;
-
-            public GameObject GenerateContextMenuObject(Transform parentTransform)
-            {
-                GameObject contextMenuObject = new GameObject("ContextMenuOption");
-                contextMenuObject.transform.parent = parentTransform;
-                contextMenuObject.AddComponent<RectTransform>();
-                contextMenuObject.AddComponent<Button>();
-                contextMenuObject.transform.localPosition = Vector3.zero;
-                return null;
-            }
+            OnSelected?.Invoke();
         }
+
+        public GameObject GenerateContextMenuObject(Transform parentTransform)
+        {
+            GameObject contextMenuObject = new GameObject("ContextMenuOption", typeof(RectTransform), typeof(Image), typeof(Button), typeof(LayoutElement));
+            contextMenuObject.transform.SetParent(parentTransform, false);
+            contextMenuObject.GetComponent<LayoutElement>().minHeight = 20;
+
+            GameObject contextMenuObjectText = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+            contextMenuObjectText.transform.SetParent(contextMenuObject.transform, false);
+            contextMenuObjectText.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+            contextMenuObjectText.GetComponent<RectTransform>().anchorMax = Vector2.one;
+            contextMenuObjectText.GetComponent<RectTransform>().sizeDelta = Vector2.zero;
+            contextMenuObjectText.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
+            contextMenuObjectText.GetComponent<TextMeshProUGUI>().fontSize = 18f;
+            contextMenuObjectText.GetComponent<TextMeshProUGUI>().color = Color.black;
+            contextMenuObjectText.GetComponent<TextMeshProUGUI>().text = optionText;
+            contextMenuObjectText.GetComponent<TextMeshProUGUI>().font = Resources.Load<TMP_FontAsset>("Font/KodeMono-Bold SDF");
+            return contextMenuObject;
+        }
+    }
+
+    public class ContextMenuOptionMono : MonoBehaviour
+    {
+       
     }
 }
