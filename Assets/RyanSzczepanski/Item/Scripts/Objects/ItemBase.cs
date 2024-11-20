@@ -23,7 +23,7 @@ public class ItemBase
 
     public void OnItemAdded(object source, ItemAddedEventArgs args)
     {
-        Rotate(IsRotated);
+        Rotate(args.IsRotated);
         ParentSubInventory = args.SubInventory;
     }
     public void OnItemRemoved(object source, ItemRemovedEventArgs args)
