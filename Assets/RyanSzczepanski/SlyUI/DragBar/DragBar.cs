@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.Common;
 using Szczepanski.UI;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -32,7 +28,7 @@ public class DragBar : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDow
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(null != eventData.pointerCurrentRaycast.gameObject.GetComponent<Button>())
+        if(eventData.pointerCurrentRaycast.gameObject.GetComponent<UnityEngine.UI.Button>() != null)
         {
             DoDrag = false;
             return;

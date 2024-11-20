@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Szczepanski
+namespace Szczepanski.UI
 {
     [RequireComponent(typeof(MaskableGraphic))]
     public class Button : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
@@ -21,7 +18,7 @@ namespace Szczepanski
         public float fadeDuration = 0.1f;
 
         public delegate void OnClick();
-        public OnClick OnButtonClicked;
+        public event OnClick OnButtonClicked;
 
         private Color startColor;
         private Color targetColor;

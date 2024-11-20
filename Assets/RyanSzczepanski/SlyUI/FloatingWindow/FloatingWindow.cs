@@ -3,8 +3,6 @@ using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
 namespace Szczepanski.UI
 {
     public static class FloatingWindowFactory
@@ -66,7 +64,6 @@ namespace Szczepanski.UI
         public bool IsResizeable { get; private set; }
         public bool IsDraggable { get; private set; }
         public string Title { get; private set; }
-
         public Vector2 MinWindowSize { get; private set; }
 
         public void GenerateUI(FloatingWindowSettings settings)
@@ -143,7 +140,7 @@ namespace Szczepanski.UI
             textMeshProUGUI.color = Color.black;
             textMeshProUGUI.fontSize = 18;
             textMeshProUGUI.font = (TMP_FontAsset)Resources.Load("Font/KodeMono-Bold SDF");
-            textMeshProUGUI.enableWordWrapping = false;
+            textMeshProUGUI.textWrappingMode = TextWrappingModes.NoWrap;
             textMeshProUGUI.overflowMode = TextOverflowModes.Ellipsis;
 
 
