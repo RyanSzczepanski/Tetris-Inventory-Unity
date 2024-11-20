@@ -7,8 +7,10 @@ public class InventoryUIManager : MonoBehaviour
 {
     public static InventoryUIManager INSTANCE;
     public static InventoryCellDrawSettings DRAW_SETTINGS;
+    public static Canvas CANVAS;
 
     [SerializeField] private InventoryCellDrawSettingsSO drawSettingsSO;
+    [SerializeField] private Canvas canvas;
 
     private void Awake()
     {
@@ -16,6 +18,7 @@ public class InventoryUIManager : MonoBehaviour
         else { Destroy(this); }
 
         DRAW_SETTINGS = new InventoryCellDrawSettings(drawSettingsSO);
+        CANVAS = canvas;
         DragItemUI.Init(DRAW_SETTINGS);
     }
 }

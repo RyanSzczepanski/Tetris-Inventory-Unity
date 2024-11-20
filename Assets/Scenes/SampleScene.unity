@@ -334,6 +334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   drawSettingsSO: {fileID: 11400000, guid: 16e7db63187cea641bdef1fa1ff91a50, type: 2}
+  canvas: {fileID: 1549034963}
 --- !u!4 &641987855
 Transform:
   m_ObjectHideFlags: 0

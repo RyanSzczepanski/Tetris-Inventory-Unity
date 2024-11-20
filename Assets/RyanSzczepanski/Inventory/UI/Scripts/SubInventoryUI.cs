@@ -118,7 +118,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
                 {
                     lifeSpan = ContextMenuLifeSpan.OnOptionSelect,
                     sizeFit = ContextMenuSizeFit.ToLargestElement,
-                    options = slot.ItemInSlot.ContextMenuOptions(),
+                    options = slot.ItemInSlot.ContextMenuOptions,
                 });
                 CMObject.GetComponent<RectTransform>().pivot = new Vector2(0, 1);
                 CMObject.transform.position = eventData.position;

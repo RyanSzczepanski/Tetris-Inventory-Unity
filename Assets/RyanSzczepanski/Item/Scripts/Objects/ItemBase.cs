@@ -11,6 +11,17 @@ public class ItemBase
     public SubInventory ParentSubInventory { get; private set; }
     public bool IsRotated { get; private set; }
 
+    //TODO: Make this more modular using the interfaces
+    public virtual ContextMenuOption[] ContextMenuOptions
+    {
+        get => new ContextMenuOption[2]
+        {
+            new ContextMenuOption { optionText = "Inspect", OnSelected = () => throw new System.NotImplementedException("Inspect Item Not Implemented")},
+            new ContextMenuOption { optionText = "Discard", OnSelected = () => ParentSubInventory.TryRemoveItem(this)},
+        };
+    }
+
+
     public delegate void ItemRemovedHandler(object source, ItemRemovedEventArgs args);
     public delegate void ItemRotatedHandler(object source, bool itemRotated);
     public event ItemRemovedHandler ItemRemoved;
@@ -43,16 +54,6 @@ public class ItemBase
     {
         IsRotated = rotated;
         ItemRotated?.Invoke(this, IsRotated);
-    }
-
-    public ContextMenuOption[] ContextMenuOptions()
-    {
-        return new ContextMenuOption[2]
-        {
-            new ContextMenuOption { optionText = "Inspect", OnSelected = () => throw new System.NotImplementedException("Inspect Item Not Implemented")},
-            new ContextMenuOption { optionText = "Discard", OnSelected = () => ParentSubInventory.TryRemoveItem(this)},
-
-        };
     }
 
     public override string ToString()
