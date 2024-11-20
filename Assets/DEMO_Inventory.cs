@@ -30,7 +30,7 @@ public class DEMO_Inventory : MonoBehaviour
             {
                 var targetGridCoordinate = subInventoryUI.GridCoordinateFromScreenPosition(m_PointerData.position);
 
-                ItemBaseSO itemSO = ItemDB.GetObjectByName("Basic Item 2x2");
+                ItemBaseSO itemSO = ItemDB.GetObjectByName("Test Rig 1");
                 bool isRotated = Input.GetKey(KeyCode.LeftShift);
                 subInventoryUI.SubInventory.TryAddItem(itemSO.CreateItem(), targetGridCoordinate, isRotated);
             }

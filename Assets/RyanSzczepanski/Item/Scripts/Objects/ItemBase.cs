@@ -1,4 +1,5 @@
 using System;
+using Szczepanski.UI;
 using UnityEngine;
 
 [System.Serializable]
@@ -44,9 +45,14 @@ public class ItemBase
         ItemRotated?.Invoke(this, IsRotated);
     }
 
-    public string[] ContextMenuOptions()
+    public ContextMenuOption[] ContextMenuOptions()
     {
-        return new string[2] { "Open Inspector", "Discard" };
+        return new ContextMenuOption[2]
+        {
+            new ContextMenuOption { optionText = "Inspect", OnSelected = () => throw new System.NotImplementedException("Inspect Item Not Implemented")},
+            new ContextMenuOption { optionText = "Discard", OnSelected = () => ParentSubInventory.TryRemoveItem(this)},
+
+        };
     }
 
     public override string ToString()

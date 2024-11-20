@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Szczepanski.UI;
-using Sirenix.Reflection.Editor;
 
 [RequireComponent(typeof(Image))]
 [RequireComponent(typeof(LayoutElement))]
@@ -92,23 +90,6 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                if (!slot.IsOccupied) { break; }
-                string[] optionsText = slot.ItemInSlot.ContextMenuOptions();
-                ContextMenuOption[] CMOptions = new ContextMenuOption[optionsText.Length];
-                for (int i = 0; i < CMOptions.Length; i++)
-                {
-                    CMOptions[i] = new ContextMenuOption()
-                    {
-                        optionText = optionsText[i],
-                        OnSelected = () => SubInventory.TryRemoveItem(slot.ItemInSlot),
-                    };
-                }
-
-                ContextMenuFactory.CreateContextMenu(GetComponentInParent<Canvas>().transform, new ContextMenuSettings {
-                    lifeSpan = ContextMenuLifeSpan.OnOptionSelect,
-                    sizeFit = ContextMenuSizeFit.ToLargestElement,
-                    options = CMOptions,
-                });
                 break;
             case PointerEventData.InputButton.Middle:
                 if (slot.IsOccupied)
@@ -131,7 +112,16 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
                 break;
             case PointerEventData.InputButton.Right:
-                SubInventory.TryRemoveItem(slot.ItemInSlot);
+                if (!slot.IsOccupied) { break; }
+
+                GameObject CMObject = ContextMenuFactory.CreateContextMenu(GetComponentInParent<Canvas>().transform, new ContextMenuSettings
+                {
+                    lifeSpan = ContextMenuLifeSpan.OnOptionSelect,
+                    sizeFit = ContextMenuSizeFit.ToLargestElement,
+                    options = slot.ItemInSlot.ContextMenuOptions(),
+                });
+                CMObject.GetComponent<RectTransform>().pivot = new Vector2(0, 1);
+                CMObject.transform.position = eventData.position;
                 break;
         }
     }

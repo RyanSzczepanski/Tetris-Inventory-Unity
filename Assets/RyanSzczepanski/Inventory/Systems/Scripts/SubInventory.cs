@@ -223,7 +223,6 @@ public class SubInventory
                 targetSubInventory.Slots[targetCoordinate.x + x, targetCoordinate.y + y].InsertItem(item);
             }
         }
-        item.Subscribe(targetSubInventory);
     }
 
     public bool TryMoveItem(ItemBase item, SubInventory targetSubInventory, Vector2Int targetCoordinate, bool isRotated, Vector2Int originCoordinate, bool originRotatedStatus)
