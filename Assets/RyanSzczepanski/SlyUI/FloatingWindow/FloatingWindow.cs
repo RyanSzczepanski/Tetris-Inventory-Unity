@@ -2,13 +2,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
 namespace Szczepanski.UI
 {
     public static class FloatingWindowFactory
     {
-        public static GameObject CreateFloatingWindow(Transform parent, in FloatingWindowSettings settings)
+        public static GameObject CreateFloatingWindow(Transform parent, FloatingWindowSettings settings)
         {
             GameObject go = new GameObject("FloatingWindow", typeof(RectTransform), typeof(FloatingWindow), typeof(VerticalLayoutGroup));
             go.transform.SetParent(parent, false);
@@ -23,7 +21,7 @@ namespace Szczepanski.UI
             }
 
             FloatingWindow floatingWindow = go.GetComponent<FloatingWindow>();
-            floatingWindow.Init(settings);
+            floatingWindow.GenerateUI(settings);
             return go;
         }
     }
@@ -51,7 +49,10 @@ namespace Szczepanski.UI
         public RectTransform rectTransform;
         public LayoutElement layoutElement;
 
-        public T GetComponent<T>() => gameObject.GetComponent<T>();
+        public T GetComponent<T>()
+        {
+            return gameObject.GetComponent<T>();
+        }
     }
 
     public class FloatingWindow : MonoBehaviour
@@ -62,16 +63,16 @@ namespace Szczepanski.UI
         public bool IsResizeable { get; private set; }
         public bool IsDraggable { get; private set; }
         public string Title { get; private set; }
-
         public Vector2 MinWindowSize { get; private set; }
 
-        public void Init(in FloatingWindowSettings settings)
+        public void GenerateUI(FloatingWindowSettings settings)
         {
             IsDraggable = settings.isDraggable;
             IsResizeable = settings.isResizeable;
             MinWindowSize = settings.minWindowSize;
             Title = settings.title;
             CreateObjectStructure();
+            Resize(settings.windowSize);
         }
 
         public void SetPosition(Vector2 targetPosition)
@@ -138,7 +139,7 @@ namespace Szczepanski.UI
             textMeshProUGUI.color = Color.black;
             textMeshProUGUI.fontSize = 18;
             textMeshProUGUI.font = (TMP_FontAsset)Resources.Load("Font/KodeMono-Bold SDF");
-            textMeshProUGUI.enableWordWrapping = false;
+            textMeshProUGUI.textWrappingMode = TextWrappingModes.NoWrap;
             textMeshProUGUI.overflowMode = TextOverflowModes.Ellipsis;
 
 
