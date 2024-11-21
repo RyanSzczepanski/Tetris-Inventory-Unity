@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 410911362}
   - component: {fileID: 410911361}
+  - component: {fileID: 410911363}
   m_Layer: 0
   m_Name: DEMO OBJECT
   m_TagString: Untagged
@@ -163,6 +164,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &410911363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410911360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1548fc2d021f30d4395a88f2180a587e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameSpace: NameSpace
+  className: ClassName
+  baseClass: BaseClass
+  usings:
+  - UnityEngine
+  - System
 --- !u!1 &637536514
 GameObject:
   m_ObjectHideFlags: 0
