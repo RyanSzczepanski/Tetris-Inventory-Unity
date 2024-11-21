@@ -6,7 +6,7 @@ MonoImporter:
   defaultReferences:
   - m_ViewDataDictionary: {instanceID: 0}
   - visualTree: {fileID: 9197481963319205126, guid: feeb5050d5ecec643bcc711d28baf767, type: 3}
-  - createTabVT: {fileID: 9197481963319205126, guid: 92305990fa43ca34d8e2a6284a69873a, type: 3}
+  - createTabVT: {fileID: 9197481963319205126, guid: c69a4aa5333bb6f4398ef8bc9fb8339f, type: 3}
   - searchTabVT: {fileID: 9197481963319205126, guid: b8107da866182364ebe51304a5e936da, type: 3}
   - settingsTabVT: {fileID: 9197481963319205126, guid: 373e25499e68148418187b4a294b7313, type: 3}
   - baseStyleSheet: {fileID: 7433441132597879392, guid: e6c206749fb9ea844a7fcbe5fecf045b, type: 3}

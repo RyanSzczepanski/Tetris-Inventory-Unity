@@ -1,3 +1,4 @@
+using Szczepanski.ScriptGenerator;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -88,6 +89,12 @@ namespace ItemEditorTool
             {
                 case 0:
                     toolbarContentContainer = CreateTabGUI(createTabVT);
+                    
+                    rootFromUXML.Q<Button>("button-generate").clicked += () =>
+                    {
+                        ScriptGeneratorSettings settings = ItemSOGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
+                        Debug.Log(ScriptGenerator.GenerateCode(settings));
+                    };
                     break;
                 case 1:
                     toolbarContentContainer = CreateTabGUI(searchTabVT);
@@ -177,7 +184,6 @@ public struct ItemSettingsPrefs
 
             string itemScriptableObjectClassPath = EditorPrefs.GetString($"RyanSzczepanski_ItemTools_{nameof(itemScriptableObjectClassPath)}");
             itemScriptableObjectClassPathTextField.SetValueWithoutNotify(itemScriptableObjectClassPath);
-
         }
     }
 }

@@ -1,0 +1,4 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <editor:EnumFlagsField label="Item Tags (Interfaces)" value="Basic" type="ItemTags, Assembly-CSharp" include-obsolete-values="false" name="item-tags" />
+    <engine:Button text="Generate Script" name="button-generate" />
+</engine:UXML>

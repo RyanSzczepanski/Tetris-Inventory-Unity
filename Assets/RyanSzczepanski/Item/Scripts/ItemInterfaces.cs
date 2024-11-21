@@ -50,6 +50,7 @@ public static class ItemTagsUtils
     {
         List<Type> types = new List<Type>();
         if ((ItemTags.Inventory & tags) != 0) { types.Add(typeof(IInventorySO)); }
+        if ((ItemTags.Equipable & tags) != 0) { types.Add(typeof(IEquipableSO)); }
         return types.ToArray();
     }
     public static ItemTags TypesToTags(Type type)

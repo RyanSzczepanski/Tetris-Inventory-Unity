@@ -6,24 +6,12 @@ using UnityEngine;
 
 namespace Szczepanski.ScriptGenerator
 {
-    public class ScriptGenerator : MonoBehaviour
+    public class ScriptGenerator
     {
-        public ScriptGeneratorSettigns settings;
-        //public string nameSpace;
-        //public string className;
-        //public string baseClass;
-        //public string[] interfaces;
-        //public string[] usings;
-        private CodeBuilder code = new CodeBuilder();
-
-        [Button]
-        public void Test()
+        public static string GenerateCode(ScriptGeneratorSettings settings)
         {
-            Debug.Log(GenerateCode());
-        }
+            CodeBuilder code = new CodeBuilder();
 
-        public string GenerateCode()
-        {
             code.Clear();
             //Usings
             foreach (string s in settings.usings)
@@ -40,28 +28,8 @@ namespace Szczepanski.ScriptGenerator
                 code.AppendLine($"namespace {settings.nameSpace}");
                 code.OpenBody();
             }
-            //Class Name
-            code.AppendLine(settings.newClass.ToString());
-            //code.Append($"public class {className}");
-            //if (baseClass != string.Empty)
-            //{
-            //    code.Append($" : {baseClass}");
-            //}
-            //code.AppendLine();
-            //code.OpenBody();
-
-
-            //Property property = new Property()
-            //{
-            //    accessibility = Accessibility.Public,
-            //    type = "string",
-            //    isOnlyGetter = true,
-            //    getterBody = "ItemTags.Basic;",
-            //    isPrivateSetter = true,
-            //    name = "StringProperty"
-            //};
-
-            //code.AppendLine(property.ToString());
+            //Class
+            code.AppendLine(settings.@class.ToString());
 
             return code.ToString();
         }
@@ -85,13 +53,12 @@ namespace Szczepanski.ScriptGenerator
         public string baseClass;
         public string[] interfaces;
         public Property[] properties;
-        public string functions;
+        public Function[] functions;
 
-        public CodeBuilder code;
-
+        public static Class Empty => new Class() { atributes = string.Empty, name = string.Empty, baseClass = string.Empty, interfaces = new string[0], properties = new Property[0], functions = new Function[0] };
         public override string ToString()
         {
-            code = new CodeBuilder();
+            CodeBuilder code = new CodeBuilder();
             code.AppendLine(atributes);
             code.Append($"public class {name}");
             if (baseClass != string.Empty)
@@ -113,8 +80,12 @@ namespace Szczepanski.ScriptGenerator
             {
                 code.AppendLine(property.ToString());
             }
+            foreach (Function function in functions)
+            {
+                code.AppendLine(function.ToString());
+            }
 
-            return code.ToString();
+            return code.ToString().Trim('\n');
         }
     }
 
@@ -126,48 +97,46 @@ namespace Szczepanski.ScriptGenerator
         public bool isPrivateSetter;
         public bool isOnlyGetter;
         public bool hasBackingField;
+        public bool isOverride;
         public string getterBody;
         public Accessibility accessibility;
 
+        public static Property Empty => new Property() { accessibility = Accessibility.Public }; 
 
         public override string ToString()
         {
             CodeBuilder code = new CodeBuilder();
-            code.AppendLine($"{accessibility.ToString().ToLower()} {type} {name} {{ {GenerateGetter()} {GenerateSetter()} }}");
+            code.AppendLine($"{accessibility.ToString().ToLower()} {(isOverride ? "override" : string.Empty)} {type} {name} {{ {getter} {setter} }}");
             if (!hasBackingField) { return code.ToString().Trim('\n'); }
             code.AppendLine($"private {type} m_{name}");
             return code.ToString().Trim('\n');
         }
 
 
-        private string GenerateGetter()
-        {
-            if (hasBackingField)
-            {
-                return $"get =>  m_{name};";
-            }
-            else
-            {
-                return "get => " + (getterBody == string.Empty ? "throw new System.NotImplementedException();" : getterBody);
-            }
-        }
-        private string GenerateSetter()
-        {
-            if (isOnlyGetter) { return string.Empty; }
-            else
-            {
-                string setterAccessor = (isPrivateSetter && accessibility == Accessibility.Public) ? "private" : string.Empty;
-                return $"{setterAccessor} set => m_{name} = value;";
-            }
-        }
+        private readonly string getter => $"get =>  {(hasBackingField ? $"m_{name}" : (getterBody == string.Empty ? "throw new System.NotImplementedException();" : getterBody))}";
+        private readonly string setter => isOnlyGetter ? string.Empty : $"{(isPrivateSetter && accessibility == Accessibility.Public ? "private" : string.Empty)} set => m_{name} = value;";
     }
 
+    [System.Serializable]
     public struct Function
     {
         public string name;
+        [Multiline]
         public string body;
+        public string type;
         public Accessibility accessibility;
+        public bool isOverride;
 
+        public static Function Empty => new Function();
+
+        public override string ToString()
+        {
+            CodeBuilder code = new CodeBuilder();
+            code.AppendLine($"{accessibility.ToString().ToLower()} {(isOverride ? "override" : string.Empty)} {type} {name}()");
+            code.OpenBody();
+            code.AppendLine(body != string.Empty ? body : "throw new System.NotImplementedException();");
+            return code.ToString().Trim('\n');
+        }
     }
 
     public enum Accessibility
@@ -255,7 +224,7 @@ namespace Szczepanski.ScriptGenerator
             {
                 CloseBody();
             }
-            return code.ToString();
+            return code.ToString().Trim('\n');
         }
     }
 }
