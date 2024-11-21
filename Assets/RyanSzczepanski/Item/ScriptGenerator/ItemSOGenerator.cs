@@ -1,6 +1,7 @@
 using Sirenix.Utilities;
 using System;
 using System.Text;
+using UnityEngine;
 
 namespace Szczepanski.ScriptGenerator
 {
@@ -9,6 +10,11 @@ namespace Szczepanski.ScriptGenerator
         public static ScriptGeneratorSettings ToSettingsStruct(ItemTags tags)
         {
             ScriptGeneratorSettings settings = ScriptGeneratorSettings.Empty;
+
+            settings.usings = new string[1]
+            {
+                "UnityEngine"
+            };
 
             //Used for name generation
             Type[] interfacesTypes = ItemTagsUtils.TagsToTypes(tags);
@@ -53,6 +59,7 @@ namespace Szczepanski.ScriptGenerator
                     sb.Append($"{@interface}.TAG | ");
                 }
                 sb.Remove(sb.Length - 3, 3);
+                sb.Append(';');
             }
             
             //Properties
@@ -60,7 +67,7 @@ namespace Szczepanski.ScriptGenerator
             {
                 new Property()
                 {
-                    name = "Tag",
+                    name = "Tags",
                     type = "ItemTags",
                     accessibility = Accessibility.Public,
                     hasBackingField = false,

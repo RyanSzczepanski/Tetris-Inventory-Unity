@@ -1,3 +1,4 @@
+using System.IO;
 using Szczepanski.ScriptGenerator;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -29,7 +30,6 @@ namespace ItemEditorTool
         string[] toolbarButtonsQuery;
         int selectedToolbarIndex = -1;
         TemplateContainer toolbarContentContainer;
-
 
         private record ToolbarButtonRecord
         {
@@ -93,7 +93,11 @@ namespace ItemEditorTool
                     rootFromUXML.Q<Button>("button-generate").clicked += () =>
                     {
                         ScriptGeneratorSettings settings = ItemSOGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
-                        Debug.Log(ScriptGenerator.GenerateCode(settings));
+                        //AssetDatabase.MakeEditable(EditorPrefs.GetString($"RyanSzczepanski_ItemTools_itemScriptableObjectClassPath"));
+                        ScriptGenerator.GenerateCSFile(settings, EditorPrefs.GetString($"RyanSzczepanski_ItemTools_itemScriptableObjectClassPath"));
+                        //AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
+                        //Debug.Log(ScriptGenerator.GenerateCode(settings));
                     };
                     break;
                 case 1:

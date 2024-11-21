@@ -129,8 +129,6 @@ GameObject:
   m_Component:
   - component: {fileID: 410911362}
   - component: {fileID: 410911361}
-  - component: {fileID: 410911363}
-  - component: {fileID: 410911364}
   m_Layer: 0
   m_Name: DEMO OBJECT
   m_TagString: Untagged
@@ -165,41 +163,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &410911363
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 410911360}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1548fc2d021f30d4395a88f2180a587e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  settings:
-    usings: []
-    nameSpace: 
-    newClass:
-      atributes: 
-      name: 
-      baseClass: 
-      interfaces: []
-      properties: []
-      functions: []
---- !u!114 &410911364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 410911360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a27bd9601c73c5448d4d747d836c89d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  settingsSO: {fileID: 11400000, guid: bba5f542882af8a418c72af85466fffb, type: 2}
 --- !u!1 &637536514
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,13 +1,16 @@
-using JetBrains.Annotations;
-using Sirenix.OdinInspector;
+using System.IO;
 using System.Text;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Szczepanski.ScriptGenerator
 {
     public class ScriptGenerator
     {
+        public static void GenerateCSFile(ScriptGeneratorSettings settings, string filepath)
+        {
+            if (File.Exists($"{filepath}\\{settings.@class.name}_AutoGen.cs")) { return; }
+            File.WriteAllText($"{filepath}\\{settings.@class.name}_AutoGen.cs", GenerateCode(settings));
+        }
         public static string GenerateCode(ScriptGeneratorSettings settings)
         {
             CodeBuilder code = new CodeBuilder();
@@ -83,12 +86,19 @@ namespace Szczepanski.ScriptGenerator
             }
             if (baseClass != string.Empty)
             {
-                code.Append($", {interfaces.ToCommaSeparatedString()}");
+                code.Append($", ");
             }
             else
             {
-                code.Append($" : {interfaces.ToCommaSeparatedString()}");
+                code.Append($" : ");
             }
+
+            foreach (var item in interfaces)
+            {
+                code.Append($"{item}, ");
+            }
+            code.Remove(code.lineLength - 2,2);
+
             code.AppendLine();
             code.OpenBody();
 
@@ -180,7 +190,7 @@ namespace Szczepanski.ScriptGenerator
                 return str;
             }
         }
-
+        public int lineLength => line.Length;
         public void Append(string str)
         {
             if (line.Length == 0) { line.Append(IndentString); }
@@ -225,6 +235,11 @@ namespace Szczepanski.ScriptGenerator
                 line.Append($"{strItem}");
                 AppendLine();
             }   
+        }
+
+        public void Remove(int startIndex, int length)
+        { 
+            line.Remove(startIndex, length);
         }
 
         public void Clear()
