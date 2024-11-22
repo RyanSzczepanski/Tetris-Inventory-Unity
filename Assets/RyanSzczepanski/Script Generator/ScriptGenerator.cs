@@ -36,16 +36,6 @@ namespace Szczepanski.ScriptGenerator
 
             return code.ToString();
         }
-
-        public string IndentString(int indentAmount)
-        {
-            string indent = string.Empty;
-            for (int i = 0; i < indentAmount; i++)
-            {
-                indent += "\t";
-            }
-            return indent;
-        }
     }
 
     [System.Serializable]
@@ -70,11 +60,11 @@ namespace Szczepanski.ScriptGenerator
         public string atributes;
         public string name;
         public string baseClass;
-        public string[] interfaces;
+        public Interface[] interfaces;
         public Property[] properties;
         public Function[] functions;
 
-        public static Class Empty => new Class() { atributes = string.Empty, name = string.Empty, baseClass = string.Empty, interfaces = new string[0], properties = new Property[0], functions = new Function[0] };
+        public static Class Empty => new Class() { atributes = string.Empty, name = string.Empty, baseClass = string.Empty, interfaces = new Interface[0], properties = new Property[0], functions = new Function[0] };
         public override string ToString()
         {
             CodeBuilder code = new CodeBuilder();
@@ -93,18 +83,37 @@ namespace Szczepanski.ScriptGenerator
                 code.Append($" : ");
             }
 
-            foreach (var item in interfaces)
+            foreach (Interface @interface in interfaces)
             {
-                code.Append($"{item}, ");
+                code.Append($"{@interface.name}, ");
             }
             code.Remove(code.lineLength - 2,2);
 
             code.AppendLine();
             code.OpenBody();
-
-            foreach(Property property in properties)
+            //Props
+            foreach (Interface @interface in interfaces)
             {
-                code.AppendLine(property.ToString());
+                if (@interface.properties.Length > 0) { code.AppendLine($"//{@interface.name}"); }
+                foreach (Property property in @interface.properties)
+                {
+                    code.AppendLine(property.ToString());
+                }
+                code.AppendLine();
+            }
+            foreach (Property property in properties)
+            {
+                code.AppendLine(property.ToString().Trim('\n'));
+            }
+            //Funcs
+            foreach (Interface @interface in interfaces)
+            {
+                if (@interface.functions.Length > 0) { code.AppendLine($"//{@interface.name}"); }
+                foreach (Function function in @interface.functions)
+                {
+                    code.AppendLine(function.ToString().Trim('\n'));
+                }
+                code.AppendLine();
             }
             foreach (Function function in functions)
             {
@@ -122,8 +131,9 @@ namespace Szczepanski.ScriptGenerator
         public string type;
         public bool isPrivateSetter;
         public bool isOnlyGetter;
-        public bool hasBackingField;
         public bool isOverride;
+        public bool hasBackingField;
+        public bool isBackingFieldSerialized;
         public string getterBody;
         public Accessibility accessibility;
 
@@ -132,14 +142,14 @@ namespace Szczepanski.ScriptGenerator
         public override string ToString()
         {
             CodeBuilder code = new CodeBuilder();
-            code.AppendLine($"{accessibility.ToString().ToLower()} {(isOverride ? "override" : string.Empty)} {type} {name} {{ {getter} {setter} }}");
+            code.AppendLine($"{accessibility.ToString().ToLower()} {(isOverride ? "override " : string.Empty)}{type} {name} {{ {getter}{(setter != string.Empty? " " : string.Empty)}{setter} }}");
             if (!hasBackingField) { return code.ToString().Trim('\n'); }
-            code.AppendLine($"private {type} m_{name}");
+            code.AppendLine($"{(isBackingFieldSerialized ? "[SerializeField]" : string.Empty)} private {type} m_{name};");
             return code.ToString().Trim('\n');
         }
 
 
-        private readonly string getter => $"get =>  {(hasBackingField ? $"m_{name}" : (getterBody == string.Empty ? "throw new System.NotImplementedException();" : getterBody))}";
+        private readonly string getter => $"get => {(hasBackingField ? $"m_{name};" : (getterBody == string.Empty ? "throw new System.NotImplementedException();" : getterBody))}";
         private readonly string setter => isOnlyGetter ? string.Empty : $"{(isPrivateSetter && accessibility == Accessibility.Public ? "private" : string.Empty)} set => m_{name} = value;";
     }
 
@@ -165,11 +175,21 @@ namespace Szczepanski.ScriptGenerator
         }
     }
 
+    [System.Serializable]
+    public struct Interface
+    {
+        public string name;
+        public Property[] properties;
+        public Function[] functions;
+
+        public Interface Empty => new Interface() { name = string.Empty, properties = new Property[0], functions = new Function[0] };
+    }
+
     public enum Accessibility
     {
-        Private = 0,
-        Protected = 1,
-        Public = 2,
+        Public = 0,
+        Private = 1,
+        Protected = 2,
 
     }
 
@@ -199,7 +219,7 @@ namespace Szczepanski.ScriptGenerator
 
         public void AppendLine()
         {
-            code.AppendLine(line.ToString());
+            code.Append($"{line}\n");
             line.Clear();
         }
 
@@ -225,16 +245,6 @@ namespace Szczepanski.ScriptGenerator
             line.Append($"{str}");
             line.Replace("\n", $"\n{IndentString}");
             AppendLine();
-        }
-
-        public void AppendLine(string[] strArr)
-        {
-            foreach(string strItem in strArr)
-            {
-                if (line.Length == 0) { line.Append(IndentString); }
-                line.Append($"{strItem}");
-                AppendLine();
-            }   
         }
 
         public void Remove(int startIndex, int length)

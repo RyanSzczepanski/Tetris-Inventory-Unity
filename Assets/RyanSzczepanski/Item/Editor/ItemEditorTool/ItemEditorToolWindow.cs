@@ -93,11 +93,9 @@ namespace ItemEditorTool
                     rootFromUXML.Q<Button>("button-generate").clicked += () =>
                     {
                         ScriptGeneratorSettings settings = ItemSOGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
-                        //AssetDatabase.MakeEditable(EditorPrefs.GetString($"RyanSzczepanski_ItemTools_itemScriptableObjectClassPath"));
                         ScriptGenerator.GenerateCSFile(settings, EditorPrefs.GetString($"RyanSzczepanski_ItemTools_itemScriptableObjectClassPath"));
-                        //AssetDatabase.SaveAssets();
-                        AssetDatabase.Refresh();
                         //Debug.Log(ScriptGenerator.GenerateCode(settings));
+                        AssetDatabase.Refresh();
                     };
                     break;
                 case 1:

@@ -1,5 +1,6 @@
 using Sirenix.Utilities;
 using System;
+using System.Data.Common;
 using System.Text;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace Szczepanski.ScriptGenerator
         public static ScriptGeneratorSettings ToSettingsStruct(ItemTags tags)
         {
             ScriptGeneratorSettings settings = ScriptGeneratorSettings.Empty;
+            ScriptGeneratorDB.Init();
 
             settings.usings = new string[1]
             {
@@ -19,47 +21,49 @@ namespace Szczepanski.ScriptGenerator
             //Used for name generation
             Type[] interfacesTypes = ItemTagsUtils.TagsToTypes(tags);
             string[] interfacesNames = new string[interfacesTypes.Length];
+            Interface[] interfaces = new Interface[interfacesTypes.Length];
             for (int i = 0; i < interfacesTypes.Length; i++)
             {
                 interfacesNames[i] = interfacesTypes[i].Name;
             }
             interfacesNames.Sort();
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Item ");
-            if(interfacesNames.Length == 0 ) { sb.Append("Basic"); }
+            StringBuilder tagsSpaceSeperated = new StringBuilder();
+            tagsSpaceSeperated.Append("Item ");
+            if(interfacesNames.Length == 0 ) { tagsSpaceSeperated.Append("Basic"); }
             for(int i = 0; i < interfacesTypes.Length; i++)
             {
-                char[] copy = new char[interfacesNames[i].Length-3];
-                interfacesNames[i].CopyTo(1, copy, 0, interfacesNames[i].Length-3);
-                sb.Append(copy);
-                sb.Append(" ");
+                interfaces[i] = ScriptGeneratorDB.GetObjectByName(interfacesNames[i]).AsInterface;
+                char[] shortenedInterfaceName = new char[interfacesNames[i].Length-3];
+                interfacesNames[i].CopyTo(1, shortenedInterfaceName, 0, interfacesNames[i].Length-3);
+                tagsSpaceSeperated.Append(shortenedInterfaceName);
+                tagsSpaceSeperated.Append(" ");
             }
-            sb.Append("SO");
+            tagsSpaceSeperated.Append("SO");
 
 
             //Class
             settings.@class = new Class()
             {
-                atributes = $"[CreateAssetMenu(fileName = \"New {sb}\", menuName = \"Item/{sb}\")]",
-                name = sb.ToString().Replace(" ", ""),
+                atributes = $"[CreateAssetMenu(fileName = \"New {tagsSpaceSeperated}\", menuName = \"Item/{tagsSpaceSeperated}\")]",
+                name = tagsSpaceSeperated.ToString().Replace(" ", ""),
                 baseClass = "ItemBaseSO",
-                interfaces = interfacesNames,
+                interfaces = interfaces,
                 functions = new Function[0],
                 properties = new Property[0]
             };
 
-            sb.Clear();
+            tagsSpaceSeperated.Clear();
 
             //Property body builder
             if(interfacesNames.Length > 0)
             {
                 foreach (var @interface in interfacesNames)
                 {
-                    sb.Append($"{@interface}.TAG | ");
+                    tagsSpaceSeperated.Append($"{@interface}.TAG | ");
                 }
-                sb.Remove(sb.Length - 3, 3);
-                sb.Append(';');
+                tagsSpaceSeperated.Remove(tagsSpaceSeperated.Length - 3, 3);
+                tagsSpaceSeperated.Append(';');
             }
             
             //Properties
@@ -73,7 +77,7 @@ namespace Szczepanski.ScriptGenerator
                     hasBackingField = false,
                     isOnlyGetter = true,
                     isOverride = true,
-                    getterBody = sb.ToString(),
+                    getterBody = tagsSpaceSeperated.ToString(),
                 }
             };
 
