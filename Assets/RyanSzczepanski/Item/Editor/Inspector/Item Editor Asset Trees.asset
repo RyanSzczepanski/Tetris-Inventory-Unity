@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aa7030f7eea15241b48d454962d15c1, type: 3}
   m_Name: Item Editor Asset Trees
   m_EditorClassIdentifier: 
-  m_ItemBaseSO: {fileID: 9197481963319205126, guid: c69a4aa5333bb6f4398ef8bc9fb8339f, type: 3}
+  m_ItemBaseSO: {fileID: 9197481963319205126, guid: 92305990fa43ca34d8e2a6284a69873a, type: 3}
   m_ItemIInventoryInterface: {fileID: 9197481963319205126, guid: 44631b0da42a3bd4fb787d785ab4db4e, type: 3}

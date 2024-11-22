@@ -12,6 +12,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49d5ca8e2fcc4ae469528720c7abf0e0, type: 3}
   m_Name: IInventorySO
   m_EditorClassIdentifier: 
-  name: 
-  properties: []
+  name: IInventorySO
+  properties:
+  - name: SubInventories
+    type: 'Vector2Int[]'
+    isPrivateSetter: 0
+    isOnlyGetter: 1
+    isOverride: 0
+    hasBackingField: 0
+    isBackingFieldSerialized: 0
+    getterBody: IInventorySO.GetAllSubInventories(SubInventoryArrangements);
+    accessibility: 0
+  - name: StorageSlots
+    type: int
+    isPrivateSetter: 0
+    isOnlyGetter: 1
+    isOverride: 0
+    hasBackingField: 0
+    isBackingFieldSerialized: 0
+    getterBody: IInventorySO.GetStorageSlotsCount(SubInventoryArrangements);
+    accessibility: 0
+  - name: SubInventoryArrangements
+    type: SubInventoryArrangement
+    isPrivateSetter: 0
+    isOnlyGetter: 1
+    isOverride: 0
+    hasBackingField: 1
+    isBackingFieldSerialized: 1
+    getterBody: 
+    accessibility: 0
   functions: []
