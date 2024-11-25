@@ -11,7 +11,7 @@ public class ItemInventorySO : ItemBaseSO, IInventorySO
 {
 	#region Properties
 	#region IInventorySO
-	public Vector2Int[] SubInventories { get => GetAllSubInventories(); }
+	public Vector2Int[] SubInventorySizes { get => GetAllSubInventories(); }
 	public int StorageSlots { get => GetStorageSlotsCount(); }
 	public SubInventoryArrangement SubInventoryArrangements { get => m_SubInventoryArrangements; }
 	[SerializeField] private SubInventoryArrangement m_SubInventoryArrangements;

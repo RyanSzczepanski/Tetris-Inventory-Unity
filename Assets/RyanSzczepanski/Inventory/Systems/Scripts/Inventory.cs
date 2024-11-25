@@ -9,10 +9,10 @@ public class Inventory
 
     public Inventory(IInventorySO inventoryData)
     {
-        SubInventories = new SubInventory[inventoryData.SubInventories.Length];
-        for (int i = 0; i < inventoryData.SubInventories.Length; i++)
+        SubInventories = new SubInventory[inventoryData.SubInventorySizes.Length];
+        for (int i = 0; i < inventoryData.SubInventorySizes.Length; i++)
         {
-            SubInventories[i] =  new SubInventory(inventoryData.SubInventories[i], this);
+            SubInventories[i] =  new SubInventory(inventoryData.SubInventorySizes[i], this);
         }
     }
 

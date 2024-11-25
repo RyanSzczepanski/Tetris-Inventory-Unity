@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d54d3b2e5a6dca4eaad289e899f7dd7, type: 3}
+  m_Name: IInventorySO
+  m_EditorClassIdentifier: 
+  name: IInventorySO
+  properties:
+  - name: SubInventoryArrangements
+    type: SubInventoryArrangement
+    isPrivateSetter: 0
+    isOnlyGetter: 1
+    isOverride: 0
+    hasBackingField: 1
+    isBackingFieldSerialized: 1
+    getterBody: 
+    accessibility: 0
+  - name: StorageSlots
+    type: int
+    isPrivateSetter: 0
+    isOnlyGetter: 1
+    isOverride: 0
+    hasBackingField: 0
+    isBackingFieldSerialized: 0
+    getterBody: GetStorageSlotsCount();
+    accessibility: 0
+  - name: SubInventorySizes
+    type: 'Vector2Int[]'
+    isPrivateSetter: 0
+    isOnlyGetter: 1
+    isOverride: 0
+    hasBackingField: 0
+    isBackingFieldSerialized: 0
+    getterBody: GetAllSubInventorySizes(m_SubInventoryArrangements);
+    accessibility: 0
+  functions:
+  - signature: 
+    body: "int storage = 0;\r\nforeach (Vector2Int subInventory in GetAllSubInventorySizes(m_SubInventoryArrangements))\r\n{\r\n\tstorage
+      += subInventory.x * subInventory.y;\r\n}\r\nreturn storage;"
+    name: GetStorageSlotsCount
+    type: int
+    accessibility: 1
+    isOverride: 0
+  - signature: private Vector2Int[] GetAllSubInventorySizes(SubInventoryArrangement
+      subInventoryArrangement)
+    body: "List<Vector2Int> subInventories = new List<Vector2Int>();\r\n\r\nif (!m_SubInventoryArrangements.IsLeaf)\r\n{\r\n\tforeach
+      (SubInventoryArrangement child in m_SubInventoryArrangements.childArrangements)\r\n\t{\r\n\t\tsubInventories.AddRange(GetAllSubInventorySizes(child));\r\n\t}\r\n}\r\nif
+      (m_SubInventoryArrangements.HasSubInventory)\r\n{\r\n\tsubInventories.Add(m_SubInventoryArrangements.subInventorySize);\r\n}\r\nreturn
+      subInventories.ToArray();"
+    name: GetAllSubInventories
+    type: 'Vector2Int[]'
+    accessibility: 1
+    isOverride: 0

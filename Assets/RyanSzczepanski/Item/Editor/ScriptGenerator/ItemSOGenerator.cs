@@ -1,8 +1,6 @@
 using Sirenix.Utilities;
 using System;
-using System.Data.Common;
 using System.Text;
-using UnityEngine;
 
 namespace Szczepanski.ScriptGenerator
 {
@@ -10,9 +8,8 @@ namespace Szczepanski.ScriptGenerator
     {
         public static ScriptGeneratorSettings ToSettingsStruct(ItemTags tags)
         {
+            ScriptableObjectDatabase<InterfaceSO>.Init();
             ScriptGeneratorSettings settings = ScriptGeneratorSettings.Empty;
-            ScriptGeneratorDB.Init();
-
             settings.usings = new string[2]
             {
                 "UnityEngine",
@@ -34,7 +31,7 @@ namespace Szczepanski.ScriptGenerator
             if(interfacesNames.Length == 0 ) { tagsSpaceSeperated.Append("Basic "); }
             for(int i = 0; i < interfacesTypes.Length; i++)
             {
-                interfaces[i] = ScriptGeneratorDB.GetObjectByName(interfacesNames[i]).AsInterface;
+                interfaces[i] = ScriptableObjectDatabase<InterfaceSO>.GetObjectByName(interfacesNames[i]).AsInterface;
                 char[] shortenedInterfaceName = new char[interfacesNames[i].Length-3];
                 interfacesNames[i].CopyTo(1, shortenedInterfaceName, 0, interfacesNames[i].Length-3);
                 tagsSpaceSeperated.Append(shortenedInterfaceName);
@@ -88,10 +85,11 @@ namespace Szczepanski.ScriptGenerator
             {
                 new Function()
                 {
-                    accessibility = Accessibility.Public,
-                    name = "CreateItem",
+                    //accessibility = Accessibility.Public,
+                    //name = "CreateItem",
+                    signature = $"public override ItemBase CreateItem()",
                     isOverride = true,
-                    type = "ItemBase",
+                    //type = "ItemBase",
                     body = $"return new {settings.@class.name.Remove(settings.@class.name.Length - 2, 2)}(this);"
                 }
             };

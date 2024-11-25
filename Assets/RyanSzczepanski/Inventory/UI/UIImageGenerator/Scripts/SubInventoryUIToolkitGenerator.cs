@@ -24,7 +24,7 @@ public static class InventoryUIToolkitGenerator
         if (arrangement.HasSubInventory)
         {
             //TODO:
-            newParent = SubInventoryUIToolkitGenerator.GenerateSubInventoryObject(item.SubInventories[subInventoryTracker], parent, in drawSettings); ;
+            newParent = SubInventoryUIToolkitGenerator.GenerateSubInventoryObject(item.SubInventorySizes[subInventoryTracker], parent, in drawSettings); ;
             subInventoryTracker++;
         }
         else

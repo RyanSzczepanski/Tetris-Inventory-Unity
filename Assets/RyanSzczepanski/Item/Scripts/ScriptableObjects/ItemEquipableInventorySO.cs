@@ -11,14 +11,14 @@ public class ItemEquipableInventorySO : ItemBaseSO, IEquipableSO, IInventorySO
 {
 	#region Properties
 	#region IEquipableSO
-	public float MaxDurability { get => m_MaxDurability; private set => m_MaxDurability = value; }
-	[SerializeField] private float m_MaxDurability;
+	public EquipmentType EquipmentType { get => m_EquipmentType; private set => m_EquipmentType = value; }
+	[SerializeField] private EquipmentType m_EquipmentType;
 	#endregion
 	#region IInventorySO
-	public Vector2Int[] SubInventories { get => GetAllSubInventories(); }
-	public int StorageSlots { get => GetStorageSlotsCount(); }
 	public SubInventoryArrangement SubInventoryArrangements { get => m_SubInventoryArrangements; }
 	[SerializeField] private SubInventoryArrangement m_SubInventoryArrangements;
+	public int StorageSlots { get => GetStorageSlotsCount(); }
+	public Vector2Int[] SubInventorySizes { get => GetAllSubInventorySizes(m_SubInventoryArrangements); }
 	#endregion
 	#region Base
 	public override ItemTags Tags { get => IEquipableSO.TAG | IInventorySO.TAG; }
@@ -26,31 +26,31 @@ public class ItemEquipableInventorySO : ItemBaseSO, IEquipableSO, IInventorySO
 	#endregion
 	#region Functions
 	#region IInventorySO
-	public  Vector2Int[] GetAllSubInventories()
+	private int GetStorageSlotsCount()
 	{
-		List<Vector2Int> subInventories = new List<Vector2Int>();	
-			
-		if (!m_SubInventoryArrangements.IsLeaf)	
-		{	
-			foreach (SubInventoryArrangement child in m_SubInventoryArrangements.childArrangements)	
-			{	
-				subInventories.AddRange(GetAllSubInventories());	
-			}	
-		}	
-		if (m_SubInventoryArrangements.HasSubInventory)	
+		int storage = 0;
+		foreach (Vector2Int subInventory in GetAllSubInventorySizes(m_SubInventoryArrangements))
 		{
-			subInventories.Add(m_SubInventoryArrangements.subInventorySize);	
-		}	
-		return subInventories.ToArray();
-	}
-	public  int GetStorageSlotsCount()
-	{
-		int storage = 0;	
-		foreach (Vector2Int subInventory in GetAllSubInventories())	
-		{	
-			storage += subInventory.x * subInventory.y;	
-		}	
+			storage += subInventory.x * subInventory.y;
+		}
 		return storage;
+	}
+	private Vector2Int[] GetAllSubInventorySizes(SubInventoryArrangement subInventoryArrangement)
+	{
+		List<Vector2Int> subInventories = new List<Vector2Int>();
+		
+		if (!subInventoryArrangement.IsLeaf)
+		{
+			foreach (SubInventoryArrangement child in subInventoryArrangement.childArrangements)
+			{
+				subInventories.AddRange(GetAllSubInventorySizes(child));
+			}
+		}
+		if (subInventoryArrangement.HasSubInventory)
+		{
+			subInventories.Add(subInventoryArrangement.subInventorySize);
+		}
+		return subInventories.ToArray();
 	}
 	#endregion
 	#region Base
