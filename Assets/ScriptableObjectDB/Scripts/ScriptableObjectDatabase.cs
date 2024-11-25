@@ -30,7 +30,7 @@ public class ScriptableObjectDatabase<T> : MonoBehaviour where T : ScriptableObj
     {
         if (!objects.ContainsKey(name))
         {
-            Debug.LogError($"Object with name {name} not found in database");
+            Debug.LogWarning($"Object with name {name} not found in database");
             return null;
         }
         return objects[name];

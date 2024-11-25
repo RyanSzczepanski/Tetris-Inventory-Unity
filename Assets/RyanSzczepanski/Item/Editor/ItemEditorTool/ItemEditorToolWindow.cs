@@ -90,12 +90,16 @@ namespace ItemEditorTool
                 case 0:
                     toolbarContentContainer = CreateTabGUI(createTabVT);
                     
-                    rootFromUXML.Q<Button>("button-generate").clicked += () =>
+                    rootFromUXML.Q<Button>("button-generate-script").clicked += () =>
                     {
                         ScriptGeneratorSettings settings = ItemSOGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
                         ScriptGenerator.GenerateCSFile(settings, EditorPrefs.GetString($"RyanSzczepanski_ItemTools_itemScriptableObjectClassPath"));
-                        //Debug.Log(ScriptGenerator.GenerateCode(settings));
-                        AssetDatabase.Refresh();
+                    };
+
+                    rootFromUXML.Q<Button>("button-generate-code").clicked += () =>
+                    {
+                        ScriptGeneratorSettings settings = ItemSOGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
+                        Debug.Log(ScriptGenerator.GenerateCode(settings));
                     };
                     break;
                 case 1:

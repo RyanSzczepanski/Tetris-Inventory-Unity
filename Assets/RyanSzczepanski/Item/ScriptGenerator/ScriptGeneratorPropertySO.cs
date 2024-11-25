@@ -9,5 +9,9 @@ public class ScriptGeneratorPropertySO : ScriptableObject
     public Property[] properties;
     public Function[] functions;
 
-    public Interface AsInterface => new Interface() {name = name, properties = properties, functions = functions}; 
+    public Interface AsInterface => new Interface() {name = name, properties = properties, functions = functions};
+    public string ToJSON(ScriptGeneratorPropertySO scriptGeneratorPropertySO)
+    {
+        return JsonUtility.ToJson(scriptGeneratorPropertySO);
+    }
 }

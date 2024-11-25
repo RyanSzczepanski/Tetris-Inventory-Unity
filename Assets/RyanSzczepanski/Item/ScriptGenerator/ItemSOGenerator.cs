@@ -13,9 +13,10 @@ namespace Szczepanski.ScriptGenerator
             ScriptGeneratorSettings settings = ScriptGeneratorSettings.Empty;
             ScriptGeneratorDB.Init();
 
-            settings.usings = new string[1]
+            settings.usings = new string[2]
             {
-                "UnityEngine"
+                "UnityEngine",
+                "System.Collections.Generic"
             };
 
             //Used for name generation
@@ -30,7 +31,7 @@ namespace Szczepanski.ScriptGenerator
 
             StringBuilder tagsSpaceSeperated = new StringBuilder();
             tagsSpaceSeperated.Append("Item ");
-            if(interfacesNames.Length == 0 ) { tagsSpaceSeperated.Append("Basic"); }
+            if(interfacesNames.Length == 0 ) { tagsSpaceSeperated.Append("Basic "); }
             for(int i = 0; i < interfacesTypes.Length; i++)
             {
                 interfaces[i] = ScriptGeneratorDB.GetObjectByName(interfacesNames[i]).AsInterface;
@@ -77,7 +78,7 @@ namespace Szczepanski.ScriptGenerator
                     hasBackingField = false,
                     isOnlyGetter = true,
                     isOverride = true,
-                    getterBody = tagsSpaceSeperated.ToString(),
+                    getterBody = tagsSpaceSeperated.ToString() == string.Empty ? "ItemTags.Basic;" : tagsSpaceSeperated.ToString()
                 }
             };
 

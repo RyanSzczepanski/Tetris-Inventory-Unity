@@ -1,21 +1,24 @@
 using System.IO;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 
 namespace Szczepanski.ScriptGenerator
 {
     public class ScriptGenerator
     {
+        public const string AUTO_GEN_LABLE = "\n///------------------------------------///\n///    This File Was Auto Generated    ///\n/// Using Szczepanski Script Generator ///\n///------------------------------------///\n";
+
         public static void GenerateCSFile(ScriptGeneratorSettings settings, string filepath)
         {
-            if (File.Exists($"{filepath}\\{settings.@class.name}_AutoGen.cs")) { return; }
-            File.WriteAllText($"{filepath}\\{settings.@class.name}_AutoGen.cs", GenerateCode(settings));
+            File.WriteAllText($"{filepath}\\{settings.@class.name}.cs", GenerateCode(settings));
+            AssetDatabase.Refresh();
         }
         public static string GenerateCode(ScriptGeneratorSettings settings)
         {
             CodeBuilder code = new CodeBuilder();
+            code.AppendLine(AUTO_GEN_LABLE);
 
-            code.Clear();
             //Usings
             foreach (string s in settings.usings)
             {
@@ -92,33 +95,42 @@ namespace Szczepanski.ScriptGenerator
             code.AppendLine();
             code.OpenBody();
             //Props
+            code.AppendLine($"#region Properties");
             foreach (Interface @interface in interfaces)
             {
-                if (@interface.properties.Length > 0) { code.AppendLine($"//{@interface.name}"); }
+                if (@interface.properties.Length > 0) { code.AppendLine($"#region {@interface.name}"); }
                 foreach (Property property in @interface.properties)
                 {
-                    code.AppendLine(property.ToString());
+                    code.AppendLine(property.ToString().Trim('\n'));
                 }
-                code.AppendLine();
+                if (@interface.properties.Length > 0) { code.AppendLine($"#endregion"); }
             }
+            if (functions.Length > 0) { code.AppendLine($"#region Base"); }
             foreach (Property property in properties)
             {
                 code.AppendLine(property.ToString().Trim('\n'));
             }
+            if (functions.Length > 0) { code.AppendLine($"#endregion"); }
+            code.AppendLine($"#endregion");
+
             //Funcs
+            code.AppendLine($"#region Functions");
             foreach (Interface @interface in interfaces)
             {
-                if (@interface.functions.Length > 0) { code.AppendLine($"//{@interface.name}"); }
+                if (@interface.functions.Length > 0) { code.AppendLine($"#region {@interface.name}"); }
                 foreach (Function function in @interface.functions)
                 {
                     code.AppendLine(function.ToString().Trim('\n'));
                 }
-                code.AppendLine();
+                if (@interface.functions.Length > 0) { code.AppendLine($"#endregion"); }
             }
+            if (functions.Length > 0) { code.AppendLine($"#region Base"); }
             foreach (Function function in functions)
             {
                 code.AppendLine(function.ToString());
             }
+            if (functions.Length > 0) { code.AppendLine($"#endregion"); }
+            code.AppendLine($"#endregion");
 
             return code.ToString().Trim('\n');
         }

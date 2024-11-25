@@ -21,7 +21,7 @@ MonoBehaviour:
     isOverride: 0
     hasBackingField: 0
     isBackingFieldSerialized: 0
-    getterBody: IInventorySO.GetAllSubInventories(SubInventoryArrangements);
+    getterBody: GetAllSubInventories();
     accessibility: 0
   - name: StorageSlots
     type: int
@@ -30,7 +30,7 @@ MonoBehaviour:
     isOverride: 0
     hasBackingField: 0
     isBackingFieldSerialized: 0
-    getterBody: IInventorySO.GetStorageSlotsCount(SubInventoryArrangements);
+    getterBody: GetStorageSlotsCount();
     accessibility: 0
   - name: SubInventoryArrangements
     type: SubInventoryArrangement
@@ -41,4 +41,18 @@ MonoBehaviour:
     isBackingFieldSerialized: 1
     getterBody: 
     accessibility: 0
-  functions: []
+  functions:
+  - name: GetAllSubInventories
+    body: "List<Vector2Int> subInventories = new List<Vector2Int>();\t\n\t\nif (!m_SubInventoryArrangements.IsLeaf)\t\n{\t\n\tforeach
+      (SubInventoryArrangement child in m_SubInventoryArrangements.childArrangements)\t\n\t{\t\n\t\tsubInventories.AddRange(GetAllSubInventories());\t\n\t}\t\n}\t\nif
+      (m_SubInventoryArrangements.HasSubInventory)\t\n{\n\tsubInventories.Add(m_SubInventoryArrangements.subInventorySize);\t\n}\t\nreturn
+      subInventories.ToArray();"
+    type: 'Vector2Int[]'
+    accessibility: 0
+    isOverride: 0
+  - name: GetStorageSlotsCount
+    body: "int storage = 0;\t\nforeach (Vector2Int subInventory in GetAllSubInventories())\t\n{\t\n\tstorage
+      += subInventory.x * subInventory.y;\t\n}\t\nreturn storage;"
+    type: int
+    accessibility: 0
+    isOverride: 0
