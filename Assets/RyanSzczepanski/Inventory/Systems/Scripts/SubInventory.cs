@@ -212,6 +212,7 @@ public class SubInventory
         if (!targetSubInventory.SlotsOccupiedCheck(item, targetCoordinate, isRotated)) { return false; }
         return true;
     }
+
     public void MoveItem(ItemBase item, SubInventory targetSubInventory, Vector2Int targetCoordinate, bool isRotated)
     {
         RemoveItem(item);
@@ -225,12 +226,7 @@ public class SubInventory
             }
         }
     }
-    public bool TryMoveItem(SubInventoryItemMovedEventArgs args)
-    {
-        if (!CanMoveItem(args.Item, args.TargetSubInventory, args.TargetCellCoordinate, args.TargetIsRotated)) { return false; }
-        MoveItem(args.Item, args.TargetSubInventory, args.TargetCellCoordinate, args.TargetIsRotated);
-        return true;
-    }
+
     public bool TryMoveItem(ItemBase item, SubInventory targetSubInventory, Vector2Int targetCoordinate, bool isRotated, Vector2Int originCoordinate, bool originRotatedStatus)
     {
         if (!CanMoveItem(item, targetSubInventory, targetCoordinate, isRotated)) { return false; }
