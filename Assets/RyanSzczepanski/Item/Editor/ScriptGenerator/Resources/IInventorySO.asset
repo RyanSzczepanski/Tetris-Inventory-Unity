@@ -51,9 +51,9 @@ MonoBehaviour:
     isOverride: 0
   - signature: private Vector2Int[] GetAllSubInventorySizes(SubInventoryArrangement
       subInventoryArrangement)
-    body: "List<Vector2Int> subInventories = new List<Vector2Int>();\r\n\r\nif (!m_SubInventoryArrangements.IsLeaf)\r\n{\r\n\tforeach
-      (SubInventoryArrangement child in m_SubInventoryArrangements.childArrangements)\r\n\t{\r\n\t\tsubInventories.AddRange(GetAllSubInventorySizes(child));\r\n\t}\r\n}\r\nif
-      (m_SubInventoryArrangements.HasSubInventory)\r\n{\r\n\tsubInventories.Add(m_SubInventoryArrangements.subInventorySize);\r\n}\r\nreturn
+    body: "List<Vector2Int> subInventories = new List<Vector2Int>();\r\n\r\nif (!subInventoryArrangement.IsLeaf)\r\n{\r\n\tforeach
+      (SubInventoryArrangement child in subInventoryArrangement.childArrangements)\r\n\t{\r\n\t\tsubInventories.AddRange(GetAllSubInventorySizes(child));\r\n\t}\r\n}\r\nif
+      (subInventoryArrangement.HasSubInventory)\r\n{\r\n\tsubInventories.Add(subInventoryArrangement.subInventorySize);\r\n}\r\nreturn
       subInventories.ToArray();"
     name: GetAllSubInventories
     type: 'Vector2Int[]'

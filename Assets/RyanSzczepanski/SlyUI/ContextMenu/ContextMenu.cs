@@ -33,6 +33,14 @@ namespace Szczepanski.UI
             GenerateContextMenu();
         }
 
+        private void Update()
+        {
+            if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2))
+            {
+                Close();
+            }
+        }
+
         private void GenerateContextMenu()
         {
             float maxSize = 0;
