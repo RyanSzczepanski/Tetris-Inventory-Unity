@@ -33,11 +33,11 @@ public class SubInventory
 
     private void OnItemAdded(ItemBase item, ItemData targetData)
     {
-        //if (ItemAdded is null) { return; }
-        item.OnItemAdded(this, new ItemAddedEventArgs() {
+        item.OnItemAdded(this, new ItemAddedEventArgs()
+        {
             Item = item,
-            SubInventory = targetData.subInventory,
-            IsRotated = targetData.isRotated
+            TargetSubInventory = targetData.subInventory,
+            TargetIsRotated = targetData.isRotated,
         });
         ItemAdded?.Invoke(this, new SubInventoryItemAddedEventArgs
         {
@@ -49,7 +49,6 @@ public class SubInventory
     }
     private void OnItemMoved(ItemBase item, ItemData originData, ItemData targetData)
     {
-        //if (ItemMoved is null) { return; }
         ItemMoved?.Invoke(this, new SubInventoryItemMovedEventArgs
         {
             Item = item,
@@ -65,12 +64,10 @@ public class SubInventory
     }
     private void OnItemRemoved(ItemBase item)
     {
-
-        //if (ItemRemoved is null) { return; }
         ItemRemoved?.Invoke(this, new SubInventoryItemRemovedEventArgs
         {
             Item = item,
-            SubInventory = this
+            SubInventory = this,
         });
         item.OnItemRemoved(this, new ItemRemovedEventArgs {
             Item = item,

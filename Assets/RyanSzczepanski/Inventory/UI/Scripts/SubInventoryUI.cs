@@ -9,7 +9,6 @@ using Szczepanski.UI;
 public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public SubInventory SubInventory { get; private set; }
-    public InventoryCellDrawSettings drawSettings;
 
     public delegate void OnDragBeginHandler(object sender);
     public delegate void OnDragEndHandler(object sender);
@@ -17,10 +16,9 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
     public event OnDragEndHandler DragEnd;
 
 
-    public void Init(SubInventory subInventory, InventoryCellDrawSettings drawSettings)
+    public void Init(SubInventory subInventory)
     {
         SubInventory = subInventory;
-        this.drawSettings = drawSettings;
         Subscribe();
 
         List<ItemBase> items = new List<ItemBase>();
@@ -31,7 +29,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
                 if (!subInventory.Slots[x, y].IsOccupied) { continue; }
                 if (items.Contains(subInventory.Slots[x, y].ItemInSlot)) { continue; }
                 items.Add(subInventory.Slots[x, y].ItemInSlot);
-                ItemUI.Generate(subInventory.Slots[x, y].ItemInSlot, this, new Vector2Int(x, y));
+                ItemUIFactory.GenerateUI(subInventory.Slots[x, y].ItemInSlot, this, new Vector2Int(x, y));
             }
         }
     }
@@ -55,7 +53,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
     public void OnItemAdded(object source, SubInventoryItemAddedEventArgs args)
     {
-        ItemUI.Generate(args.Item, this, args.TargetCellCoordinate);
+        ItemUIFactory.GenerateUI(args.Item, this, args.TargetCellCoordinate);
 
     }
     public void OnItemMoved(object source, SubInventoryItemMovedEventArgs args)
@@ -170,7 +168,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
         Vector2Int itemSize = isRotated ? new Vector2Int(targetItem.Data.Size.y, targetItem.Data.Size.x) : targetItem.Data.Size;
 
-        Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position - SlotAndItemCenteringOffset(itemSize, drawSettings) * GetComponentInParent<Canvas>().scaleFactor);
+        Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position - SlotAndItemCenteringOffset(itemSize, InventoryUIManager.DRAW_SETTINGS) * GetComponentInParent<Canvas>().scaleFactor);
         targetCoordinate.Clamp(Vector2Int.zero, new Vector2Int(targetSubInventoryUI.SubInventory.Size.x - itemSize.x, targetSubInventoryUI.SubInventory.Size.y - itemSize.y));
 
         SubInventory.TryMoveItem(targetItem, targetSubInventoryUI.SubInventory, targetCoordinate, isRotated, originGridCoordinate, originRotatedStatus);
@@ -198,12 +196,12 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
     {
         return new Vector2Int(
             Mathf.Clamp(
-                Mathf.FloorToInt((localPosition.x - drawSettings._paddingSize - drawSettings._outlineSize) / (drawSettings._cellSize)),
+                Mathf.FloorToInt((localPosition.x - InventoryUIManager.DRAW_SETTINGS._paddingSize - InventoryUIManager.DRAW_SETTINGS._outlineSize) / (InventoryUIManager.DRAW_SETTINGS._cellSize)),
                 0,
                 SubInventory.Size.x - 1
             ),
             Mathf.Clamp(
-                Mathf.FloorToInt((localPosition.y - drawSettings._paddingSize - drawSettings._outlineSize) / (drawSettings._cellSize)),
+                Mathf.FloorToInt((localPosition.y - InventoryUIManager.DRAW_SETTINGS._paddingSize - InventoryUIManager.DRAW_SETTINGS._outlineSize) / (InventoryUIManager.DRAW_SETTINGS._cellSize)),
                 0,
                 SubInventory.Size.y - 1
             )
@@ -216,8 +214,8 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
     public Vector2 LocalPositionFromGridCoordinate(Vector2Int gridCoordinate)
     {
-        return new Vector2(gridCoordinate.x * drawSettings._cellSize + drawSettings._paddingSize + drawSettings._outlineSize,
-            gridCoordinate.y * drawSettings._cellSize + drawSettings._paddingSize + drawSettings._outlineSize);
+        return new Vector2(gridCoordinate.x * InventoryUIManager.DRAW_SETTINGS._cellSize + InventoryUIManager.DRAW_SETTINGS._paddingSize + InventoryUIManager.DRAW_SETTINGS._outlineSize,
+            gridCoordinate.y * InventoryUIManager.DRAW_SETTINGS._cellSize + InventoryUIManager.DRAW_SETTINGS._paddingSize + InventoryUIManager.DRAW_SETTINGS._outlineSize);
     }
     public Vector2 ScreenPositionFromGridCoordinate(Vector2Int gridCoordinate)
     {

@@ -34,8 +34,8 @@ public class ItemBase
 
     public void OnItemAdded(object source, ItemAddedEventArgs args)
     {
-        Rotate(args.IsRotated);
-        ParentSubInventory = args.SubInventory;
+        Rotate(args.TargetIsRotated);
+        ParentSubInventory = args.TargetSubInventory;
     }
     public void OnItemRemoved(object source, ItemRemovedEventArgs args)
     {

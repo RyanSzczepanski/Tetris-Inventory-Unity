@@ -32,7 +32,7 @@ public static class InventoryUIGenerator
         Transform newParent;
         if (arrangement.HasSubInventory)
         {
-            GameObject go = SubInventoryUIGenerator.GenerateSubInventoryObject(item.Inventory.SubInventories[subInventoryTracker], parent, in drawSettings); ;
+            GameObject go = SubInventoryUIGenerator.GenerateSubInventoryObject(item.Inventory.SubInventories[subInventoryTracker], parent); ;
             newParent = go.transform;
             subInventoryTracker++;
         }
@@ -74,17 +74,17 @@ public static class SubInventoryUIGenerator
 {
     public static Dictionary<Vector2Int, Sprite> CAHCED_SPRITES = new Dictionary<Vector2Int, Sprite>();
 
-    public static GameObject GenerateSubInventoryObject(SubInventory subInventory, Transform parent, in InventoryCellDrawSettings drawSettings)
+    public static GameObject GenerateSubInventoryObject(SubInventory subInventory, Transform parent)
     {
         //Rename Object
         GameObject subInventoryObject = new GameObject($"{subInventory.Size.x}x{subInventory.Size.y} SubInventory");
         subInventoryObject.transform.SetParent(parent, false);
         SubInventoryUI subInventoryUI = subInventoryObject.AddComponent<SubInventoryUI>();
-        subInventoryUI.Init(subInventory, drawSettings);
+        subInventoryUI.Init(subInventory);
         //Generate Or Get Cached Sprite
         if (!CAHCED_SPRITES.TryGetValue(subInventory.Size, out Sprite sprite))
         {
-            sprite = GenerateSprite(subInventory.Size, drawSettings);
+            sprite = GenerateSprite(subInventory.Size, InventoryUIManager.DRAW_SETTINGS);
             CAHCED_SPRITES.Add(subInventory.Size, sprite);
         }
 
