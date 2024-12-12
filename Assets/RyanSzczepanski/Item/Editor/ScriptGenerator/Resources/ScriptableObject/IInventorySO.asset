@@ -41,6 +41,15 @@ MonoBehaviour:
     isBackingFieldSerialized: 0
     getterBody: GetAllSubInventorySizes(m_SubInventoryArrangements);
     accessibility: 0
+  - name: SuperFuckingCoolProperty
+    type: BadAss
+    isPrivateSetter: 0
+    isOnlyGetter: 0
+    isOverride: 0
+    hasBackingField: 1
+    isBackingFieldSerialized: 0
+    getterBody: 
+    accessibility: 0
   functions:
   - signature: 
     body: "int storage = 0;\r\nforeach (Vector2Int subInventory in GetAllSubInventorySizes(m_SubInventoryArrangements))\r\n{\r\n\tstorage

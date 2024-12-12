@@ -12,5 +12,5 @@ public interface IEquipableSO
 {
     public const ItemTags TAG = ItemTags.Equipable;
 
-    //public float EquipmentType { get; }
+    public EquipmentType EquipmentType { get; }
 }

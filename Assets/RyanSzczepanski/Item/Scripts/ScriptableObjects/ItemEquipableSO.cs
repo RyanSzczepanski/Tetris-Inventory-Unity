@@ -11,8 +11,8 @@ public class ItemEquipableSO : ItemBaseSO, IEquipableSO
 {
 	#region Properties
 	#region IEquipableSO
-	public float MaxDurability { get => m_MaxDurability; private set => m_MaxDurability = value; }
-	[SerializeField] private float m_MaxDurability;
+	public EquipmentType EquipmentType { get => m_EquipmentType; private set => m_EquipmentType = value; }
+	[SerializeField] private EquipmentType m_EquipmentType;
 	#endregion
 	#region Base
 	public override ItemTags Tags { get => IEquipableSO.TAG; }
@@ -22,7 +22,7 @@ public class ItemEquipableSO : ItemBaseSO, IEquipableSO
 	#region Base
 	public override ItemBase CreateItem()
 	{
-		return new ItemBase(this);
+		return new ItemEquipable(this);
 	}
 	#endregion
 	#endregion

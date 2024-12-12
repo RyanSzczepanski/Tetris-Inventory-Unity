@@ -11,7 +11,7 @@ using System.Data.Common;
 public class Character : MonoBehaviour
 {
     public ItemBaseSO fillItem;
-    public EquipmentSlot equipmentSlot;
+    public EquipmentSlot[] equipmentSlots;
     public ItemBaseSO itemBaseSO;
     public Transform parent;
 
@@ -19,14 +19,14 @@ public class Character : MonoBehaviour
 
     private void Awake()
     {
-        equipmentSlot.TryEquipItem(itemBaseSO.CreateItem());
+        //equipmentSlot.TryEquipItem(itemBaseSO.CreateItem());
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            equipmentSlot.TryEquipItem(itemBaseSO.CreateItem());
+            //equipmentSlot.TryEquipItem(itemBaseSO.CreateItem());
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -40,22 +40,27 @@ public class Character : MonoBehaviour
 
             GameObject floatingWindow = FloatingWindowFactory.CreateFloatingWindow(parent, settings);
             Transform transform = floatingWindow.GetComponent<FloatingWindow>().Content.rectTransform;
-            InventoryUIGenerator.GenerateUIObject(transform, equipmentSlot.item.Data as IInventorySO, equipmentSlot.item as IInventory, in InventoryUIManager.DRAW_SETTINGS);
+            //InventoryUIGenerator.GenerateUIObject(transform, equipmentSlot.item.Data as IInventorySO, equipmentSlot.item as IInventory, in InventoryUIManager.DRAW_SETTINGS);
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            IInventory itemInventory = equipmentSlot.item as IInventory;
+            //IInventory itemInventory = equipmentSlot.item as IInventory;
 
             for (int i = 0; i < 10000; i++)
             {
-                if (!itemInventory.Inventory.TryAddItem(fillItem.CreateItem())) { break; }
+                //if (!itemInventory.Inventory.TryAddItem(fillItem.CreateItem())) { break; }
             }
         }
+    }
+
+    public void TryEquipItem(ItemBase itemBase, EquipmentType equipmentType)
+    {
+        equipmentSlots[(int)equipmentType].TryEquipItem(itemBase);
     }
 }
 
 [System.Serializable]
-public class EquipmentSlot
+public struct EquipmentSlot
 {
     public EquipmentType equipmentType;
     public ItemBase item;
@@ -73,5 +78,7 @@ public class EquipmentSlot
 
 public enum EquipmentType
 {
-    Backpack = 0,
+    Helmet = 0,
+    PlateCarrier,
+    Backpack,
 }
