@@ -88,8 +88,10 @@ namespace Szczepanski.ScriptGenerator
         public string type;
         public bool isPrivateSetter;
         public bool isOnlyGetter;
+        public bool isInit;
         public bool isOverride;
         public bool hasBackingField;
+        public bool isMultiline;
         public bool isBackingFieldSerialized;
         public string getterBody;
         public Accessibility accessibility;
@@ -99,13 +101,25 @@ namespace Szczepanski.ScriptGenerator
         public override string ToString()
         {
             CodeBuilder code = new CodeBuilder();
-            code.AppendLine($"{accessibility.ToString().ToLower()} {(isOverride ? "override " : string.Empty)}{type} {name} {{ {getter}{(setter != string.Empty ? " " : string.Empty)}{setter} }}");
+            if (isMultiline)
+            {
+                code.AppendLine($"{accessibility.ToString().ToLower()} {(isOverride ? "override " : string.Empty)}{type} {name}");
+                code.OpenBody();
+                code.AppendLine(getter);
+                if (setter != string.Empty) { code.AppendLine(setter); }
+                code.CloseBody();
+            }
+            else
+            {
+                code.AppendLine($"{accessibility.ToString().ToLower()} {(isOverride ? "override " : string.Empty)}{type} {name} {{ {getter}{(setter != string.Empty ? " " : string.Empty)}{setter} }}");
+            }
+
             if (!hasBackingField) { return code.ToString().Trim('\n'); }
             code.AppendLine($"{(isBackingFieldSerialized ? "[SerializeField]" : string.Empty)} private {type} m_{name};");
             return code.ToString().Trim('\n');
         }
 
-        private readonly string getter => $"get => {(hasBackingField ? $"m_{name};" : (getterBody == string.Empty ? "throw new System.NotImplementedException();" : getterBody))}";
+        private readonly string getter => $"get{(isInit ? ";" : " => ")}{(hasBackingField ? $"m_{name};" : (getterBody == string.Empty ? "throw new System.NotImplementedException();" : getterBody))}";
         private readonly string setter => isOnlyGetter ? string.Empty : $"{(isPrivateSetter && accessibility == Accessibility.Public ? "private" : string.Empty)} set => m_{name} = value;";
     }
 

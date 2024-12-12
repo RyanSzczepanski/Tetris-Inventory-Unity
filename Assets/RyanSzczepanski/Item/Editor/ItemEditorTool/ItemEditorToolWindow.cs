@@ -92,13 +92,19 @@ namespace ItemEditorTool
                     
                     rootFromUXML.Q<Button>("button-generate-script").clicked += () =>
                     {
-                        ScriptGeneratorSettings settings = ItemSOGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
+                        ScriptGeneratorSettings settings = ItemScriptableObjectGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
                         ScriptGenerator.GenerateCSFile(settings, EditorPrefs.GetString($"RyanSzczepanski_ItemTools_itemScriptableObjectClassPath"));
                     };
 
                     rootFromUXML.Q<Button>("button-generate-code").clicked += () =>
                     {
-                        ScriptGeneratorSettings settings = ItemSOGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
+                        ScriptGeneratorSettings settings = ItemScriptableObjectGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
+                        Debug.Log(ScriptGenerator.GenerateCode(settings));
+                    };
+
+                    rootFromUXML.Q<Button>("button-generate-object-script").clicked += () =>
+                    {
+                        ScriptGeneratorSettings settings = ItemObjectGenerator.ToSettingsStruct((ItemTags)rootFromUXML.Q<EnumFlagsField>("item-tags").value);
                         Debug.Log(ScriptGenerator.GenerateCode(settings));
                     };
                     break;

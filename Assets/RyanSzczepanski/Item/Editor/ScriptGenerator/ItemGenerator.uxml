@@ -1,7 +1,8 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <editor:EnumFlagsField label="Item Tags (Interfaces)" value="Basic" type="ItemTags, Assembly-CSharp" include-obsolete-values="false" name="item-tags" />
-    <engine:VisualElement name="VisualElement" style="height: 50px; flex-wrap: nowrap; flex-direction: row; justify-content: space-evenly;">
-        <engine:Button text="Generate Script" name="button-generate-script" style="width: 45%;" />
-        <engine:Button text="Log Code" name="button-generate-code" style="width: 45%;" />
+    <engine:VisualElement name="VisualElement" style="height: 50px; flex-wrap: nowrap; flex-direction: row; justify-content: space-evenly; flex-grow: 0; flex-shrink: 1; align-content: auto; flex-basis: auto;">
+        <engine:Button text="Generate Script" name="button-generate-script" style="flex-grow: 1; flex-basis: 100%; flex-shrink: 1;" />
+        <engine:Button text="Generate Object" name="button-generate-object-script" style="flex-grow: 1; flex-shrink: 1; flex-basis: 100%;" />
+        <engine:Button text="Log Code" name="button-generate-code" style="flex-grow: 1; flex-basis: 100%; flex-shrink: 1;" />
     </engine:VisualElement>
 </engine:UXML>

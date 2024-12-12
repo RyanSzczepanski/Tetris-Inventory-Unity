@@ -22,7 +22,7 @@ public class ItemEquipableSO : ItemBaseSO, IEquipableSO
 	#region Base
 	public override ItemBase CreateItem()
 	{
-		return new ItemEquipable(this);
+		return new ItemBase(this);
 	}
 	#endregion
 	#endregion

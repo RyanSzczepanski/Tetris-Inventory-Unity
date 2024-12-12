@@ -2,8 +2,8 @@ using Szczepanski.UI;
 
 public class ItemInventory : ItemBase, IInventory
 {
-    public new ItemInventorySO Data { get; private set; }
-    public Inventory Inventory { get; private set; }
+    public new ItemInventorySO Data { get; }
+    public Inventory Inventory { get; }
 
     public ItemInventory(ItemInventorySO data) : base(data)
     {

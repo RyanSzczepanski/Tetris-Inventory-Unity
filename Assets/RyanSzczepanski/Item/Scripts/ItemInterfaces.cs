@@ -1,15 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Szczepanski.UI;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public interface IInventory
 {
     public Inventory Inventory { get; }
-    public static ItemTags TAGS = ItemTags.Inventory;
+    public const ItemTags TAGS = ItemTags.Inventory;
     public static GameObject OpenUI(ItemBase item, Transform windowParent)
     {
         if (item is not IInventory) { throw new System.ArgumentException("Input item does not implement IInventory interface"); }
@@ -32,7 +29,7 @@ public interface IInventory
 
 public interface IEquipable
 {
-    public static ItemTags TAGS = ItemTags.Equipable;
+    public const ItemTags TAGS = ItemTags.Equipable;
 }
 
 [Flags]
@@ -46,11 +43,20 @@ public enum ItemTags
 
 public static class ItemTagsUtils
 {
-    public static Type[] TagsToTypes(ItemTags tags)
+    public static Type[] TagsToTypes(ItemTags tags, bool asScriptableObject)
     {
         List<Type> types = new List<Type>();
-        if ((ItemTags.Inventory & tags) != 0) { types.Add(typeof(IInventorySO)); }
-        if ((ItemTags.Equipable & tags) != 0) { types.Add(typeof(IEquipableSO)); }
+        if (asScriptableObject)
+        {
+            if ((ItemTags.Inventory & tags) != 0) { types.Add(typeof(IInventorySO)); }
+            if ((ItemTags.Equipable & tags) != 0) { types.Add(typeof(IEquipableSO)); }
+        }
+        else
+        {
+            if ((ItemTags.Inventory & tags) != 0) { types.Add(typeof(IInventory)); }
+            if ((ItemTags.Equipable & tags) != 0) { types.Add(typeof(IEquipable)); }
+        }
+        
         return types.ToArray();
     }
     public static ItemTags TypesToTags(Type type)
