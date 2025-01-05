@@ -751,10 +751,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillItem: {fileID: 11400000, guid: 93c019876f8a25a4982736833883c289, type: 2}
-  equipmentSlot:
-    equipmentType: 0
-    item:
-      <Data>k__BackingField: {fileID: 0}
   itemBaseSO: {fileID: 11400000, guid: df5f436a2cad5374f827f851c659d831, type: 2}
   parent: {fileID: 1011744901}
   m_Raycaster: {fileID: 1011744900}

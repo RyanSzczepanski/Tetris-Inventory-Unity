@@ -1,8 +1,7 @@
 fileFormatVersion: 2
-guid: 5de782a9528f04b41a8ba70afba32a61
-timeCreated: 1498113024
-licenseType: Store
+guid: bfddca3b681a343a4a2754ce493c2c44
 DefaultImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -11,5 +10,5 @@ AssetOrigin:
   productId: 11889
   packageName: Editor Console Pro
   packageVersion: 3.977
-  assetPath: Assets/ConsolePro/Editor Console Pro Documentation.pdf
+  assetPath: Assets/ConsolePro/Remote/RemoteServer.zip
   uploadId: 708146

@@ -12,6 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d54d3b2e5a6dca4eaad289e899f7dd7, type: 3}
   m_Name: IInventory
   m_EditorClassIdentifier: 
-  name: 
-  properties: []
+  name: IInventory
+  properties:
+  - name: Inventory
+    type: Inventory
+    isPrivateSetter: 1
+    isOnlyGetter: 0
+    isInit: 0
+    isOverride: 0
+    hasBackingField: 1
+    isMultiline: 0
+    isBackingFieldSerialized: 0
+    getterBody: 
+    accessibility: 0
   functions: []

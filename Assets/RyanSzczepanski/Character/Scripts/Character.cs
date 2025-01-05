@@ -1,17 +1,16 @@
 using UnityEngine;
 using Szczepanski.UI;
-using System.Dynamic;
-using Unity.VisualScripting;
-using System.Runtime.InteropServices;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System.Data.Common;
+using System;
 
 public class Character : MonoBehaviour
 {
     public ItemBaseSO fillItem;
-    public EquipmentSlot[] equipmentSlots;
+    [NonSerialized] public EquipmentSlot[] equipmentSlots = {
+        new EquipmentSlot { equipmentType = EquipmentType.Helmet },
+        new EquipmentSlot { equipmentType = EquipmentType.PlateCarrier },
+        new EquipmentSlot {equipmentType = EquipmentType.Backpack}
+    };
     public ItemBaseSO itemBaseSO;
     public Transform parent;
 
@@ -26,7 +25,7 @@ public class Character : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            //equipmentSlot.TryEquipItem(itemBaseSO.CreateItem());
+            TryEquipItem(itemBaseSO.CreateItem());
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -40,7 +39,7 @@ public class Character : MonoBehaviour
 
             GameObject floatingWindow = FloatingWindowFactory.CreateFloatingWindow(parent, settings);
             Transform transform = floatingWindow.GetComponent<FloatingWindow>().Content.rectTransform;
-            //InventoryUIGenerator.GenerateUIObject(transform, equipmentSlot.item.Data as IInventorySO, equipmentSlot.item as IInventory, in InventoryUIManager.DRAW_SETTINGS);
+            InventoryUIGenerator.GenerateUIObject(transform, equipmentSlots[2].item.Data as IInventorySO, equipmentSlots[2].item as IInventory, in InventoryUIManager.DRAW_SETTINGS);
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -53,9 +52,14 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void TryEquipItem(ItemBase itemBase, EquipmentType equipmentType)
+    public void TryEquipItem(ItemBase itemBase)
     {
-        equipmentSlots[(int)equipmentType].TryEquipItem(itemBase);
+        IEquipableSO Equipable = itemBase.Data as IEquipableSO;
+        if (Equipable == null)
+        {
+            throw new ArgumentException($"Item [{itemBase.Data.GetType()}] does not implement [IEquipableSO]");
+        }
+        equipmentSlots[(int)Equipable.EquipmentType].TryEquipItem(itemBase);
     }
 }
 
