@@ -7,7 +7,7 @@ using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class CreateItemWindow
+public class CreateItemWindow : EditorWindow
 {
     //Prefs
     string itemScriptableObjectClassPath;
@@ -18,11 +18,12 @@ public class CreateItemWindow
     string newItemName;
     List<Type> itemTypes;
 
-    [MenuItem("Window/Create Item GUI")]
+    [MenuItem("Szczepanski/Item Tool")]
     public static void ShowWindow()
     {
-        //CreateItemWindow window = EditorWindow.GetWindow<CreateItemWindow>("Item Tool");
-        //window.Init();
+        CreateItemWindow window = EditorWindow.GetWindow<CreateItemWindow>("Item Tool");
+        window.Init();
+        window.LoadPrefs();
     }
 
     void SavePrefs()
@@ -40,8 +41,8 @@ public class CreateItemWindow
 
     void Init()
     {
-        //rootVisualElement.Q<EnumField>
         LoadPrefs();
+        Debug.Log(itemScriptableObjectClassPath);
         GetItemTypes(out itemTypes);
         if (itemScriptableObjectClassPath == string.Empty)
         {
@@ -120,6 +121,7 @@ public class CreateItemWindow
         if (!TryGetTargetItemTypeFromTags(itemTags, out Type targetType)) { return; }
 
         newItemName = EditorGUILayout.TextField("Item Name", newItemName);
+        newItemName ??= String.Empty;
         if (Regex.IsMatch(newItemName, "^(?<ItemName>(?>\\w|[- ])*)$"))
         {
             string[] assetGUIDS = AssetDatabase.FindAssets($"t:ItemBaseSO {newItemName}");
@@ -141,6 +143,7 @@ public class CreateItemWindow
             else if (GUILayout.Button($"Create Asset"))
             {
                 ScriptableObject so = ScriptableObject.CreateInstance(targetType.Name);
+                Debug.Log(so);
                 AssetDatabase.CreateAsset(so, $"{itemScriptableObjectPath}{newItemName}.asset");
                 PopUpAssetInspector.ShowWindow(so);
             }
@@ -167,7 +170,6 @@ public class CreateItemWindow
 
     private void OnDestroy()
     {
-        Debug.Log("Saving Prefs");
         SavePrefs();
     }
 }
