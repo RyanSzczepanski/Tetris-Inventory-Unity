@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.VersionControl;
@@ -42,18 +43,20 @@ public class CreateItemWindow : EditorWindow
     void Init()
     {
         LoadPrefs();
-        Debug.Log(itemScriptableObjectClassPath);
         GetItemTypes(out itemTypes);
         if (itemScriptableObjectClassPath == string.Empty)
         {
-            itemScriptableObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBaseSO))[1]);
-            //itemScriptableObjectClassPath = itemScriptableObjectClassPath.Remove(itemScriptableObjectClassPath.Length - (nameof(ItemBaseSO).Length + 3));
+            itemScriptableObjectClassPath = "Assets/RyanSzczepanski/Item/Scripts/ScriptableObjects/";
         }
         if (itemObjectClassPath == string.Empty)
         {
-            itemObjectClassPath = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(nameof(ItemBase))[1]);
-            //itemObjectClassPath = itemObjectClassPath.Remove(itemObjectClassPath.Length - (nameof(ItemBase).Length + 3));
+            itemObjectClassPath = "Assets/RyanSzczepanski/Item/Scripts/Objects/";
         }
+        if (itemScriptableObjectPath == string.Empty)
+        {
+            itemScriptableObjectPath = "Assets/RyanSzczepanski/Item/Resources/SO/";
+        }
+        Debug.Log(itemObjectClassPath);
     }
 
     void GetItemTypes(out List<Type> types)
@@ -121,7 +124,7 @@ public class CreateItemWindow : EditorWindow
         if (!TryGetTargetItemTypeFromTags(itemTags, out Type targetType)) { return; }
 
         newItemName = EditorGUILayout.TextField("Item Name", newItemName);
-        newItemName ??= String.Empty;
+        newItemName ??= string.Empty;
         if (Regex.IsMatch(newItemName, "^(?<ItemName>(?>\\w|[- ])*)$"))
         {
             string[] assetGUIDS = AssetDatabase.FindAssets($"t:ItemBaseSO {newItemName}");
