@@ -24,13 +24,13 @@ public static class DragItemUI
         if (ICON != null) { GameObject.Destroy(ICON); }
 
         BACKGROUND = new GameObject("DraggedItemBackground", typeof(Image));
-        BACKGROUND.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+        BACKGROUND.transform.SetParent(GameObject.FindAnyObjectByType<Canvas>().transform);
         BACKGROUND.GetComponent<RectTransform>().anchorMin = Vector2.up;
         BACKGROUND.GetComponent<RectTransform>().anchorMax = Vector2.up;
         BACKGROUND.SetActive(false);
 
         ICON = new GameObject("DraggedItemIcon", typeof(Image));
-        ICON.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+        ICON.transform.SetParent(GameObject.FindAnyObjectByType<Canvas>().transform);
         ICON.GetComponent<RectTransform>().pivot = new Vector2(.5f, .5f);
         ICON.GetComponent<Image>().preserveAspect = true;
         ICON.SetActive(false);

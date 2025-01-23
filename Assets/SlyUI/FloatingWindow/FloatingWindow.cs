@@ -138,7 +138,6 @@ namespace Szczepanski.UI
             textMeshProUGUI.color = Color.black;
             textMeshProUGUI.fontSize = 18;
             textMeshProUGUI.font = (TMP_FontAsset)Resources.Load("Font/KodeMono-Bold SDF");
-            textMeshProUGUI.enableWordWrapping = false;
             textMeshProUGUI.overflowMode = TextOverflowModes.Ellipsis;
 
 
