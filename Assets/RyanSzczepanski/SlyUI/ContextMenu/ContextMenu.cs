@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 
 namespace Szczepanski.UI
 {
@@ -36,7 +35,7 @@ namespace Szczepanski.UI
 
         private void Update()
         {
-            if ((Mouse.current.leftButton.wasReleasedThisFrame || Mouse.current.rightButton.wasReleasedThisFrame || Mouse.current.middleButton.wasReleasedThisFrame) && lifeSpan == ContextMenuLifeSpan.OnMouseClick)
+            if ((Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2)) && lifeSpan == ContextMenuLifeSpan.OnMouseClick)
             {
                 Close();
             }
