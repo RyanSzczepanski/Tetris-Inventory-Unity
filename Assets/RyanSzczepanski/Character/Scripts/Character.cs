@@ -40,7 +40,7 @@ public class Character : MonoBehaviour
         {
             IInventory itemInventory = equipmentSlot.item as IInventory;
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 ItemBase newItem = (ItemBase)fillItem.CreateItem();
                 if (!itemInventory.Inventory.TryAddItem(newItem)) { break; }
