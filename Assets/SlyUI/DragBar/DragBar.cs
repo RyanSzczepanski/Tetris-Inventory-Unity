@@ -22,7 +22,7 @@ public class DragBar : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDow
     public void OnDrag(PointerEventData eventData)
     {
         if (!DoDrag) { return; }
-        window.transform.position = eventData.position + offset;
+        window.SetPosition(eventData.position + offset);
     }
 
     public void OnEndDrag(PointerEventData eventData)

@@ -74,8 +74,12 @@ namespace Szczepanski.UI
             CreateObjectStructure();
         }
 
-        public void SetPosition(Vector2 targetPosition)
+        public void SetPosition(Vector2 targetPosition, bool pixelPerfect = true)
         {
+            if (pixelPerfect)
+            {
+                targetPosition = new Vector2(Mathf.RoundToInt(targetPosition.x), Mathf.RoundToInt(targetPosition.y));
+            }
             GetComponent<RectTransform>().position = targetPosition;
         }
         public void Resize(Vector2 targetSize)
