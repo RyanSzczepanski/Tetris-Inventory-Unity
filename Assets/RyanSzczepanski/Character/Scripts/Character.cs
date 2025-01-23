@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 public class Character : MonoBehaviour
 {
-    public ItemBasicSO fillItem;
+    public ItemBaseSO fillItem;
     public EquipmentSlot equipmentSlot;
     public ItemBaseSO itemBaseSO;
     public Transform parent;
@@ -42,12 +42,8 @@ public class Character : MonoBehaviour
 
             for (int i = 0; i < 100; i++)
             {
-                ItemBasic newItem = (ItemBasic)fillItem.CreateItem();
-                if (!itemInventory.Inventory.TryAddItem(newItem))
-                {
-                    Debug.Log("Item Not Added");
-                    break;
-                }
+                ItemBase newItem = (ItemBase)fillItem.CreateItem();
+                if (!itemInventory.Inventory.TryAddItem(newItem)) { break; }
             }
         }
     }
