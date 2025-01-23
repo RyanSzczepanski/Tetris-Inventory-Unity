@@ -9,7 +9,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(LayoutElement))]
 public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-
     public SubInventory SubInventory { get; private set; }
     public InventoryCellDrawSettings drawSettings;
 
@@ -89,9 +88,6 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                ItemBaseSO itemSO = ItemDB.GetObjectByName("Test Rig 1");
-                bool isRotated = Input.GetKey(KeyCode.LeftShift);
-                SubInventory.TryAddItem(itemSO.CreateItem(), targetGridCoordinate, isRotated);
 
                 break;
             case PointerEventData.InputButton.Middle:

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c229a9264b90df446a7c1b3883702946, type: 3}
-  m_Name: Basic Item
+  m_Name: Basic Item 2x2
   m_EditorClassIdentifier: 
-  m_FullName: Basic Item
-  m_ShortName: Basic Item
-  m_Description: Item Summary
-  m_Value: 0
-  m_Weight: 1
-  m_Size: {x: 1, y: 1}
-  m_Icon: {fileID: 0}
+  m_FullName: Basic Item 2x2
+  m_ShortName: Basic Item 2x2
+  m_Description: Basic Item 2x2
+  m_Value: 4
+  m_Weight: 4
+  m_Size: {x: 2, y: 2}
+  m_Icon: {fileID: 21300000, guid: f5d5b410cce6d0a4ba9591fad39b1cbe, type: 3}
