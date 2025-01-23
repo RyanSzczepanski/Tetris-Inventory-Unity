@@ -14,6 +14,7 @@ public class InventoryUIManager : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 10000;
         if (INSTANCE == null) { INSTANCE = this; }
         else { Destroy(this); }
 

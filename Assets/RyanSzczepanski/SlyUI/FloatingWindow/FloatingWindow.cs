@@ -76,8 +76,12 @@ namespace Szczepanski.UI
             Resize(settings.windowSize);
         }
 
-        public void SetPosition(Vector2 targetPosition)
+        public void SetPosition(Vector2 targetPosition, bool pixelPerfect = true)
         {
+            if (pixelPerfect)
+            {
+                targetPosition = new Vector2(Mathf.RoundToInt(targetPosition.x), Mathf.RoundToInt(targetPosition.y));
+            }
             GetComponent<RectTransform>().position = targetPosition;
         }
         public void Resize(Vector2 targetSize)
@@ -140,7 +144,6 @@ namespace Szczepanski.UI
             textMeshProUGUI.color = Color.black;
             textMeshProUGUI.fontSize = 18;
             textMeshProUGUI.font = (TMP_FontAsset)Resources.Load("Font/KodeMono-Bold SDF");
-            textMeshProUGUI.textWrappingMode = TextWrappingModes.NoWrap;
             textMeshProUGUI.overflowMode = TextOverflowModes.Ellipsis;
 
 

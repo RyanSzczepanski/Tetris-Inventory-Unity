@@ -18,7 +18,7 @@ MonoBehaviour:
   m_Value: 0
   m_Weight: 0
   m_Size: {x: 0, y: 0}
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 21300000, guid: af48a047788ca234f9f30f61ffad7c22, type: 3}
   m_SubInventoryArrangements:
     alignment: 0
     direction: 0

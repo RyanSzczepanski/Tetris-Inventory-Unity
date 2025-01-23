@@ -1,4 +1,4 @@
-using UnityEngine;
+    using UnityEngine;
 using Szczepanski.UI;
 using UnityEngine.UI;
 
@@ -8,8 +8,6 @@ public class Character : MonoBehaviour
     public EquipmentSlot equipmentSlot;
     public ItemBaseSO itemBaseSO;
     public Transform parent;
-
-    [SerializeField] GraphicRaycaster m_Raycaster;
 
     private void Awake()
     {
@@ -42,7 +40,8 @@ public class Character : MonoBehaviour
 
             for (int i = 0; i < 10000; i++)
             {
-                if (!itemInventory.Inventory.TryAddItem(fillItem.CreateItem())) { break; }
+                ItemBase newItem = (ItemBase)fillItem.CreateItem();
+                if (!itemInventory.Inventory.TryAddItem(newItem)) { break; }
             }
         }
     }

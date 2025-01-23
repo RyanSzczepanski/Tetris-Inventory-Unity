@@ -232,3 +232,11 @@ public class SubInventory
         return true;
     }
 }
+
+//TODO: Rename this it doesnt quite make sense
+public struct ItemData
+{
+    public bool isRotated;
+    public Vector2Int gridCoordinate;
+    public SubInventory subInventory;
+}
