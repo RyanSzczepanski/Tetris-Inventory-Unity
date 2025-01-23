@@ -3,12 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [System.Serializable]
-public class InventoryDataTest
-{
-    public Vector2Int[] subInventories;
-}
-
-[System.Serializable]
 public struct SubInventoryArrangement
 {
     [HideIf("IsLeaf")]

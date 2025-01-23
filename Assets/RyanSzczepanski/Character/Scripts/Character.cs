@@ -1,4 +1,4 @@
-using UnityEngine;
+    using UnityEngine;
 using Szczepanski.UI;
 using System.Dynamic;
 using Unity.VisualScripting;
@@ -38,12 +38,16 @@ public class Character : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ItemInventory itemInventory = equipmentSlot.item as ItemInventory;
+            IInventory itemInventory = equipmentSlot.item as IInventory;
 
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 ItemBasic newItem = (ItemBasic)fillItem.CreateItem();
-                if (!itemInventory.Inventory.TryAddItem(newItem)) { break; }
+                if (!itemInventory.Inventory.TryAddItem(newItem))
+                {
+                    Debug.Log("Item Not Added");
+                    break;
+                }
             }
         }
     }

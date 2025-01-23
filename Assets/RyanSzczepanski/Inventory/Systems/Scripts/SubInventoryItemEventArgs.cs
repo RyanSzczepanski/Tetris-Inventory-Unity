@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SubInventoryItemAddedEventArgs : EventArgs
@@ -29,7 +27,6 @@ public class SubInventoryItemRemovedEventArgs : EventArgs
 {
     public ItemBase Item { get; set; }
 }
-
 
 public class ItemRemovedEventArgs
 {
