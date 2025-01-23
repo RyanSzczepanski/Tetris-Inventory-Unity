@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace Szczepanski.UI
 {
@@ -33,20 +34,28 @@ namespace Szczepanski.UI
             GenerateContextMenu();
         }
 
+        private void Update()
+        {
+            if ((Mouse.current.leftButton.wasReleasedThisFrame || Mouse.current.rightButton.wasReleasedThisFrame || Mouse.current.middleButton.wasReleasedThisFrame) && lifeSpan == ContextMenuLifeSpan.OnMouseClick)
+            {
+                Close();
+            }
+        }
+
         private void GenerateContextMenu()
         {
             float maxSize = 0;
             foreach (ContextMenuOption option in options)
             {
                 GameObject cmObject = option.GenerateContextMenuObject(transform);
-                cmObject.GetComponentInChildren<Button>().OnButtonClicked += option.ContextMenuClicked;
+                cmObject.GetComponentInChildren<UnityEngine.UI.Button>().onClick.AddListener(option.ContextMenuClicked);
                 if (sizeFit == ContextMenuSizeFit.ToLargestElement)
                 {
                     maxSize = Mathf.Max(cmObject.GetComponentInChildren<TextMeshProUGUI>().preferredWidth, maxSize);
                 }
                 if (lifeSpan == ContextMenuLifeSpan.OnOptionSelect)
                 {
-                    cmObject.GetComponentInChildren<Button>().OnButtonClicked += Close;
+                    cmObject.GetComponentInChildren<UnityEngine.UI.Button>().onClick.AddListener(Close);
                 }
             }
             if (sizeFit == ContextMenuSizeFit.ToLargestElement)
@@ -76,6 +85,7 @@ namespace Szczepanski.UI
         Manual,
         Time,
         OnOptionSelect,
+        OnMouseClick,
     }
     public enum ContextMenuSizeFit
     {

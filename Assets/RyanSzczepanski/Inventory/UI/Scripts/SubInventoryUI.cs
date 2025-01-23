@@ -116,7 +116,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
                 GameObject CMObject = ContextMenuFactory.CreateContextMenu(GetComponentInParent<Canvas>().transform, new ContextMenuSettings
                 {
-                    lifeSpan = ContextMenuLifeSpan.OnOptionSelect,
+                    lifeSpan = ContextMenuLifeSpan.OnMouseClick,
                     sizeFit = ContextMenuSizeFit.ToLargestElement,
                     options = slot.ItemInSlot.ContextMenuOptions,
                 });

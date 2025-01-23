@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Text.RegularExpressions;
 using UnityEditor;
-using UnityEditor.VersionControl;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class CreateItemWindow
 {

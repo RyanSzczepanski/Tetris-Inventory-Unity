@@ -1,12 +1,6 @@
 using UnityEngine;
 using Szczepanski.UI;
-using System.Dynamic;
-using Unity.VisualScripting;
-using System.Runtime.InteropServices;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System.Data.Common;
 
 public class Character : MonoBehaviour
 {

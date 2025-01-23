@@ -32,6 +32,14 @@ namespace Szczepanski.UI
             contextMenuObjectText.GetComponent<TextMeshProUGUI>().color = Color.black;
             contextMenuObjectText.GetComponent<TextMeshProUGUI>().text = optionText;
             contextMenuObjectText.GetComponent<TextMeshProUGUI>().font = Resources.Load<TMP_FontAsset>("Font/KodeMono-Bold SDF");
+            contextMenuObject.GetComponent<Button>().colors = new ColorBlock()
+            {
+                colorMultiplier = 1,
+                normalColor = Color.white,
+                selectedColor = Color.black,
+                highlightedColor = Color.red,
+                pressedColor = Color.green,
+            };
             return contextMenuObject;
         }
     }
