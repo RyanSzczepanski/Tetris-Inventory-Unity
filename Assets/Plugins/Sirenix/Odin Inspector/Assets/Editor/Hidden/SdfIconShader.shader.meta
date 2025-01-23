@@ -1,8 +1,9 @@
 fileFormatVersion: 2
-guid: 90eaa0dc28c1934408dc1c02e13a507f
-timeCreated: 1628274352
-licenseType: Store
-TextScriptImporter:
+guid: 99e0f263ae4ed2d4d962a2e995dff6df
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -11,5 +12,5 @@ AssetOrigin:
   productId: 89041
   packageName: Odin Inspector and Serializer
   packageVersion: 3.3.1.11
-  assetPath: Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/ConfigData.bytes
+  assetPath: Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/SdfIconShader.shader
   uploadId: 712389
