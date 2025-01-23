@@ -4,8 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - inspectorAssets: {fileID: 11400000, guid: 74b18966d6e55de4ab6b71f7aa14e8db, type: 2}
-  - tag: {fileID: 9197481963319205126, guid: ffc7dab84f8c2654295898f078c03ca4, type: 3}
+  - inspectorAssets: {fileID: 11400000, guid: 791aad3397e78e7439e7a5b5c0da3acd, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
