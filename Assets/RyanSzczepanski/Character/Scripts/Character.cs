@@ -3,6 +3,10 @@ using Szczepanski.UI;
 using System.Dynamic;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Data.Common;
 
 public class Character : MonoBehaviour
 {
@@ -10,6 +14,8 @@ public class Character : MonoBehaviour
     public EquipmentSlot equipmentSlot;
     public ItemBaseSO itemBaseSO;
     public Transform parent;
+
+    [SerializeField] GraphicRaycaster m_Raycaster;
 
     private void Awake()
     {
@@ -42,8 +48,7 @@ public class Character : MonoBehaviour
 
             for (int i = 0; i < 10000; i++)
             {
-                ItemBase newItem = (ItemBase)fillItem.CreateItem();
-                if (!itemInventory.Inventory.TryAddItem(newItem)) { break; }
+                if (!itemInventory.Inventory.TryAddItem(fillItem.CreateItem())) { break; }
             }
         }
     }
