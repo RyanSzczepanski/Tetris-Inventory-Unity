@@ -170,23 +170,21 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
         RaycastResult result = results.Find(r => r.gameObject.GetComponent<SubInventoryUI>());
-        if (!result.isValid)
+        if (result.isValid)
         {
-            DragItemUI.EndDrag();
-            return;
+            SubInventoryUI targetSubInventoryUI = result.gameObject.GetComponent<SubInventoryUI>();
+
+            Vector2Int itemSize = isRotated ? new Vector2Int(targetItem.Data.Size.y, targetItem.Data.Size.x) : targetItem.Data.Size;
+
+            Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position - SlotAndItemCenteringOffset(itemSize, drawSettings) * GetComponentInParent<Canvas>().scaleFactor);
+            targetCoordinate.Clamp(Vector2Int.zero, new Vector2Int(SubInventory.Size.x - itemSize.x, SubInventory.Size.y - itemSize.y));
+
+            SubInventory.TryMoveItem(targetItem, targetSubInventoryUI.SubInventory, targetCoordinate, isRotated, originGridCoordinate, originRotatedStatus);
         }
-        SubInventoryUI targetSubInventoryUI = result.gameObject.GetComponent<SubInventoryUI>();
-
-        Vector2Int itemSize = isRotated ? new Vector2Int(targetItem.Data.Size.y, targetItem.Data.Size.x) : targetItem.Data.Size;
-
-        Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position - SlotAndItemCenteringOffset(itemSize, drawSettings) * GetComponentInParent<Canvas>().scaleFactor);
-        targetCoordinate.Clamp(Vector2Int.zero, new Vector2Int(SubInventory.Size.x - itemSize.x, SubInventory.Size.y - itemSize.y));
-
-        SubInventory.TryMoveItem(targetItem, targetSubInventoryUI.SubInventory, targetCoordinate, isRotated, originGridCoordinate, originRotatedStatus);
 
         DragItemUI.EndDrag();
 
-        targetItemUI?.SetBackgroundActive(false);
+        targetItemUI?.SetBackgroundActive(true);
 
         targetItem = null;
         isRotated = false;

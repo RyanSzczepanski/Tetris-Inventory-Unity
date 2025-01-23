@@ -9,8 +9,8 @@ public static class DragItemUI
     private static bool IS_ROTATED;
     private static Vector2Int ITEM_SIZE { get => IS_ROTATED ? new Vector2Int(ITEM.Data.Size.y, ITEM.Data.Size.x) : ITEM.Data.Size; }
 
-    private static GameObject BACKGROUND;
-    private static GameObject ICON;
+    private static GameObject DRAGGED_BACKGROUND;
+    private static GameObject DRAGGED_ICON;
 
     private static Color VALID_PLACEMENT = new Color(0,1,0,.25f);
     private static Color INVALID_PLACEMENT = new Color(1, 0, 0, .25f);
@@ -20,34 +20,34 @@ public static class DragItemUI
     {
         DRAW_SETTINGS = drawSettings;
 
-        if (BACKGROUND != null) { GameObject.Destroy(BACKGROUND); }
-        if (ICON != null) { GameObject.Destroy(ICON); }
+        if (DRAGGED_BACKGROUND != null) { GameObject.Destroy(DRAGGED_BACKGROUND); }
+        if (DRAGGED_ICON != null) { GameObject.Destroy(DRAGGED_ICON); }
 
-        BACKGROUND = new GameObject("DraggedItemBackground", typeof(Image));
-        BACKGROUND.transform.SetParent(GameObject.FindAnyObjectByType<Canvas>().transform);
-        BACKGROUND.GetComponent<RectTransform>().anchorMin = Vector2.up;
-        BACKGROUND.GetComponent<RectTransform>().anchorMax = Vector2.up;
-        BACKGROUND.SetActive(false);
+        DRAGGED_BACKGROUND = new GameObject("DraggedItemBackground", typeof(Image));
+        DRAGGED_BACKGROUND.transform.SetParent(GameObject.FindAnyObjectByType<Canvas>().transform);
+        DRAGGED_BACKGROUND.GetComponent<RectTransform>().anchorMin = Vector2.up;
+        DRAGGED_BACKGROUND.GetComponent<RectTransform>().anchorMax = Vector2.up;
+        DRAGGED_BACKGROUND.SetActive(false);
 
-        ICON = new GameObject("DraggedItemIcon", typeof(Image));
-        ICON.transform.SetParent(GameObject.FindAnyObjectByType<Canvas>().transform);
-        ICON.GetComponent<RectTransform>().pivot = new Vector2(.5f, .5f);
-        ICON.GetComponent<Image>().preserveAspect = true;
-        ICON.SetActive(false);
+        DRAGGED_ICON = new GameObject("DraggedItemIcon", typeof(Image));
+        DRAGGED_ICON.transform.SetParent(GameObject.FindAnyObjectByType<Canvas>().transform);
+        DRAGGED_ICON.GetComponent<RectTransform>().pivot = new Vector2(.5f, .5f);
+        DRAGGED_ICON.GetComponent<Image>().preserveAspect = true;
+        DRAGGED_ICON.SetActive(false);
     }
 
     public static void OnDrag(SubInventoryUI hoveredSubInventory = null)
     {
-        ICON.GetComponent<RectTransform>().position = Input.mousePosition;
+        DRAGGED_ICON.GetComponent<RectTransform>().position = Input.mousePosition;
         if (hoveredSubInventory != null)
         {
-            BACKGROUND.GetComponent<RectTransform>().position = hoveredSubInventory.ScreenPositionToGridSnapScreenPosition((Vector2)Input.mousePosition - SubInventoryUI.SlotAndItemCenteringOffset(ITEM_SIZE, DRAW_SETTINGS) * hoveredSubInventory.GetComponentInParent<Canvas>().scaleFactor, ITEM_SIZE);
+            DRAGGED_BACKGROUND.GetComponent<RectTransform>().position = hoveredSubInventory.ScreenPositionToGridSnapScreenPosition((Vector2)Input.mousePosition - SubInventoryUI.SlotAndItemCenteringOffset(ITEM_SIZE, DRAW_SETTINGS) * hoveredSubInventory.GetComponentInParent<Canvas>().scaleFactor, ITEM_SIZE);
             SetBackgroundColor(hoveredSubInventory);
-            BACKGROUND.SetActive(true);
+            DRAGGED_BACKGROUND.SetActive(true);
         }
         else
         {
-            BACKGROUND.SetActive(false);
+            DRAGGED_BACKGROUND.SetActive(false);
         }
     }
 
@@ -56,30 +56,29 @@ public static class DragItemUI
         ITEM = item;
         IS_ROTATED = ITEM.IsRotated;
 
-        BACKGROUND.transform.SetAsLastSibling();
-        BACKGROUND.transform.eulerAngles = new Vector3(0, 0, 0);
-        BACKGROUND.GetComponent<RectTransform>().sizeDelta = ITEM_SIZE * DRAW_SETTINGS._cellSize;
-        BACKGROUND.GetComponent<RectTransform>().pivot = Vector2.up;
+        DRAGGED_BACKGROUND.transform.SetAsLastSibling();
+        DRAGGED_BACKGROUND.transform.eulerAngles = new Vector3(0, 0, 0);
+        DRAGGED_BACKGROUND.GetComponent<RectTransform>().sizeDelta = ITEM_SIZE * DRAW_SETTINGS._cellSize;
+        DRAGGED_BACKGROUND.GetComponent<RectTransform>().pivot = Vector2.up;
 
-        ICON.transform.SetAsLastSibling();
-        ICON.transform.eulerAngles = IS_ROTATED ? new Vector3(0, 0, 90) : new Vector3(0, 0, 0);
-        ICON.GetComponent<RectTransform>().sizeDelta = ITEM.Data.Size * DRAW_SETTINGS._cellSize;
-        ICON.GetComponent<Image>().sprite = ITEM.Data.Icon;
-        ICON.SetActive(true);
+        DRAGGED_ICON.transform.SetAsLastSibling();
+        DRAGGED_ICON.transform.eulerAngles = IS_ROTATED ? new Vector3(0, 0, 90) : new Vector3(0, 0, 0);
+        DRAGGED_ICON.GetComponent<RectTransform>().sizeDelta = ITEM.Data.Size * DRAW_SETTINGS._cellSize;
+        DRAGGED_ICON.GetComponent<Image>().sprite = ITEM.Data.Icon;
+        DRAGGED_ICON.SetActive(true);
     }
     public static void EndDrag()
     {
-        BACKGROUND.SetActive(false);
-
-        ICON.SetActive(false);
+        DRAGGED_BACKGROUND.SetActive(false);
+        DRAGGED_ICON.SetActive(false);
     }
 
     public static void Rotate()
     {
-        BACKGROUND.transform.eulerAngles = BACKGROUND.transform.eulerAngles.z == 0 ? new Vector3(0, 0, 90) : new Vector3(0, 0, 0);
-        BACKGROUND.GetComponent<RectTransform>().pivot = BACKGROUND.GetComponent<RectTransform>().pivot == Vector2.up ? Vector2.one : Vector2.up;
+        DRAGGED_BACKGROUND.transform.eulerAngles = DRAGGED_BACKGROUND.transform.eulerAngles.z == 0 ? new Vector3(0, 0, 90) : new Vector3(0, 0, 0);
+        DRAGGED_BACKGROUND.GetComponent<RectTransform>().pivot = DRAGGED_BACKGROUND.GetComponent<RectTransform>().pivot == Vector2.up ? Vector2.one : Vector2.up;
 
-        ICON.transform.eulerAngles = ICON.transform.eulerAngles.z == 0 ? new Vector3(0, 0, 90) : new Vector3(0, 0, 0);
+        DRAGGED_ICON.transform.eulerAngles = DRAGGED_ICON.transform.eulerAngles.z == 0 ? new Vector3(0, 0, 90) : new Vector3(0, 0, 0);
 
         IS_ROTATED = !IS_ROTATED;
         OnDrag();
@@ -90,6 +89,6 @@ public static class DragItemUI
         Vector2Int targetCoord = targetSubInventoryUI.GridCoordinateFromScreenPosition((Vector2)Input.mousePosition - SubInventoryUI.SlotAndItemCenteringOffset(ITEM_SIZE, DRAW_SETTINGS) * targetSubInventoryUI.GetComponentInParent<Canvas>().scaleFactor);
         Vector2Int maxClamp = new Vector2Int(targetSubInventoryUI.SubInventory.Size.x - ITEM_SIZE.x, targetSubInventoryUI.SubInventory.Size.y - ITEM_SIZE.y);
         targetCoord.Clamp(Vector2Int.zero, maxClamp);
-        BACKGROUND.GetComponent<Image>().color = targetSubInventoryUI.SubInventory.CanMoveItem(ITEM, targetSubInventoryUI.SubInventory, targetCoord, IS_ROTATED) ? VALID_PLACEMENT : INVALID_PLACEMENT;
+        DRAGGED_BACKGROUND.GetComponent<Image>().color = targetSubInventoryUI.SubInventory.CanMoveItem(ITEM, targetSubInventoryUI.SubInventory, targetCoord, IS_ROTATED) ? VALID_PLACEMENT : INVALID_PLACEMENT;
     }
 }

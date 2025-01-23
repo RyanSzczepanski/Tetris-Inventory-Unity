@@ -725,7 +725,7 @@ MonoBehaviour:
     equipmentType: 0
     item:
       <Data>k__BackingField: {fileID: 0}
-  itemBaseSO: {fileID: 11400000, guid: df5f436a2cad5374f827f851c659d831, type: 2}
+  itemBaseSO: {fileID: 11400000, guid: 33cc7eaf2fc097b4399c0dcac5fca040, type: 2}
   parent: {fileID: 1549034964}
 --- !u!4 &1883593043
 Transform:
