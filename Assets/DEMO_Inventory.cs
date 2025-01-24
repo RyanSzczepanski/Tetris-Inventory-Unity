@@ -51,7 +51,8 @@ public class DEMO_Inventory : MonoBehaviour
                 for (int i = 0; i < 5; i++)
                 {
                     tempNewItem = ItemDB.GetObjectByName("T20 Backpack").CreateItem();
-                    targetSubInv.TryAddItem(tempNewItem, targetGridCoordinate, isRotated);
+                    targetSubInv.TryAddItem(tempNewItem, targetGridCoordinate, false);
+                    targetGridCoordinate = new Vector2Int(0, 0);
                     targetSubInv = (tempNewItem as IInventory).Inventory.SubInventories[0];
                 }
                 IInventory.OpenUI(tempNewItem, InventoryUIManager.CANVAS.transform);
