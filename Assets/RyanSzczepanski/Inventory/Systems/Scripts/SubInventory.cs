@@ -86,10 +86,12 @@ public class SubInventory
     }
     private bool SelfInsertCheck(ItemBase item)
     {
-        if (ParentInventory.ParentItem == item) { return false; }
-        if (ParentInventory.ParentItem.ParentSubInventory != null)
+        SubInventory subInventory = ParentInventory.ParentItem.ParentSubInventory;
+        while (subInventory != null)
         {
-            return ParentInventory.ParentItem.ParentSubInventory.SelfInsertCheck(item);
+            ItemBase parentItem = subInventory.ParentInventory.ParentItem;
+            if (parentItem == item) { return false; }
+            subInventory = parentItem.ParentSubInventory;
         }
         return true;
     }

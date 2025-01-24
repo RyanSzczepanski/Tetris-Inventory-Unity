@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae74b06eac906e744b87f0af56981307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newItem: {fileID: 11400000, guid: 93c019876f8a25a4982736833883c289, type: 2}
+  newItem: {fileID: 11400000, guid: df5f436a2cad5374f827f851c659d831, type: 2}
 --- !u!4 &410911362
 Transform:
   m_ObjectHideFlags: 0
@@ -225,7 +225,7 @@ MonoBehaviour:
   m_text: "Key Binds\n\n  Tab    - Open Backpack\n  Return - Generate New Backpack\n 
     Space  - Fill Backpack With 1x1 Items\n\n  Left Mouse Click  - Spawn 3x2 Test
     Rig\n  Left Mouse Drag   - Drags Item\n  Right Mouse Click - Open Items Context
-    Menu\n  Mouse Wheel Click - Console Log Item Details\n  \n  Left Mouse Click
+    Menu\n  Mouse Wheel Click - Creates Backpack Stack 5 Deep\n  \n  Left Mouse Click
     + Shift Spawns Item Rotated\n  Pressing R While Dragging Item Will Rotate It\n  "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 335fa30dba13fa045ab1c509ceaa4687, type: 2}

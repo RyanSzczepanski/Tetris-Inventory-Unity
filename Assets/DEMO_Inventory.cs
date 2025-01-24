@@ -33,5 +33,29 @@ public class DEMO_Inventory : MonoBehaviour
                 subInventoryUI.SubInventory.TryAddItem(newItem.CreateItem(), targetGridCoordinate, isRotated);
             }
         }
+        if (Input.GetMouseButtonDown(2))
+        {
+            raycastResults.Clear();
+            PointerEventData m_PointerData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+            m_Raycaster.Raycast(m_PointerData, raycastResults);
+
+            if (raycastResults.Count <= 0) { return; }
+            if (raycastResults[0].gameObject.TryGetComponent(out SubInventoryUI subInventoryUI))
+            {
+                var targetGridCoordinate = subInventoryUI.GridCoordinateFromScreenPosition(m_PointerData.position);
+
+                bool isRotated = Input.GetKey(KeyCode.LeftShift);
+                
+                SubInventory targetSubInv = subInventoryUI.SubInventory;
+                ItemBase tempNewItem = null;
+                for (int i = 0; i < 5; i++)
+                {
+                    tempNewItem = ItemDB.GetObjectByName("T20 Backpack").CreateItem();
+                    targetSubInv.TryAddItem(tempNewItem, targetGridCoordinate, isRotated);
+                    targetSubInv = (tempNewItem as IInventory).Inventory.SubInventories[0];
+                }
+                IInventory.OpenUI(tempNewItem, InventoryUIManager.CANVAS.transform);
+            }
+        }
     }
 }
