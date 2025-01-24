@@ -86,7 +86,7 @@ public class SubInventory
     }
     private bool SelfInsertCheck(ItemBase item)
     {
-        SubInventory subInventory = ParentInventory.ParentItem.ParentSubInventory;
+        SubInventory subInventory = this;
         while (subInventory != null)
         {
             ItemBase parentItem = subInventory.ParentInventory.ParentItem;
