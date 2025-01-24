@@ -85,24 +85,6 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
             case PointerEventData.InputButton.Left:
                 break;
             case PointerEventData.InputButton.Middle:
-                if (slot.IsOccupied)
-                {
-                    if (Input.GetKey(KeyCode.LeftShift))
-                    {
-                        Debug.Log($"{slot.ItemInSlot.GetHashCode()}");
-                    }
-                    else
-                    {
-                        ItemBase itemInSlot = SubInventory.Slots[targetGridCoordinate.x, targetGridCoordinate.y].ItemInSlot;
-                        string log = $"{itemInSlot}\n   Origin Coordinate: {SubInventory.GetItemOriginSlot(itemInSlot)}";
-                        Debug.Log(log);
-                    }
-                }
-                else
-                {
-                    Debug.Log($"Empty");
-                }
-
                 break;
             case PointerEventData.InputButton.Right:
                 if (!slot.IsOccupied) { break; }

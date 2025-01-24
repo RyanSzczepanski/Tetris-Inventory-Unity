@@ -16,7 +16,7 @@ public class ItemBase
     {
         get => new ContextMenuOption[2]
         {
-            new ContextMenuOption { optionText = "Inspect", OnSelected = () => throw new System.NotImplementedException("Inspect Item Not Implemented")},
+            new ContextMenuOption { optionText = "Inspect", OnSelected = () => Debug.Log(this)},
             new ContextMenuOption { optionText = "Discard", OnSelected = () => ParentSubInventory.TryRemoveItem(this)},
         };
     }
