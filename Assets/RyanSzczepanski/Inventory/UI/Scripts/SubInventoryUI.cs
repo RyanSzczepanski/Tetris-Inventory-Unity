@@ -160,7 +160,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
             Vector2Int itemSize = isRotated ? new Vector2Int(targetItem.Data.Size.y, targetItem.Data.Size.x) : targetItem.Data.Size;
 
             Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position - SlotAndItemCenteringOffset(itemSize, drawSettings) * GetComponentInParent<Canvas>().scaleFactor);
-            targetCoordinate.Clamp(Vector2Int.zero, new Vector2Int(SubInventory.Size.x - itemSize.x, SubInventory.Size.y - itemSize.y));
+            targetCoordinate.Clamp(Vector2Int.zero, new Vector2Int(targetSubInventoryUI.SubInventory.Size.x - itemSize.x, targetSubInventoryUI.SubInventory.Size.y - itemSize.y));
 
             SubInventory.TryMoveItem(targetItem, targetSubInventoryUI.SubInventory, targetCoordinate, isRotated);
         }

@@ -8,6 +8,8 @@ public class DEMO_Inventory : MonoBehaviour
     GraphicRaycaster m_Raycaster;
     List<RaycastResult> raycastResults = new();
 
+    [SerializeField] ItemBaseSO newItem;
+
     private void Awake()
     {
         m_Raycaster = FindAnyObjectByType<GraphicRaycaster>();
@@ -26,9 +28,9 @@ public class DEMO_Inventory : MonoBehaviour
             {
                 var targetGridCoordinate = subInventoryUI.GridCoordinateFromScreenPosition(m_PointerData.position);
 
-                ItemBaseSO itemSO = ItemDB.GetObjectByName("Test Rig 1");
+                newItem ??= ItemDB.GetObjectByName("Test Rig 1");
                 bool isRotated = Input.GetKey(KeyCode.LeftShift);
-                subInventoryUI.SubInventory.TryAddItem(itemSO.CreateItem(), targetGridCoordinate, isRotated);
+                subInventoryUI.SubInventory.TryAddItem(newItem.CreateItem(), targetGridCoordinate, isRotated);
             }
         }
     }
