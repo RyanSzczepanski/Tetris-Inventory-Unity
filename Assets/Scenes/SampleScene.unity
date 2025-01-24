@@ -222,10 +222,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Key Binds\n\n  Tab    - Open Backpack\n  Return - Generate New Backpack\n 
-    Space  - Fill Backpack With 1x1 Items\n\n  Left Mouse Click  - Spawn 3x2 Item\n 
-    Left Mouse Drag   - Drags Item\n  Right Mouse Click - Destroy Hovered Item\n 
-    Mouse Wheel Click - Console Log Item Details\n  \n  Left Mouse Click + Shift
-    Spawns Item Rotated\n  Pressing R While Dragging Item Will Rotate It\n  "
+    Space  - Fill Backpack With 1x1 Items\n\n  Left Mouse Click  - Spawn 3x2 Test
+    Rig\n  Left Mouse Drag   - Drags Item\n  Right Mouse Click - Open Items Context
+    Menu\n  Mouse Wheel Click - Console Log Item Details\n  \n  Left Mouse Click
+    + Shift Spawns Item Rotated\n  Pressing R While Dragging Item Will Rotate It\n  "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 335fa30dba13fa045ab1c509ceaa4687, type: 2}
   m_sharedMaterial: {fileID: -7901250662334377243, guid: 335fa30dba13fa045ab1c509ceaa4687, type: 2}

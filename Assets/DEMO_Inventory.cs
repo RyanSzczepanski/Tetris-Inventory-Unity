@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Szczepanski.UI;
 
 public class DEMO_Inventory : MonoBehaviour
 {
@@ -20,13 +18,11 @@ public class DEMO_Inventory : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             raycastResults.Clear();
-            PointerEventData m_PointerData = new PointerEventData(EventSystem.current);
-            m_PointerData.position = Input.mousePosition;
-
+            PointerEventData m_PointerData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
             m_Raycaster.Raycast(m_PointerData, raycastResults);
 
             if (raycastResults.Count <= 0) { return; }
-            if (raycastResults[0].gameObject.TryGetComponent<SubInventoryUI>(out SubInventoryUI subInventoryUI))
+            if (raycastResults[0].gameObject.TryGetComponent(out SubInventoryUI subInventoryUI))
             {
                 var targetGridCoordinate = subInventoryUI.GridCoordinateFromScreenPosition(m_PointerData.position);
 

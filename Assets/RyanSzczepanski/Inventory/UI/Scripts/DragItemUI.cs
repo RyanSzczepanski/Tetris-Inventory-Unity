@@ -89,6 +89,6 @@ public static class DragItemUI
         Vector2Int targetCoord = targetSubInventoryUI.GridCoordinateFromScreenPosition((Vector2)Input.mousePosition - SubInventoryUI.SlotAndItemCenteringOffset(ITEM_SIZE, DRAW_SETTINGS) * targetSubInventoryUI.GetComponentInParent<Canvas>().scaleFactor);
         Vector2Int maxClamp = new Vector2Int(targetSubInventoryUI.SubInventory.Size.x - ITEM_SIZE.x, targetSubInventoryUI.SubInventory.Size.y - ITEM_SIZE.y);
         targetCoord.Clamp(Vector2Int.zero, maxClamp);
-        DRAGGED_BACKGROUND.GetComponent<Image>().color = targetSubInventoryUI.SubInventory.CanMoveItem(ITEM, targetSubInventoryUI.SubInventory, targetCoord, IS_ROTATED) ? VALID_PLACEMENT : INVALID_PLACEMENT;
+        DRAGGED_BACKGROUND.GetComponent<Image>().color = targetSubInventoryUI.SubInventory.CanAddItem(ITEM, targetCoord, IS_ROTATED) ? VALID_PLACEMENT : INVALID_PLACEMENT;
     }
 }

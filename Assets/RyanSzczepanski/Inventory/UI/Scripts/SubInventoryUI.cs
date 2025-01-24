@@ -59,20 +59,12 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         ItemUI.Generate(args.Item, this, args.TargetCellCoordinate);
 
     }
-    public void OnItemMoved(object source, SubInventoryItemMovedEventArgs args)
-    {
-        
-    }
     public void OnItemRemoved(object source, SubInventoryItemRemovedEventArgs args)
     {
 
     }
 
-
     bool isDraggingItem;
-
-    Vector2Int originGridCoordinate;
-    bool originRotatedStatus;
     bool isRotated;
 
     ItemBase targetItem;
@@ -81,7 +73,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //TODO: Think about wether or not this logic should be moved to ItemUI
+        //TODO: Think about whether or not this logic should be moved to ItemUI
         //Does it make more sence b/c you are clicking on the item or should it stay here b/c you are going to need to have sub inventory data
 
         //Should move remove item function to the item to allow for discarding of the item being tied to the item its self rather than the slot it was in on the start of the interaction
@@ -135,7 +127,6 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         if (targetItem == null) { return; }
 
         isRotated = targetItem.IsRotated;
-        originGridCoordinate = SubInventory.GetItemOriginSlot(targetItem);
 
         DragItemUI.BeginDrag(targetItem);
 
@@ -143,7 +134,6 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         targetItemUI?.SetBackgroundActive(false);
 
         isDraggingItem = true;
-        originRotatedStatus = targetItem.IsRotated;
     }
     public void OnDrag(PointerEventData eventData)
     {
@@ -151,8 +141,9 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
         RaycastResult result = results.Find(r => r.gameObject.GetComponent<SubInventoryUI>());
-        if (!result.isValid) { DragItemUI.OnDrag(); return; }
-        DragItemUI.OnDrag(result.gameObject.GetComponent<SubInventoryUI>());
+
+        if (result.isValid) { DragItemUI.OnDrag(result.gameObject.GetComponent<SubInventoryUI>()); }
+        else { DragItemUI.OnDrag(); }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
@@ -171,7 +162,7 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
             Vector2Int targetCoordinate = targetSubInventoryUI.GridCoordinateFromScreenPosition(eventData.position - SlotAndItemCenteringOffset(itemSize, drawSettings) * GetComponentInParent<Canvas>().scaleFactor);
             targetCoordinate.Clamp(Vector2Int.zero, new Vector2Int(SubInventory.Size.x - itemSize.x, SubInventory.Size.y - itemSize.y));
 
-            SubInventory.TryMoveItem(targetItem, targetSubInventoryUI.SubInventory, targetCoordinate, isRotated, originGridCoordinate, originRotatedStatus);
+            SubInventory.TryMoveItem(targetItem, targetSubInventoryUI.SubInventory, targetCoordinate, isRotated);
         }
 
         DragItemUI.EndDrag();
@@ -249,13 +240,11 @@ public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler,
     private void Subscribe()
     {
         SubInventory.ItemAdded += OnItemAdded;
-        SubInventory.ItemMoved += OnItemMoved;
         SubInventory.ItemRemoved += OnItemRemoved;
     }
     private void Unsubscribe()
     {
         SubInventory.ItemAdded -= OnItemAdded;
-        SubInventory.ItemMoved -= OnItemMoved;
         SubInventory.ItemRemoved -= OnItemRemoved;
     }
 }
