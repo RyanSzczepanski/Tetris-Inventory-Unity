@@ -23,7 +23,7 @@ public class ItemEquipableInventory : ItemBase, IInventory, IEquipable
     public ItemEquipableInventory(ItemEquipableInventorySO data) : base(data)
     {
         Data = data;
-        Inventory = new Inventory(data);
+        Inventory = new Inventory(this);
     }
     public override string ToString()
     {

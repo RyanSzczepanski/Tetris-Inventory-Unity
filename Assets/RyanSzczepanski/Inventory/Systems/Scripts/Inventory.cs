@@ -6,12 +6,15 @@ using UnityEngine;
 public class Inventory
 {
     //Inventory Refrences
+    public ItemBase ParentItem { get; }
     public SubInventory[] SubInventories { get; }
 
-    public Inventory(IInventorySO inventoryData)
+    public Inventory(ItemBase item)
     {
+        ParentItem = item;
+        IInventorySO inventoryData = (item.Data as IInventorySO);
         SubInventories = new SubInventory[inventoryData.SubInventories.Length];
-        for (int i = 0; i < inventoryData.SubInventories.Length; i++)
+        for (int i = 0; i < SubInventories.Length; i++)
         {
             SubInventories[i] =  new SubInventory(inventoryData.SubInventories[i], this);
         }

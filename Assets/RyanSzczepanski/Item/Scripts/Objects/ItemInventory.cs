@@ -8,7 +8,7 @@ public class ItemInventory : ItemBase, IInventory
     public ItemInventory(ItemInventorySO data) : base(data)
     {
         Data = data;
-        Inventory = new Inventory(data);
+        Inventory = new Inventory(this);
     }
 
     //TODO: Make this more modular using the interfaces
