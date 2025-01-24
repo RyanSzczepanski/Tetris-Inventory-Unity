@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 [System.Serializable]
@@ -83,6 +84,15 @@ public class SubInventory
         }
         return true;
     }
+    private bool SelfInsertCheck(ItemBase item)
+    {
+        if (ParentInventory.ParentItem == item) { return false; }
+        if (ParentInventory.ParentItem.ParentSubInventory != null)
+        {
+            return ParentInventory.ParentItem.ParentSubInventory.SelfInsertCheck(item);
+        }
+        return true;
+    }
 
     public Vector2Int GetItemOriginSlot(ItemBase item)
     {
@@ -103,6 +113,7 @@ public class SubInventory
     {
         if (!BoundsCheck(item, targetCoordinate, isRotated)) { return false; }
         if (!SlotsOccupiedCheck(item, targetCoordinate, isRotated)) { return false; }
+        if (!SelfInsertCheck(item)) { return false; }
         return true;
     }
     public bool CanAddItem(ItemBase item)
