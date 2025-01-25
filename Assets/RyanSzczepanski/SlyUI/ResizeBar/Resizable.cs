@@ -13,15 +13,28 @@ namespace Szczepanski
             [SerializeField] private float resizeBarSize;
             public void CreateResizeBars(Transform parent, FloatingWindow window)
             {
-                foreach (var dir in (Int32[])Enum.GetValues(typeof(ResizeBarDirection)))
-                {
-                    GameObject go = new GameObject($"{(ResizeBarDirection)dir}");
+                GameObject gob = new GameObject($"Resize Bar", typeof(ResizeBar), typeof(RectTransform), typeof(Image));
 
-                    ResizeBar bar = go.AddComponent<ResizeBar>();
+                var dirs = (Int32[])Enum.GetValues(typeof(ResizeBarDirection));
+                var last = dirs[dirs.Length - 1];
+                foreach (var dir in dirs)
+                {
+                    GameObject go;
+                    if (dir == last)
+                    {
+                        go = gob;
+                        go.transform.SetParent(parent, false);
+                    }
+                    else
+                    {
+                        go = GameObject.Instantiate(gob, parent);
+                    }
+
+                    ResizeBar bar = go.GetComponent<ResizeBar>();
                     bar.Init(window, (ResizeBarDirection)dir);
 
-                    RectTransform rt = go.AddComponent<RectTransform>();
-                    Image image = go.AddComponent<Image>();
+                    RectTransform rt = go.GetComponent<RectTransform>();
+                    Image image = go.GetComponent<Image>();
 
                     rt.anchorMin = ResizeBarsEnumUtils.GetMin(dir);
                     rt.anchorMax = ResizeBarsEnumUtils.GetMax(dir);
@@ -70,7 +83,7 @@ namespace Szczepanski
                     //}
                     //rt.sizeDelta = vect2;
 
-                    go.transform.SetParent(parent, false);
+                    //go.transform.SetParent(parent, false);
 
                 }
             }

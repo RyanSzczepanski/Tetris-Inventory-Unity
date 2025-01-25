@@ -1,12 +1,12 @@
 using Szczepanski.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class DragBar : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
     [SerializeField] FloatingWindow window;
     Vector2 offset;
+    bool isEnabled;
     bool DoDrag = false;
 
     public void Init(FloatingWindow window)
@@ -14,11 +14,16 @@ public class DragBar : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDow
         this.window = window;
     }
 
+    public void SetEnabled(bool enabled)
+    {
+        this.isEnabled = enabled;
+    }
+
 
     public void OnDrag(PointerEventData eventData)
     {
         if (!DoDrag) { return; }
-        window.SetPosition(eventData.position + offset);
+        window.transform.position = eventData.position + offset;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -28,7 +33,9 @@ public class DragBar : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDow
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(eventData.pointerCurrentRaycast.gameObject.GetComponent<UnityEngine.UI.Button>() != null)
+        if(!isEnabled) { return; }
+
+        if(null != eventData.pointerCurrentRaycast.gameObject.GetComponent<UnityEngine.UI.Button>())
         {
             DoDrag = false;
             return;

@@ -47,14 +47,14 @@ namespace Szczepanski.UI
             foreach (ContextMenuOption option in options)
             {
                 GameObject cmObject = option.GenerateContextMenuObject(transform);
-                cmObject.GetComponentInChildren<UnityEngine.UI.Button>().onClick.AddListener(option.ContextMenuClicked);
+                cmObject.GetComponentInChildren<Button>().onClick.AddListener(option.ContextMenuClicked);
                 if (sizeFit == ContextMenuSizeFit.ToLargestElement)
                 {
                     maxSize = Mathf.Max(cmObject.GetComponentInChildren<TextMeshProUGUI>().preferredWidth, maxSize);
                 }
                 if (lifeSpan == ContextMenuLifeSpan.OnOptionSelect)
                 {
-                    cmObject.GetComponentInChildren<UnityEngine.UI.Button>().onClick.AddListener(Close);
+                    cmObject.GetComponentInChildren<Button>().onClick.AddListener(Close);
                 }
             }
             if (sizeFit == ContextMenuSizeFit.ToLargestElement)

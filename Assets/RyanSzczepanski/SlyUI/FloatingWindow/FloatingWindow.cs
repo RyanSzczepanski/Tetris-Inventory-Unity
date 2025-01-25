@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.UI;
 
 namespace Szczepanski.UI
@@ -71,18 +72,20 @@ namespace Szczepanski.UI
             IsResizeable = settings.isResizeable;
             MinWindowSize = settings.minWindowSize;
             Title = settings.title;
-            CreateObjectStructure();
+            Profiler.BeginSample("CreateWindowStructure");
+            CreateWindowStructure();
+            Profiler.EndSample();
+            Profiler.BeginSample("SetWindowData");
+            SetWindowData();
+            Profiler.EndSample();
             Resize(settings.windowSize);
         }
 
-        public void SetPosition(Vector2 targetPosition, bool pixelPerfect = true)
+        public void SetPosition(Vector2 targetPosition)
         {
-            if (pixelPerfect)
-            {
-                targetPosition = new Vector2(Mathf.RoundToInt(targetPosition.x), Mathf.RoundToInt(targetPosition.y));
-            }
             GetComponent<RectTransform>().position = targetPosition;
         }
+
         public void Resize(Vector2 targetSize)
         {
             Vector2 newSize = new Vector2(
@@ -91,6 +94,7 @@ namespace Szczepanski.UI
             );
             (transform as RectTransform).sizeDelta = newSize;
         }
+
         public void Resize(Vector2 targetSize, Vector2 direction)
         {
             Vector2 newSize = new Vector2(
@@ -100,7 +104,6 @@ namespace Szczepanski.UI
             Vector2 windowSizeDelta = (newSize - (transform as RectTransform).sizeDelta);
             (transform as RectTransform).sizeDelta = newSize;
             SetPosition((Vector2)GetComponent<RectTransform>().position + windowSizeDelta * GetComponentInParent<Canvas>().scaleFactor * direction / 2);
-
         }
 
         public void Close()
@@ -108,68 +111,38 @@ namespace Szczepanski.UI
             Destroy(gameObject);
         }
 
-        private void CreateObjectStructure()
+        private void CreateWindowStructure()
         {
             if (IsResizeable)
             {
+                Profiler.BeginSample("CreateResizeableStructure");
                 CreateResizeableStructure();
+                Profiler.EndSample();
+
             }
+            Profiler.BeginSample("CreateTitleBarStructure");
             CreateTitleBarStructure();
+            Profiler.EndSample();
+
+            Profiler.BeginSample("CreateContentStructure");
             CreateContentStructure();
+            Profiler.EndSample();
         }
         private void CreateTitleBarStructure()
         {
             TitleBar = new WindowElement(new GameObject("TitleBar", typeof(LayoutElement), typeof(HorizontalLayoutGroup), typeof(Image)));
+            new GameObject("Title", typeof(TextMeshProUGUI)).transform.SetParent(TitleBar.rectTransform, false);
+            new GameObject("Spacer", typeof(LayoutElement)).transform.SetParent(TitleBar.rectTransform, false);
+            GameObject closeButton = new GameObject("CloseButton", typeof(LayoutElement), typeof(Image), typeof(UnityEngine.UI.Button));
+            closeButton.transform.SetParent(TitleBar.rectTransform, false);
+            closeButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(gameObject.GetComponent<FloatingWindow>().Close);
             TitleBar.rectTransform.SetParent(transform, false);
-            TitleBar.layoutElement.minHeight = 25;
-            TitleBar.layoutElement.preferredWidth = 25;
-
-            TitleBar.GetComponent<HorizontalLayoutGroup>().childForceExpandWidth = false;
-            TitleBar.GetComponent<HorizontalLayoutGroup>().childForceExpandHeight = false;
-            TitleBar.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleLeft;
-            TitleBar.GetComponent<HorizontalLayoutGroup>().padding = new RectOffset() { left = 2, right = 2 };
 
             if (IsDraggable)
             {
                 DragBar dragBar = TitleBar.gameObject.AddComponent<DragBar>();
                 dragBar.Init(this);
             }
-            GameObject title = new GameObject("Title", typeof(TextMeshProUGUI));
-            title.transform.SetParent(TitleBar.rectTransform, false);
-
-
-            TextMeshProUGUI textMeshProUGUI = title.GetComponent<TextMeshProUGUI>();
-            textMeshProUGUI.text = Title;
-            textMeshProUGUI.color = Color.black;
-            textMeshProUGUI.fontSize = 18;
-            textMeshProUGUI.font = (TMP_FontAsset)Resources.Load("Font/KodeMono-Bold SDF");
-            textMeshProUGUI.overflowMode = TextOverflowModes.Ellipsis;
-
-
-            GameObject spacer = new GameObject("Spacer", typeof(LayoutElement));
-            spacer.transform.SetParent(TitleBar.rectTransform, false);
-            spacer.GetComponent<LayoutElement>().flexibleWidth = 1;
-
-            GameObject closeButton = new GameObject("CloseButton", typeof(LayoutElement), typeof(Image), typeof(UnityEngine.UI.Button));
-            closeButton.transform.SetParent(TitleBar.rectTransform, false);
-            closeButton.GetComponent<LayoutElement>().minWidth = 21;
-            closeButton.GetComponent<LayoutElement>().minHeight = 21;
-            closeButton.GetComponent<LayoutElement>().preferredWidth = 21;
-            closeButton.GetComponent<LayoutElement>().preferredHeight = 21;
-
-            closeButton.GetComponent<UnityEngine.UI.Button>().targetGraphic = closeButton.GetComponent<Image>();
-            closeButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(Close);
-            closeButton.GetComponent<UnityEngine.UI.Button>().colors = new ColorBlock()
-            {
-                normalColor = Color.red,
-                highlightedColor = new Color(1 * .8f, 0, 0),
-                selectedColor = Color.red,
-                pressedColor = Color.red,
-                disabledColor = Color.grey,
-                colorMultiplier = 1,
-                fadeDuration = .1f
-            };
-
         }
         private void CreateResizeableStructure()
         {
@@ -188,6 +161,85 @@ namespace Szczepanski.UI
             Content.rectTransform.SetParent(transform, false);
             Content.layoutElement.flexibleWidth = 1;
             Content.layoutElement.flexibleHeight = 1;
+        }
+
+        private void SetWindowData()
+        {
+            if (IsResizeable)
+            {
+                SetResizeableData();
+            }
+            SetTitleBarData();
+            SetContentData();
+        }
+        private void SetTitleBarData()
+        {
+            GameObject title = TitleBar.rectTransform.GetChild(0).gameObject;
+            GameObject spacer = TitleBar.rectTransform.GetChild(1).gameObject;
+            GameObject closeButton = TitleBar.rectTransform.GetChild(2).gameObject;
+
+
+            if (!IsDraggable)
+            {
+                TitleBar.GetComponent<DragBar>().SetEnabled(false);
+            }
+            else
+            {
+                TitleBar.GetComponent<DragBar>().SetEnabled(true);
+            }
+
+            TitleBar.layoutElement.minHeight = 25;
+            TitleBar.layoutElement.preferredWidth = 25;
+
+            HorizontalLayoutGroup horizontalLayoutGroup = TitleBar.GetComponent<HorizontalLayoutGroup>();
+            horizontalLayoutGroup.childForceExpandWidth = false;
+            horizontalLayoutGroup.childForceExpandHeight = false;
+            horizontalLayoutGroup.childAlignment = TextAnchor.MiddleLeft;
+            horizontalLayoutGroup.padding = new RectOffset() { left = 2, right = 2 };
+
+            title.transform.SetParent(TitleBar.rectTransform, false);
+
+
+            TextMeshProUGUI textMeshProUGUI = title.GetComponent<TextMeshProUGUI>();
+            textMeshProUGUI.text = Title;
+            textMeshProUGUI.color = Color.black;
+            textMeshProUGUI.fontSize = 18;
+            textMeshProUGUI.font = (TMP_FontAsset)Resources.Load("Font/KodeMono-Bold SDF");
+            textMeshProUGUI.textWrappingMode = TextWrappingModes.NoWrap;
+            textMeshProUGUI.overflowMode = TextOverflowModes.Ellipsis;
+
+
+            spacer.transform.SetParent(TitleBar.rectTransform, false);
+            spacer.GetComponent<LayoutElement>().flexibleWidth = 1;
+
+            closeButton.transform.SetParent(TitleBar.rectTransform, false);
+
+            LayoutElement layoutElement = closeButton.GetComponent<LayoutElement>();
+            layoutElement.minWidth = 21;
+            layoutElement.minHeight = 21;
+            layoutElement.preferredWidth = 21;
+            layoutElement.preferredHeight = 21;
+
+            UnityEngine.UI.Button button = closeButton.GetComponent<UnityEngine.UI.Button>();
+            button.targetGraphic = closeButton.GetComponent<Image>();
+            button.colors = new ColorBlock()
+            {
+                normalColor = Color.red,
+                highlightedColor = new Color(1 * .8f, 0, 0),
+                selectedColor = Color.red,
+                pressedColor = Color.red,
+                disabledColor = Color.grey,
+                colorMultiplier = 1,
+                fadeDuration = .1f
+            };
+        }
+        private void SetResizeableData()
+        {
+
+        }
+        private void SetContentData()
+        {
+
         }
     }
 }
