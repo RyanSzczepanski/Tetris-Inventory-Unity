@@ -18,7 +18,7 @@ namespace Szczepanski.UI
 
         public GameObject GenerateContextMenuObject(Transform parentTransform)
         {
-            GameObject contextMenuObject = new GameObject("ContextMenuOption", typeof(RectTransform), typeof(Image), typeof(Button), typeof(LayoutElement));
+            GameObject contextMenuObject = new GameObject("ContextMenuOption", typeof(RectTransform), typeof(Image), typeof(UnityEngine.UI.Button), typeof(LayoutElement));
             contextMenuObject.transform.SetParent(parentTransform, false);
             contextMenuObject.GetComponent<LayoutElement>().minHeight = 20;
 

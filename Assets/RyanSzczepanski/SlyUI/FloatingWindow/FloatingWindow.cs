@@ -7,27 +7,25 @@ namespace Szczepanski.UI
 {
     public static class FloatingWindowFactory
     {
-        private static GameObject _PREFAB;
+        private static GameObject FLOATING_WINDOW_PREFAB;
 
         public static void PreLoadPrefabs()
         {
-            if (_PREFAB != null) { return; }
-            _PREFAB = BuildFloatingWindow(null, new FloatingWindowSettings() {
+            FLOATING_WINDOW_PREFAB = BuildFloatingWindow(null, new FloatingWindowSettings() {
                 isDraggable = true,
                 isResizeable = true,
                 title = "PREFAB",
                 minWindowSize = new Vector2(600, 400),
                 windowSize = new Vector2(600, 400)
             });
+            FLOATING_WINDOW_PREFAB.hideFlags = HideFlags.HideAndDontSave;
         }
 
         public static GameObject CreateFloatingWindow(Transform parent, FloatingWindowSettings settings)
         {
-            if(_PREFAB == null) { PreLoadPrefabs(); }
-            GameObject go = GameObject.Instantiate(_PREFAB, parent);
-            ContentSizeFitter csf = go.GetComponent<ContentSizeFitter>();
-            if (settings.isResizeable) { csf.enabled = false; }
-            else { csf.enabled = true; }
+            if(FLOATING_WINDOW_PREFAB == null) { PreLoadPrefabs(); }
+            GameObject go = GameObject.Instantiate(FLOATING_WINDOW_PREFAB, parent);
+            go.hideFlags = HideFlags.None;
             FloatingWindow floatingWindow = go.GetComponent<FloatingWindow>();
             floatingWindow.SetUI(settings);
             return go;
@@ -40,10 +38,12 @@ namespace Szczepanski.UI
             go.GetComponent<VerticalLayoutGroup>().childForceExpandWidth = false;
             go.GetComponent<VerticalLayoutGroup>().childForceExpandHeight = false;
 
-            ContentSizeFitter csf = go.AddComponent<ContentSizeFitter>();
-            csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
-            csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
-            if (settings.isResizeable) { csf.enabled = false; }
+            if (!settings.isResizeable)
+            {
+                ContentSizeFitter csf = go.AddComponent<ContentSizeFitter>();
+                csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
+                csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
+            }
 
             FloatingWindow floatingWindow = go.GetComponent<FloatingWindow>();
             floatingWindow.GenerateUI(settings);
