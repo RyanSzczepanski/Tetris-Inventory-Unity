@@ -24,14 +24,6 @@ namespace Szczepanski.UI
         public ContextMenuOption[] options;
         public ContextMenuLifeSpan lifeSpan;
         public ContextMenuSizeFit sizeFit;
-        public void GenerateUI(ContextMenuSettings settings)
-        {
-            options = settings.options;
-            lifeSpan = settings.lifeSpan;
-            sizeFit = settings.sizeFit;
-
-            GenerateContextMenu();
-        }
 
         private void Update()
         {
@@ -41,20 +33,29 @@ namespace Szczepanski.UI
             }
         }
 
+        public void GenerateUI(ContextMenuSettings settings)
+        {
+            options = settings.options;
+            lifeSpan = settings.lifeSpan;
+            sizeFit = settings.sizeFit;
+
+            GenerateContextMenu();
+        }
+
         private void GenerateContextMenu()
         {
             float maxSize = 0;
             foreach (ContextMenuOption option in options)
             {
                 GameObject cmObject = option.GenerateContextMenuObject(transform);
-                cmObject.GetComponentInChildren<Button>().onClick.AddListener(option.ContextMenuClicked);
+                cmObject.GetComponentInChildren<UnityEngine.UI.Button>().onClick.AddListener(option.ContextMenuClicked);
                 if (sizeFit == ContextMenuSizeFit.ToLargestElement)
                 {
                     maxSize = Mathf.Max(cmObject.GetComponentInChildren<TextMeshProUGUI>().preferredWidth, maxSize);
                 }
                 if (lifeSpan == ContextMenuLifeSpan.OnOptionSelect)
                 {
-                    cmObject.GetComponentInChildren<Button>().onClick.AddListener(Close);
+                    cmObject.GetComponentInChildren<UnityEngine.UI.Button>().onClick.AddListener(Close);
                 }
             }
             if (sizeFit == ContextMenuSizeFit.ToLargestElement)

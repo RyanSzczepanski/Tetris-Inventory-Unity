@@ -7,19 +7,43 @@ namespace Szczepanski.UI
 {
     public static class FloatingWindowFactory
     {
+        private static GameObject _PREFAB;
+
+        public static void PreLoadPrefab()
+        {
+            if (_PREFAB != null) { return; }
+            _PREFAB = BuildFloatingWindow(null, new FloatingWindowSettings() {
+                isDraggable = true,
+                isResizeable = true,
+                title = "PREFAB",
+                minWindowSize = new Vector2(600, 400),
+                windowSize = new Vector2(600, 400)
+            });
+        }
+
         public static GameObject CreateFloatingWindow(Transform parent, FloatingWindowSettings settings)
+        {
+            if(_PREFAB == null) { PreLoadPrefab(); }
+            GameObject go = GameObject.Instantiate(_PREFAB, parent);
+            ContentSizeFitter csf = go.GetComponent<ContentSizeFitter>();
+            if (settings.isResizeable) { csf.enabled = false; }
+            else { csf.enabled = true; }
+            FloatingWindow floatingWindow = go.GetComponent<FloatingWindow>();
+            floatingWindow.SetUI(settings);
+            return go;
+        }
+
+        private static GameObject BuildFloatingWindow(Transform parent, FloatingWindowSettings settings)
         {
             GameObject go = new GameObject("FloatingWindow", typeof(RectTransform), typeof(FloatingWindow), typeof(VerticalLayoutGroup));
             go.transform.SetParent(parent, false);
             go.GetComponent<VerticalLayoutGroup>().childForceExpandWidth = false;
             go.GetComponent<VerticalLayoutGroup>().childForceExpandHeight = false;
 
-            if (!settings.isResizeable)
-            {
-                ContentSizeFitter csf = go.AddComponent<ContentSizeFitter>();
-                csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
-                csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
-            }
+            ContentSizeFitter csf = go.AddComponent<ContentSizeFitter>();
+            csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
+            csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
+            if (settings.isResizeable) { csf.enabled = false; }
 
             FloatingWindow floatingWindow = go.GetComponent<FloatingWindow>();
             floatingWindow.GenerateUI(settings);
@@ -80,6 +104,17 @@ namespace Szczepanski.UI
             Profiler.EndSample();
             Resize(settings.windowSize);
         }
+        public void SetUI(FloatingWindowSettings settings)
+        {
+            IsDraggable = settings.isDraggable;
+            IsResizeable = settings.isResizeable;
+            MinWindowSize = settings.minWindowSize;
+            Title = settings.title;
+            Profiler.BeginSample("SetWindowData");
+            SetWindowData();
+            Profiler.EndSample();
+            Resize(settings.windowSize);
+        }
 
         public void SetPosition(Vector2 targetPosition)
         {
@@ -94,7 +129,6 @@ namespace Szczepanski.UI
             );
             (transform as RectTransform).sizeDelta = newSize;
         }
-
         public void Resize(Vector2 targetSize, Vector2 direction)
         {
             Vector2 newSize = new Vector2(
@@ -135,7 +169,6 @@ namespace Szczepanski.UI
             new GameObject("Spacer", typeof(LayoutElement)).transform.SetParent(TitleBar.rectTransform, false);
             GameObject closeButton = new GameObject("CloseButton", typeof(LayoutElement), typeof(Image), typeof(UnityEngine.UI.Button));
             closeButton.transform.SetParent(TitleBar.rectTransform, false);
-            closeButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(gameObject.GetComponent<FloatingWindow>().Close);
             TitleBar.rectTransform.SetParent(transform, false);
 
             if (IsDraggable)
@@ -149,35 +182,26 @@ namespace Szczepanski.UI
             ResizeBarParent = new WindowElement(new GameObject("ResizeBars", typeof(Resizable), typeof(LayoutElement)));
             ResizeBarParent.rectTransform.SetParent(transform, false);
             ResizeBarParent.rectTransform.SetAsFirstSibling();
-            ResizeBarParent.rectTransform.anchorMin = Vector2.zero;
-            ResizeBarParent.rectTransform.anchorMax = Vector2.one;
-            ResizeBarParent.layoutElement.ignoreLayout = true;
-            Resizable resizable = ResizeBarParent.gameObject.GetComponent<Resizable>();
-            resizable.Init(10f, this);
         }
         private void CreateContentStructure()
         {
             Content = new WindowElement(new GameObject("Content", typeof(LayoutElement), typeof(VerticalLayoutGroup)));
             Content.rectTransform.SetParent(transform, false);
-            Content.layoutElement.flexibleWidth = 1;
-            Content.layoutElement.flexibleHeight = 1;
         }
 
         private void SetWindowData()
         {
-            if (IsResizeable)
-            {
-                SetResizeableData();
-            }
+            SetResizeableData();
             SetTitleBarData();
             SetContentData();
         }
         private void SetTitleBarData()
         {
+            TitleBar = new WindowElement(transform.GetChild(1).gameObject);
+
             GameObject title = TitleBar.rectTransform.GetChild(0).gameObject;
             GameObject spacer = TitleBar.rectTransform.GetChild(1).gameObject;
             GameObject closeButton = TitleBar.rectTransform.GetChild(2).gameObject;
-
 
             if (!IsDraggable)
             {
@@ -220,7 +244,9 @@ namespace Szczepanski.UI
             layoutElement.preferredWidth = 21;
             layoutElement.preferredHeight = 21;
 
+
             UnityEngine.UI.Button button = closeButton.GetComponent<UnityEngine.UI.Button>();
+            button.onClick.AddListener(Close);
             button.targetGraphic = closeButton.GetComponent<Image>();
             button.colors = new ColorBlock()
             {
@@ -235,11 +261,20 @@ namespace Szczepanski.UI
         }
         private void SetResizeableData()
         {
-
+            ResizeBarParent = new WindowElement(transform.GetChild(0).gameObject);
+            if (!IsResizeable) { ResizeBarParent.gameObject.SetActive(false); return; }
+            ResizeBarParent.rectTransform.anchorMin = Vector2.zero;
+            ResizeBarParent.rectTransform.anchorMax = Vector2.one;
+            ResizeBarParent.layoutElement.ignoreLayout = true;
+            Resizable resizable = ResizeBarParent.gameObject.GetComponent<Resizable>();
+            resizable.Init(10f, this);
         }
         private void SetContentData()
         {
+            Content = new WindowElement(transform.GetChild(2).gameObject);
 
+            Content.layoutElement.flexibleWidth = 1;
+            Content.layoutElement.flexibleHeight = 1;
         }
     }
 }
