@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Szczepanski.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,9 +15,17 @@ public class DEMO_Inventory : MonoBehaviour
     {
         m_Raycaster = FindAnyObjectByType<GraphicRaycaster>();
     }
-
+    GameObject Sample;
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            FloatingWindowSettings FWSettings = new FloatingWindowSettings() { isDraggable = true, isResizeable = true, title = "New Title", minWindowSize = new Vector2(50,50), windowSize = new Vector2(50,50)};
+            if (Sample == null) { Sample = FloatingWindowFactory.CreateFloatingWindow(InventoryUIManager.CANVAS.transform, FWSettings); Sample.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector | HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild; Sample.SetActive(false); }
+            GameObject newObject = Instantiate(Sample, InventoryUIManager.CANVAS.transform);
+            newObject.SetActive(true);
+            newObject.GetComponent<FloatingWindow>().SetUI(FWSettings);
+        }
         if (Input.GetMouseButtonDown(0))
         {
             raycastResults.Clear();

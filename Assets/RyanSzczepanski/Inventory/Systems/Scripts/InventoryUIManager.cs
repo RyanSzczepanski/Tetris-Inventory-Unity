@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Szczepanski.UI;
 using UnityEngine;
 
 public class InventoryUIManager : MonoBehaviour
@@ -11,15 +12,19 @@ public class InventoryUIManager : MonoBehaviour
 
     [SerializeField] private InventoryCellDrawSettingsSO drawSettingsSO;
     [SerializeField] private Canvas canvas;
+    [SerializeField] private ComputeShader computeShader;
 
     private void Awake()
     {
-        Application.targetFrameRate = 10000;
         if (INSTANCE == null) { INSTANCE = this; }
         else { Destroy(this); }
 
         DRAW_SETTINGS = new InventoryCellDrawSettings(drawSettingsSO);
         CANVAS = canvas;
+        InventoryUIGenerator.PreLoadPrefabs();
+        FloatingWindowFactory.PreLoadPrefabs();
+        SubInventoryUIGenerator.PreLoadPrefabs();
+        SubInventoryUIGenerator.SetShader(computeShader);
         DragItemUI.Init(DRAW_SETTINGS);
     }
 }

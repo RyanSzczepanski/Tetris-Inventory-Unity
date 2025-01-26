@@ -125,7 +125,9 @@ public static class SubInventoryUIToolkitGenerator
         //Rename Object
         VisualElement ve = new VisualElement();
 
-        Sprite sprite = SubInventoryUIGenerator.GenerateSprite(subInventory, drawSettings);
+        //TODO:FIX
+        Sprite sprite = null;
+        //Sprite sprite = SubInventoryUIGenerator.GenerateSprite(subInventory, drawSettings);
 
         //Set Component Values
         ve.style.backgroundImage = sprite.texture;

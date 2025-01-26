@@ -1,0 +1,83 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+
+RWBuffer<float4> pixelColor;
+
+int2 textureSize;
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    uint x = id.x;
+    uint y = id.y;
+
+    uint _outlineSize = 1;
+    uint _paddingSize = 1;
+    uint _cellSize = 50;
+
+    float4 _cellColor = float4(0.10f, 0.10f, 0.10f, 0.85f);
+    float4 _cellAccentColor = float4(0.15f, 0.15f, 0.15f, 0.85f);
+
+    float4 _cellOutlineColor = float4(0.30f, 0.30f, 0.30f, 0.75f);
+    float4 _cellOutlineAccentColor = float4(0.40f, 0.40f, 0.40f, 0.85f);
+
+    float4 _outlineColor = float4(0.90f, 0.90f, 0.90f, 0.50f);
+    float4 _outlineAccentColor = float4(0.85f, 0.85f, 0.85f, 0.60f);
+
+
+    float4 pixelColor;
+    //Outline of entire sub inventory
+    if (x < _outlineSize ||
+        y < _outlineSize ||
+        x > textureSize.x - _outlineSize - 1 ||
+        y > textureSize.y - _outlineSize - 1)
+    {
+        //Breaks up solid colors
+        if ((x + y % 2) % 2 == 0)
+            pixelColor = _outlineAccentColor;
+        else
+            pixelColor = _outlineColor;
+    }
+    //CellOutlinePadding (Keeps an even outline width on outside cell blocks)
+    else if (
+        x < _paddingSize + _outlineSize ||
+        y < _paddingSize + _outlineSize ||
+        x > textureSize.x - (_paddingSize + _outlineSize) ||
+        y > textureSize.y - (_paddingSize + _outlineSize))
+    {
+        //Breaks up solid colors
+        if ((x + y % 2) % 2 == 0)
+            pixelColor = _cellOutlineAccentColor;
+        else
+            pixelColor = _cellOutlineColor;
+    }
+    //CellOutline
+    else if (
+    (x - (_paddingSize + _outlineSize)) % _cellSize == 0 ||
+    (y - (_paddingSize + _outlineSize)) % _cellSize == 0 ||
+    (x - (_paddingSize + _outlineSize)) % _cellSize == _cellSize - 1 ||
+    (y - (_paddingSize + _outlineSize)) % _cellSize == _cellSize - 1)
+    {
+        //Breaks up solid colors
+        if ((x + y % 2) % 2 == 0)
+            pixelColor = _cellOutlineAccentColor;
+        else
+            pixelColor = _cellOutlineColor;
+    }
+    //Fill
+    else
+    {
+        //Breaks up solid colors
+        if (((x + y) % 2) % 2 == 0)
+            pixelColor = _cellAccentColor;
+        else
+            pixelColor = _cellColor;
+    }
+
+    Result[id.xy] = pixelColor;
+}

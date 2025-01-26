@@ -9,7 +9,7 @@ namespace Szczepanski.UI
     {
         private static GameObject _PREFAB;
 
-        public static void PreLoadPrefab()
+        public static void PreLoadPrefabs()
         {
             if (_PREFAB != null) { return; }
             _PREFAB = BuildFloatingWindow(null, new FloatingWindowSettings() {
@@ -23,7 +23,7 @@ namespace Szczepanski.UI
 
         public static GameObject CreateFloatingWindow(Transform parent, FloatingWindowSettings settings)
         {
-            if(_PREFAB == null) { PreLoadPrefab(); }
+            if(_PREFAB == null) { PreLoadPrefabs(); }
             GameObject go = GameObject.Instantiate(_PREFAB, parent);
             ContentSizeFitter csf = go.GetComponent<ContentSizeFitter>();
             if (settings.isResizeable) { csf.enabled = false; }

@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Szczepanski.UI;
 
-[RequireComponent(typeof(Image))]
+[RequireComponent(typeof(RawImage))]
 [RequireComponent(typeof(LayoutElement))]
 public class SubInventoryUI : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {

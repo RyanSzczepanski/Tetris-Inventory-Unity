@@ -1,4 +1,4 @@
- using UnityEngine;
+using UnityEngine;
 using Szczepanski.UI;
 using UnityEngine.UI;
 
@@ -29,7 +29,6 @@ public class Character : MonoBehaviour
                 minWindowSize = new Vector2(0, 0),
                 title = itemBaseSO.ShortName
             };
-
             GameObject floatingWindow = FloatingWindowFactory.CreateFloatingWindow(parent, settings);
             Transform transform = floatingWindow.GetComponent<FloatingWindow>().Content.rectTransform;
             InventoryUIGenerator.GenerateUIObject(transform, equipmentSlot.item.Data as IInventorySO, equipmentSlot.item as IInventory, in InventoryUIManager.DRAW_SETTINGS);
