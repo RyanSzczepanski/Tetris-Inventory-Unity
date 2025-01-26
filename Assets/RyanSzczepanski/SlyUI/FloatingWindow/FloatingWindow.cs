@@ -24,11 +24,15 @@ namespace Szczepanski.UI
         public static GameObject CreateFloatingWindow(Transform parent, FloatingWindowSettings settings)
         {
             if(FLOATING_WINDOW_PREFAB == null) { PreLoadPrefabs(); }
-            GameObject go = GameObject.Instantiate(FLOATING_WINDOW_PREFAB, parent);
-            go.hideFlags = HideFlags.None;
-            FloatingWindow floatingWindow = go.GetComponent<FloatingWindow>();
+            GameObject floatingWindowObject = GameObject.Instantiate(FLOATING_WINDOW_PREFAB, parent);
+            floatingWindowObject.hideFlags = HideFlags.None;
+            ContentSizeFitter csf = floatingWindowObject.GetComponent<ContentSizeFitter>();
+            if (settings.isResizeable) { csf.enabled = false; }
+            else { csf.enabled = true; }
+
+            FloatingWindow floatingWindow = floatingWindowObject.GetComponent<FloatingWindow>();
             floatingWindow.SetUI(settings);
-            return go;
+            return floatingWindowObject;
         }
 
         private static GameObject BuildFloatingWindow(Transform parent, FloatingWindowSettings settings)
@@ -38,12 +42,9 @@ namespace Szczepanski.UI
             go.GetComponent<VerticalLayoutGroup>().childForceExpandWidth = false;
             go.GetComponent<VerticalLayoutGroup>().childForceExpandHeight = false;
 
-            if (!settings.isResizeable)
-            {
-                ContentSizeFitter csf = go.AddComponent<ContentSizeFitter>();
-                csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
-                csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
-            }
+            ContentSizeFitter csf = go.AddComponent<ContentSizeFitter>();
+            csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
+            csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
 
             FloatingWindow floatingWindow = go.GetComponent<FloatingWindow>();
             floatingWindow.GenerateUI(settings);
@@ -147,13 +148,10 @@ namespace Szczepanski.UI
 
         private void CreateWindowStructure()
         {
-            if (IsResizeable)
-            {
-                Profiler.BeginSample("CreateResizeableStructure");
-                CreateResizeableStructure();
-                Profiler.EndSample();
+            Profiler.BeginSample("CreateResizeableStructure");
+            CreateResizeableStructure();
+            Profiler.EndSample();
 
-            }
             Profiler.BeginSample("CreateTitleBarStructure");
             CreateTitleBarStructure();
             Profiler.EndSample();

@@ -91,7 +91,7 @@ public static class InventoryUIGenerator
 
 public static class SubInventoryUIGenerator
 {
-    private static Dictionary<Vector2Int, RenderTexture> CAHCED_SPRITES = new Dictionary<Vector2Int, RenderTexture>();
+    private static Dictionary<Vector2Int, RenderTexture> CAHCED_TEXTURES = new Dictionary<Vector2Int, RenderTexture>();
     private static ComputeShader computeShader;
 
     private static GameObject SUB_INVENTORY;
@@ -115,9 +115,9 @@ public static class SubInventoryUIGenerator
 
         SubInventoryUI subInventoryUI = subInventoryObject.GetComponent<SubInventoryUI>();
         subInventoryUI.Init(subInventory, drawSettings);
-        //Generate Or Get Cached Sprite
+        //Generate Or Get Cached Texture
         RenderTexture texture2D;
-        if(!CAHCED_SPRITES.TryGetValue(subInventory.Size, out texture2D))
+        if(!CAHCED_TEXTURES.TryGetValue(subInventory.Size, out texture2D))
         {
             Profiler.BeginSample("Generate Texture From Shader");
             texture2D = GenerateCellGridTextureShader(subInventory.Size, in drawSettings);
@@ -155,7 +155,7 @@ public static class SubInventoryUIGenerator
         computeShader.SetInts("textureSize", new int[] { renderTexture.width, renderTexture.height });
         computeShader.Dispatch(0, renderTexture.width, renderTexture.height, 1);
 
-        CAHCED_SPRITES.Add(gridSize, renderTexture);
+        CAHCED_TEXTURES.Add(gridSize, renderTexture);
 
         return renderTexture;
     }
