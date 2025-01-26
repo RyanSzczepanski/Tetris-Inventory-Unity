@@ -129,7 +129,6 @@ GameObject:
   m_Component:
   - component: {fileID: 410911362}
   - component: {fileID: 410911361}
-  - component: {fileID: 410911363}
   m_Layer: 0
   m_Name: DEMO OBJECT
   m_TagString: Untagged
@@ -149,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae74b06eac906e744b87f0af56981307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newItem: {fileID: 11400000, guid: df5f436a2cad5374f827f851c659d831, type: 2}
+  newItem: {fileID: 11400000, guid: c64b1a4c7310e5e4999a2d1a8deee200, type: 2}
 --- !u!4 &410911362
 Transform:
   m_ObjectHideFlags: 0
@@ -165,18 +164,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &410911363
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 410911360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c74a7a4a26cf83e4999ccd9fefac372e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &637536514
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,7 +772,7 @@ MonoBehaviour:
     equipmentType: 0
     item:
       <Data>k__BackingField: {fileID: 11400000, guid: 280c8ab121e4e734ea35d51f4494b3bd, type: 2}
-  itemBaseSO: {fileID: 11400000, guid: c64b1a4c7310e5e4999a2d1a8deee200, type: 2}
+  itemBaseSO: {fileID: 11400000, guid: 33cc7eaf2fc097b4399c0dcac5fca040, type: 2}
   parent: {fileID: 1549034964}
 --- !u!4 &1883593043
 Transform:
