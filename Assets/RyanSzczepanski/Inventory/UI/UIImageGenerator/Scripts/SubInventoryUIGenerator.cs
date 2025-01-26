@@ -21,31 +21,36 @@ public static class InventoryUIGenerator
         INVENTORY_PREFAB ??= new GameObject("Inventory", typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
         HORIZONTAL_ARRANGEMENT_PREFAB ??= new GameObject("Arrangement", typeof(HorizontalLayoutGroup));
         VERTICAL_ARRANGEMENT_PREFAB ??= new GameObject("Arrangement", typeof(VerticalLayoutGroup));
+
+        INVENTORY_PREFAB.hideFlags = HideFlags.HideAndDontSave;
+        HORIZONTAL_ARRANGEMENT_PREFAB.hideFlags = HideFlags.HideAndDontSave;
+        VERTICAL_ARRANGEMENT_PREFAB.hideFlags = HideFlags.HideAndDontSave;
     }
 
     public static void GenerateUIObject(Transform transform, IInventorySO itemInventorySO, IInventory itemInventory, in InventoryCellDrawSettings drawSettings)
     {
         subInventoryTracker = 0;
         InventoryUIGenerator.drawSettings = drawSettings;
-        GameObject Inventory = GameObject.Instantiate(INVENTORY_PREFAB, transform);
+        GameObject inventoryObject = GameObject.Instantiate(INVENTORY_PREFAB, transform);
+        inventoryObject.hideFlags = HideFlags.None;
 
-        HorizontalOrVerticalLayoutGroup layoutGroup = Inventory.GetComponent<VerticalLayoutGroup>();
+        HorizontalOrVerticalLayoutGroup layoutGroup = inventoryObject.GetComponent<VerticalLayoutGroup>();
         layoutGroup.childForceExpandHeight = false;
         layoutGroup.childForceExpandWidth = false;
 
-        ContentSizeFitter csf = Inventory.GetComponent<ContentSizeFitter>();
+        ContentSizeFitter csf = inventoryObject.GetComponent<ContentSizeFitter>();
         csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
         csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
 
-        ArrangementTreeSearch(itemInventorySO.SubInventoryArrangements, Inventory.transform, itemInventory);
+        ArrangementTreeSearch(itemInventorySO.SubInventoryArrangements, inventoryObject.transform, itemInventory);
     }
     private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, Transform parent, IInventory item)
     {
         Transform newParent;
         if (arrangement.HasSubInventory)
         {
-            GameObject go = SubInventoryUIGenerator.GenerateSubInventoryObject(item.Inventory.SubInventories[subInventoryTracker], parent, drawSettings);
-            newParent = go.transform;
+            GameObject subInventoryUIObject = SubInventoryUIGenerator.GenerateSubInventoryObject(item.Inventory.SubInventories[subInventoryTracker], parent, in drawSettings);
+            newParent = subInventoryUIObject.transform;
             subInventoryTracker++;
         }
         else
@@ -61,31 +66,32 @@ public static class InventoryUIGenerator
     }
     private static GameObject GenerateArrangement(SubInventoryArrangement arrangement, Transform parent)
     {
-        GameObject go;
+        GameObject arrangementObject;
         HorizontalOrVerticalLayoutGroup layoutGroup;
         if (arrangement.direction == GridLayoutGroup.Axis.Vertical)
         {
-            go = GameObject.Instantiate(VERTICAL_ARRANGEMENT_PREFAB, parent);
-            layoutGroup = go.GetComponent<VerticalLayoutGroup>();
+            arrangementObject = GameObject.Instantiate(VERTICAL_ARRANGEMENT_PREFAB, parent);
+            layoutGroup = arrangementObject.GetComponent<VerticalLayoutGroup>();
         }
         else
         {
-            go = GameObject.Instantiate(HORIZONTAL_ARRANGEMENT_PREFAB, parent);
-            layoutGroup = go.GetComponent<HorizontalLayoutGroup>();
+            arrangementObject = GameObject.Instantiate(HORIZONTAL_ARRANGEMENT_PREFAB, parent);
+            layoutGroup = arrangementObject.GetComponent<HorizontalLayoutGroup>();
         }
+        arrangementObject.hideFlags = HideFlags.None;
         layoutGroup.childForceExpandHeight = false;
         layoutGroup.childForceExpandWidth = false;
         layoutGroup.childAlignment = arrangement.alignment;
         layoutGroup.spacing = 5;
 
-        return go;
+        return arrangementObject;
     }
 }
 
 
 public static class SubInventoryUIGenerator
 {
-    private static Dictionary<Vector2Int, Texture2D> CAHCED_SPRITES = new Dictionary<Vector2Int, Texture2D>();
+    private static Dictionary<Vector2Int, RenderTexture> CAHCED_SPRITES = new Dictionary<Vector2Int, RenderTexture>();
     private static ComputeShader computeShader;
 
     private static GameObject SUB_INVENTORY;
@@ -97,22 +103,24 @@ public static class SubInventoryUIGenerator
     public static void PreLoadPrefabs()
     {
         SUB_INVENTORY ??= new GameObject($"SubInventory Prefab", typeof(SubInventoryUI));
+        SUB_INVENTORY.hideFlags = HideFlags.HideAndDontSave;
     }
 
-    public static GameObject GenerateSubInventoryObject(SubInventory subInventory, Transform parent, InventoryCellDrawSettings drawSettings)
+    public static GameObject GenerateSubInventoryObject(SubInventory subInventory, Transform parent, in InventoryCellDrawSettings drawSettings)
     {
         //Rename Object
         GameObject subInventoryObject = GameObject.Instantiate(SUB_INVENTORY, parent);
+        subInventoryObject.hideFlags = HideFlags.None;
         subInventoryObject.name = $"{subInventory.Size.x}x{subInventory.Size.y} SubInventory";
 
         SubInventoryUI subInventoryUI = subInventoryObject.GetComponent<SubInventoryUI>();
         subInventoryUI.Init(subInventory, drawSettings);
         //Generate Or Get Cached Sprite
-        Texture2D texture2D;
+        RenderTexture texture2D;
         if(!CAHCED_SPRITES.TryGetValue(subInventory.Size, out texture2D))
         {
-            Profiler.BeginSample("Generate Sprite From Shader");
-            texture2D = GenerateCellGridTextureShader(subInventory.Size, drawSettings);
+            Profiler.BeginSample("Generate Texture From Shader");
+            texture2D = GenerateCellGridTextureShader(subInventory.Size, in drawSettings);
             Profiler.EndSample();
         }
         //Set Component Values
@@ -123,7 +131,6 @@ public static class SubInventoryUIGenerator
         layoutElement.minWidth = texture2D.width;
         layoutElement.minHeight = texture2D.height;
 
-
         RectTransform rectTransform = subInventoryObject.GetComponent<RectTransform>(); 
         rectTransform.localScale = Vector3.one;
         rectTransform.pivot = Vector2.up;
@@ -131,14 +138,14 @@ public static class SubInventoryUIGenerator
         return subInventoryObject;
     }
 
-    private static Texture2D GenerateCellGridTextureShader(Vector2Int gridSize, InventoryCellDrawSettings drawSettings)
+    public static RenderTexture GenerateCellGridTextureShader(Vector2Int gridSize, in InventoryCellDrawSettings drawSettings)
     {
         Vector2Int textureSize = new(
         gridSize.x * drawSettings._cellSize + drawSettings._paddingSize * 2 + drawSettings._outlineSize * 2,
         gridSize.y * drawSettings._cellSize + drawSettings._paddingSize * 2 + drawSettings._outlineSize * 2
         );
 
-        RenderTexture renderTexture = new RenderTexture(textureSize.x, textureSize.y, 32);
+        RenderTexture renderTexture = new RenderTexture(textureSize.x, textureSize.y, 24);
         renderTexture.enableRandomWrite = true;
         renderTexture.Create();
 
@@ -148,21 +155,12 @@ public static class SubInventoryUIGenerator
         computeShader.SetInts("textureSize", new int[] { renderTexture.width, renderTexture.height });
         computeShader.Dispatch(0, renderTexture.width, renderTexture.height, 1);
 
-        Texture2D texture = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGBA32, false);
+        CAHCED_SPRITES.Add(gridSize, renderTexture);
 
-        Graphics.CopyTexture(renderTexture, 0, 0, 0, 0, renderTexture.width, renderTexture.height, texture, 0, 0, 0, 0);
-        texture.filterMode = FilterMode.Trilinear;
-        //Profiler.BeginSample("Create Sprite");
-        //Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-        //sprite.name = $"{gridSize.x}x{gridSize.y} SubInventory";
-        //Profiler.EndSample();
-
-        CAHCED_SPRITES.Add(gridSize, texture);
-
-        return texture;
+        return renderTexture;
     }
 
-    private static Texture2D GenerateCellGridTexture(Vector2Int gridSize, in InventoryCellDrawSettings drawSettings)
+    public static Texture2D GenerateCellGridTextureCPU(Vector2Int gridSize, in InventoryCellDrawSettings drawSettings)
     {
         Vector2Int textureSize = new(
         gridSize.x * drawSettings._cellSize + drawSettings._paddingSize * 2 + drawSettings._outlineSize * 2,

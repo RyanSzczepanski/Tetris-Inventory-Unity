@@ -126,13 +126,12 @@ public static class SubInventoryUIToolkitGenerator
         VisualElement ve = new VisualElement();
 
         //TODO:FIX
-        Sprite sprite = null;
-        //Sprite sprite = SubInventoryUIGenerator.GenerateSprite(subInventory, drawSettings);
+        Texture2D texture = SubInventoryUIGenerator.GenerateCellGridTextureCPU(subInventory, drawSettings);
 
         //Set Component Values
-        ve.style.backgroundImage = sprite.texture;
-        ve.style.width = sprite.texture.width;
-        ve.style.height = sprite.texture.height;
+        ve.style.backgroundImage = texture;
+        ve.style.width = texture.width;
+        ve.style.height = texture.height;
 
         ve.style.marginBottom = 2.5f;
         ve.style.marginTop = 2.5f;
