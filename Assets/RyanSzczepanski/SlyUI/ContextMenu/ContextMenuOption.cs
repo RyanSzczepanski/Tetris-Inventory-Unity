@@ -16,7 +16,7 @@ namespace Szczepanski.UI
             OnSelected?.Invoke();
         }
 
-        public GameObject GenerateContextMenuObject(Transform parentTransform)
+        public GameObject GenerateContextMenuObject(Transform parentTransform, TMP_FontAsset font)
         {
             GameObject contextMenuObject = new GameObject("ContextMenuOption", typeof(RectTransform), typeof(Image), typeof(UnityEngine.UI.Button), typeof(LayoutElement));
             contextMenuObject.transform.SetParent(parentTransform, false);
@@ -31,7 +31,7 @@ namespace Szczepanski.UI
             contextMenuObjectText.GetComponent<TextMeshProUGUI>().fontSize = 18f;
             contextMenuObjectText.GetComponent<TextMeshProUGUI>().color = Color.black;
             contextMenuObjectText.GetComponent<TextMeshProUGUI>().text = optionText;
-            contextMenuObjectText.GetComponent<TextMeshProUGUI>().font = Resources.Load<TMP_FontAsset>("Font/KodeMono-Bold SDF");
+            contextMenuObjectText.GetComponent<TextMeshProUGUI>().font = font;
             return contextMenuObject;
         }
     }

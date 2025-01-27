@@ -11,15 +11,17 @@ namespace Szczepanski
         //TODO: Resize bar should not directly change the content size and window position but ask the window to move
         public class ResizeBar : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler/*, IPointerUpHandler, IPointerMoveHandler*/
         {
-            private FloatingWindow window;
+            [SerializeField] private FloatingWindow window;
 
-            public ResizeBarDirection direction;
+            [SerializeField] private ResizeBarDirection direction;
 
-            public Texture2D tex;
+            [SerializeField] private Texture2D tex;
+
+            public void SetWindow(FloatingWindow window) => this.window = window;
 
             public void Init(FloatingWindow window, ResizeBarDirection direction)
             {
-                this.window = window;
+                SetWindow(window);
                 this.direction = direction;
                 string path;
                 switch (ResizeBarsEnumUtils.ExpandDirection(this.direction))

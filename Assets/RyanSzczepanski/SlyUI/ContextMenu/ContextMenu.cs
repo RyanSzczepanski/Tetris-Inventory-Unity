@@ -24,6 +24,7 @@ namespace Szczepanski.UI
         public ContextMenuOption[] options;
         public ContextMenuLifeSpan lifeSpan;
         public ContextMenuSizeFit sizeFit;
+        public TMP_FontAsset font;
 
         private void Update()
         {
@@ -38,6 +39,7 @@ namespace Szczepanski.UI
             options = settings.options;
             lifeSpan = settings.lifeSpan;
             sizeFit = settings.sizeFit;
+            font = settings.font;
 
             GenerateContextMenu();
         }
@@ -47,7 +49,7 @@ namespace Szczepanski.UI
             float maxSize = 0;
             foreach (ContextMenuOption option in options)
             {
-                GameObject cmObject = option.GenerateContextMenuObject(transform);
+                GameObject cmObject = option.GenerateContextMenuObject(transform, font);
                 cmObject.GetComponentInChildren<UnityEngine.UI.Button>().onClick.AddListener(option.ContextMenuClicked);
                 if (sizeFit == ContextMenuSizeFit.ToLargestElement)
                 {
@@ -78,6 +80,7 @@ namespace Szczepanski.UI
         public ContextMenuSizeFit sizeFit;
 
         public ContextMenuOption[] options;
+        public TMP_FontAsset font;
     }
 
     public enum ContextMenuLifeSpan
