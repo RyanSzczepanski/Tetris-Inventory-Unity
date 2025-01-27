@@ -36,12 +36,14 @@ namespace Szczepanski.UI
 
         public static GameObject CreateFloatingWindow(Transform parent, FloatingWindowSettings settings)
         {
+            Profiler.BeginSample("CreateFloatingWindow");
             GameObject prefab = settings.isResizeable ? FLOATING_WINDOW_RESIZEABLE_PREFAB : FLOATING_WINDOW_PREFAB;
             if(prefab == null) { PreLoadPrefabs(); }
             GameObject floatingWindowObject = GameObject.Instantiate(prefab, parent);
             floatingWindowObject.hideFlags = HideFlags.None;
             FloatingWindow floatingWindow = floatingWindowObject.GetComponent<FloatingWindow>();
             floatingWindow.SetUI(settings);
+            Profiler.EndSample();
             return floatingWindowObject;
         }
 
@@ -127,6 +129,7 @@ namespace Szczepanski.UI
             IsResizeable = settings.isResizeable;
             MinWindowSize = settings.minWindowSize;
             Title = settings.title;
+            Font = settings.font;
             Profiler.BeginSample("SetWindowData");
             SetWindowData();
             Profiler.EndSample();

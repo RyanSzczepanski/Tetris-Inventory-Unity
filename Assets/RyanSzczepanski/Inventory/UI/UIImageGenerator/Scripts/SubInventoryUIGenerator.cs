@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.Profiling;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 
 public static class InventoryUIGenerator
@@ -36,10 +39,32 @@ public static class InventoryUIGenerator
         field.SetValue(itemInventorySO, new SubInventoryArrangement() { subInventorySize = new Vector2Int(1, 1), childArrangements = new SubInventoryArrangement[0] });
         ItemInventory item = itemInventorySO.CreateItem() as ItemInventory;
         GameObject.Destroy(GenerateUIObject(null, item.Data, item, DRAW_SETTINGS));
+
+        foreach (var method in typeof(InventoryUIGenerator).GetMethods(
+            BindingFlags.DeclaredOnly |
+            BindingFlags.NonPublic |
+            BindingFlags.Public |
+            BindingFlags.Instance |
+            BindingFlags.Static))
+        {
+            Debug.Log($"JIT Compile {method.Name}");
+            RuntimeHelpers.PrepareMethod(method.MethodHandle);
+        }
+        foreach (var method in typeof(SubInventoryUIGenerator).GetMethods(
+            BindingFlags.DeclaredOnly |
+            BindingFlags.NonPublic |
+            BindingFlags.Public |
+            BindingFlags.Instance |
+            BindingFlags.Static))
+        {
+            Debug.Log($"JIT Compile {method.Name}");
+            RuntimeHelpers.PrepareMethod(method.MethodHandle);
+        }
     }
 
     public static GameObject GenerateUIObject(Transform transform, IInventorySO itemInventorySO, IInventory itemInventory, in InventoryCellDrawSettings drawSettings)
     {
+        Profiler.BeginSample("GenerateUIObject");
         subInventoryTracker = 0;
         InventoryUIGenerator.drawSettings = drawSettings;
         GameObject inventoryObject = GameObject.Instantiate(INVENTORY_PREFAB, transform);
@@ -52,13 +77,14 @@ public static class InventoryUIGenerator
         ContentSizeFitter csf = inventoryObject.GetComponent<ContentSizeFitter>();
         csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
         csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
-        Profiler.BeginSample("ArrangementTreeSearch");
+        
         ArrangementTreeSearch(itemInventorySO.SubInventoryArrangements, inventoryObject.transform, itemInventory);
         Profiler.EndSample();
         return inventoryObject;
     }
     private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, Transform parent, IInventory item)
     {
+        //Profiler.BeginSample("ArrangementTreeSearch");
         Transform newParent;
         if (arrangement.HasSubInventory)
         {
@@ -76,6 +102,7 @@ public static class InventoryUIGenerator
         {
             ArrangementTreeSearch(child, newParent, item);
         }
+        //Profiler.EndSample();
     }
     private static GameObject GenerateArrangement(SubInventoryArrangement arrangement, Transform parent)
     {
@@ -130,9 +157,7 @@ public static class SubInventoryUIGenerator
         RenderTexture texture2D;
         if(!CAHCED_TEXTURES.TryGetValue(subInventory.Size, out texture2D))
         {
-            Profiler.BeginSample("GenerateCellGridTextureShader");
             texture2D = GenerateCellGridTextureShader(subInventory.Size, in drawSettings);
-            Profiler.EndSample();
         }
         //Set Component Values
         RawImage imageComponent = subInventoryObject.GetComponent<RawImage>();
@@ -151,6 +176,7 @@ public static class SubInventoryUIGenerator
 
     public static RenderTexture GenerateCellGridTextureShader(Vector2Int gridSize, in InventoryCellDrawSettings drawSettings)
     {
+        Profiler.BeginSample("GenerateCellGridTextureShader");
         Vector2Int textureSize = new(
         gridSize.x * drawSettings._cellSize + drawSettings._paddingSize * 2 + drawSettings._outlineSize * 2,
         gridSize.y * drawSettings._cellSize + drawSettings._paddingSize * 2 + drawSettings._outlineSize * 2
@@ -167,7 +193,7 @@ public static class SubInventoryUIGenerator
         computeShader.Dispatch(0, renderTexture.width, renderTexture.height, 1);
 
         CAHCED_TEXTURES.Add(gridSize, renderTexture);
-
+        Profiler.EndSample();
         return renderTexture;
     }
 
