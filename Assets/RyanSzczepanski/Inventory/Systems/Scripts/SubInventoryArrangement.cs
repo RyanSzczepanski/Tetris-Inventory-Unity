@@ -14,6 +14,6 @@ public struct SubInventoryArrangement
     [ShowIf("IsLeaf")]
     public Vector2Int subInventorySize;
 
-    public bool IsLeaf { get => childArrangements.Length == 0; }
+    public bool IsLeaf { get { childArrangements ??= new SubInventoryArrangement[0]; return childArrangements.Length == 0; } }
     public bool HasSubInventory { get => subInventorySize != Vector2Int.zero; }
 }

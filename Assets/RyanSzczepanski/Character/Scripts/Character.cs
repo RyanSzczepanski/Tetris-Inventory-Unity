@@ -1,6 +1,7 @@
 using UnityEngine;
 using Szczepanski.UI;
 using UnityEngine.UI;
+using UnityEngine.Profiling;
 
 public class Character : MonoBehaviour
 {
@@ -29,9 +30,13 @@ public class Character : MonoBehaviour
                 minWindowSize = new Vector2(0, 0),
                 title = itemBaseSO.ShortName
             };
+            Profiler.BeginSample("CreateFloatingWindow");
             GameObject floatingWindow = FloatingWindowFactory.CreateFloatingWindow(parent, settings);
+            Profiler.EndSample();
             Transform transform = floatingWindow.GetComponent<FloatingWindow>().Content.rectTransform;
+            Profiler.BeginSample("GenerateUIObject");
             InventoryUIGenerator.GenerateUIObject(transform, equipmentSlot.item.Data as IInventorySO, equipmentSlot.item as IInventory, in InventoryUIManager.DRAW_SETTINGS);
+            Profiler.EndSample();
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {

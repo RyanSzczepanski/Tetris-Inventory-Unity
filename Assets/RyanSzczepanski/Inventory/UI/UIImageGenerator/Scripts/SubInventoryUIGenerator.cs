@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.UI;
@@ -27,7 +29,16 @@ public static class InventoryUIGenerator
         VERTICAL_ARRANGEMENT_PREFAB.hideFlags = HideFlags.HideAndDontSave;
     }
 
-    public static void GenerateUIObject(Transform transform, IInventorySO itemInventorySO, IInventory itemInventory, in InventoryCellDrawSettings drawSettings)
+    public static void PreJIT(InventoryCellDrawSettings DRAW_SETTINGS)
+    {
+        ItemInventorySO itemInventorySO = ScriptableObject.CreateInstance<ItemInventorySO>();
+        var field = typeof(ItemInventorySO).GetField("m_SubInventoryArrangements", BindingFlags.Instance | BindingFlags.NonPublic);
+        field.SetValue(itemInventorySO, new SubInventoryArrangement() { subInventorySize = new Vector2Int(1, 1), childArrangements = new SubInventoryArrangement[0] });
+        ItemInventory item = itemInventorySO.CreateItem() as ItemInventory;
+        GameObject.Destroy(GenerateUIObject(null, item.Data, item, DRAW_SETTINGS));
+    }
+
+    public static GameObject GenerateUIObject(Transform transform, IInventorySO itemInventorySO, IInventory itemInventory, in InventoryCellDrawSettings drawSettings)
     {
         subInventoryTracker = 0;
         InventoryUIGenerator.drawSettings = drawSettings;
@@ -41,8 +52,10 @@ public static class InventoryUIGenerator
         ContentSizeFitter csf = inventoryObject.GetComponent<ContentSizeFitter>();
         csf.horizontalFit = ContentSizeFitter.FitMode.MinSize;
         csf.verticalFit = ContentSizeFitter.FitMode.MinSize;
-
+        Profiler.BeginSample("ArrangementTreeSearch");
         ArrangementTreeSearch(itemInventorySO.SubInventoryArrangements, inventoryObject.transform, itemInventory);
+        Profiler.EndSample();
+        return inventoryObject;
     }
     private static void ArrangementTreeSearch(SubInventoryArrangement arrangement, Transform parent, IInventory item)
     {
@@ -111,15 +124,13 @@ public static class SubInventoryUIGenerator
         //Rename Object
         GameObject subInventoryObject = GameObject.Instantiate(SUB_INVENTORY, parent);
         subInventoryObject.hideFlags = HideFlags.None;
-        subInventoryObject.name = $"{subInventory.Size.x}x{subInventory.Size.y} SubInventory";
-
         SubInventoryUI subInventoryUI = subInventoryObject.GetComponent<SubInventoryUI>();
         subInventoryUI.Init(subInventory, drawSettings);
         //Generate Or Get Cached Texture
         RenderTexture texture2D;
         if(!CAHCED_TEXTURES.TryGetValue(subInventory.Size, out texture2D))
         {
-            Profiler.BeginSample("Generate Texture From Shader");
+            Profiler.BeginSample("GenerateCellGridTextureShader");
             texture2D = GenerateCellGridTextureShader(subInventory.Size, in drawSettings);
             Profiler.EndSample();
         }

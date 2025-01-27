@@ -25,6 +25,7 @@ public class InventoryUIManager : MonoBehaviour
         FloatingWindowFactory.PreLoadPrefabs();
         SubInventoryUIGenerator.PreLoadPrefabs();
         SubInventoryUIGenerator.SetShader(computeShader);
+        InventoryUIGenerator.PreJIT(DRAW_SETTINGS);
         DragItemUI.Init(DRAW_SETTINGS);
     }
 }

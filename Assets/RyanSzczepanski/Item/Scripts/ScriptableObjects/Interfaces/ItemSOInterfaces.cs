@@ -13,7 +13,6 @@ public interface IInventorySO
     public static Vector2Int[] GetAllSubInventories(SubInventoryArrangement subInventoryArrangement)
     {
         List<Vector2Int> subInventories = new List<Vector2Int>();
-
         if (!subInventoryArrangement.IsLeaf)
         {
             foreach (SubInventoryArrangement child in subInventoryArrangement.childArrangements)
