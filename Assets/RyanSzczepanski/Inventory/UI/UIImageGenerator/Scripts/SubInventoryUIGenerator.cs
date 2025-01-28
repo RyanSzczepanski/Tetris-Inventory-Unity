@@ -1,3 +1,4 @@
+using Sirenix.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -189,8 +190,31 @@ public static class SubInventoryUIGenerator
         if (computeShader == null) { throw new System.NullReferenceException("computeShader is null"); }
 
         computeShader.SetTexture(0, "Result", renderTexture);
-        computeShader.SetInts("textureSize", new int[] { renderTexture.width, renderTexture.height });
-        computeShader.Dispatch(0, renderTexture.width, renderTexture.height, 1);
+        computeShader.SetInts("textureSize", new int[] {
+            renderTexture.width, renderTexture.height,
+        });
+        computeShader.SetInt("_cellSize", drawSettings._cellSize);
+        computeShader.SetInt("_outlineSize", drawSettings._outlineSize);
+        computeShader.SetInt("_paddingSize", drawSettings._paddingSize);
+        computeShader.SetFloats("_cellColor", new float[] {
+            drawSettings._cellColor.r, drawSettings._cellColor.g, drawSettings._cellColor.b, drawSettings._cellColor.a,
+        });
+        computeShader.SetFloats("_cellAccentColor", new float[] {
+            drawSettings._cellAccentColor.r, drawSettings._cellAccentColor.g, drawSettings._cellAccentColor.b, drawSettings._cellAccentColor.a,
+        });
+        computeShader.SetFloats("_cellOutlineColor", new float[] {
+            drawSettings._cellOutlineColor.r, drawSettings._cellOutlineColor.g, drawSettings._cellOutlineColor.b, drawSettings._cellOutlineColor.a,
+        });
+        computeShader.SetFloats("_cellOutlineAccentColor", new float[] {
+            drawSettings._cellOutlineAccentColor.r, drawSettings._cellOutlineAccentColor.g, drawSettings._cellOutlineAccentColor.b, drawSettings._cellOutlineAccentColor.a,
+        });
+        computeShader.SetFloats("_outlineColor", new float[] {
+            drawSettings._outlineColor.r, drawSettings._outlineColor.g, drawSettings._outlineColor.b, drawSettings._outlineColor.a,
+        });
+        computeShader.SetFloats("_outlineAccentColor", new float[] {
+            drawSettings._outlineAccentColor.r, drawSettings._outlineAccentColor.g, drawSettings._outlineAccentColor.b, drawSettings._outlineAccentColor.a,
+        });
+        computeShader.Dispatch(0, textureSize.x, textureSize.y, 1);
 
         CAHCED_TEXTURES.Add(gridSize, renderTexture);
         Profiler.EndSample();

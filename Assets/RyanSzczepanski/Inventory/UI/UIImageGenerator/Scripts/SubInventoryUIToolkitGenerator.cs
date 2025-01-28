@@ -126,6 +126,7 @@ public static class SubInventoryUIToolkitGenerator
         VisualElement ve = new VisualElement();
 
         //TODO:FIX
+        if(subInventory.x > 327 || subInventory.y > 327) { return ve; }
         Texture2D texture = SubInventoryUIGenerator.GenerateCellGridTextureCPU(subInventory, drawSettings);
 
         //Set Component Values
