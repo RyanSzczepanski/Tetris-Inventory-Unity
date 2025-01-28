@@ -47,7 +47,7 @@ public static class InventoryUIGenerator
             BindingFlags.Instance |
             BindingFlags.Static))
         {
-            Debug.Log($"JIT Compile {method.Name}");
+            Debug.Log($"JIT Compile InventoryUIGenerator.{method.Name}");
             RuntimeHelpers.PrepareMethod(method.MethodHandle);
         }
         foreach (var method in typeof(SubInventoryUIGenerator).GetMethods(
@@ -57,7 +57,7 @@ public static class InventoryUIGenerator
             BindingFlags.Instance |
             BindingFlags.Static))
         {
-            Debug.Log($"JIT Compile {method.Name}");
+            Debug.Log($"JIT Compile SubInventoryUIGenerator.{method.Name}");
             RuntimeHelpers.PrepareMethod(method.MethodHandle);
         }
     }
