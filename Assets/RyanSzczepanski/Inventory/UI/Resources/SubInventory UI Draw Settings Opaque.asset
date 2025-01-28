@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 231093d6433e1734a92acb08e7fc37cd, type: 3}
-  m_Name: SubInventory UI Draw Settings
+  m_Name: SubInventory UI Draw Settings Opaque
   m_EditorClassIdentifier: 
   _cellSize: 50
   _paddingSize: 1
   _outlineSize: 1
-  _cellColor: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 0.85}
-  _cellAccentColor: {r: 0.15, g: 0.15, b: 0.15, a: 0.85}
-  _cellOutlineColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.8509804}
-  _cellOutlineAccentColor: {r: 0.4, g: 0.4, b: 0.4, a: 0.85}
-  _outlineColor: {r: 0.9, g: 0.9, b: 0.9, a: 0.8509804}
-  _outlineAccentColor: {r: 0.85, g: 0.85, b: 0.85, a: 0.8509804}
+  _cellColor: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 1}
+  _cellAccentColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
+  _cellOutlineColor: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+  _cellOutlineAccentColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  _outlineColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+  _outlineAccentColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
